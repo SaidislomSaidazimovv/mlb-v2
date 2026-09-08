@@ -122,3 +122,17 @@ Qamrov: L16 (butun-mm rad), L5b (ε-snap, dublikat yo'q), faces, L1 (to'g'ri 600
 **Asos:** `52` (§2/§4/§6/§7/§10) + `54`§3 "T8 gate".
 
 **Test:** butun suite **49/49 pass · 0 fail** (+T8 7). **T8-gate:** diagramsiz → `publish.diagram` rad; o'zi egasi bo'lmagan maydon → `publish.ownership` rad; birliksiz/ifoda/tsikl ham rad.
+
+---
+
+## 2026-09-09 — T9: Lockfile ✅
+
+**Nima qilindi** (`apps/app/src/poligon/model/lock.ts`, sof funksiya):
+- `contentHash(thing)` — deterministik FNV-1a (mazmun o'zgarishini aniqlash).
+- `lockOf(uids, index)` — loyiha tegган Thinglar qulfi `(uid, version, hash)`.
+- `checkLock(lock, index)` — qulf mos kelmasa RAD: `lock.missing` / `lock.version` / `lock.hash` → cut list CHIQMAYDI (jimgina boshqa list emas). Mos → bo'sh (chiqadi).
+- `reverseIndex(projects)` — qaysi loyihalar qaysi Thing'dan (52§9, blast radius).
+
+**Asos:** `52`§5 (lock, reproducible) + `52`§9 (teskari indeks) + `54`§3 "T9 gate".
+
+**Test:** butun suite **55/55 pass · 0 fail** (+T9 6). **T9-gate:** bir qulf → mos (reproducible); version/mazmun o'zgarsa → rad; yo'qolsa → rad; teskari indeks.
