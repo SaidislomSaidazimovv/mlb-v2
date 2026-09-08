@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "cd apps/app && npm install",
+  "buildCommand": "cd apps/app && npm run build",
+  "outputDirectory": "apps/app/dist",
+  "framework": null,
+  "redirects": [
+    { "source": "/", "destination": "/studio.html", "permanent": false }
+  ]
+}

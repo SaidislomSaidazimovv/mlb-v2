@@ -1,30 +1,28 @@
-# FOUNDERGA — aniqlanishi kerak (javob kutilyapti)
+# FOUNDERGA — holat (KO'PI ALLAQACHON JAVOB BERILGAN)
 
-> Bu fayl faqat **founderga bog'liq**, javob kutayotgan narsalar uchun. Javob kelganda tegishli
-> vazifa bajariladi va `CHALA.md` / `BAJARILGAN.md` ga o'tadi. Har band **manba** bilan.
-> (Tekshirildi: mavjud narsalar so'ralmayapti — parts-split `panelDecomposition` eski repoda bor,
-> korpus/diagramlar biz quramiz.)
+> ⚠️ TUZATISH (2026-09-08): oldingi versiyada men KO'P narsani ORTIQCHA so'ragan edim — ular
+> allaqachon founder hujjatlarida yoki foydalanuvchi so'zida bor edi. Bu mening xatoyim (diqqat
+> bilan o'qimadim). Quyida to'g'rilangan, halol holat.
 
-## Javob kutilyapti
+## ALLAQACHON JAVOB BERILGAN — founderdan so'ramaslik kerak edi
+- **Material qismi va mebel qismi ALOHIDA fayl** ✅ hujjatda bor:
+  - `52`§3: `materials/` (har material alohida), `types/` (har mebel/blok alohida — "app 2's output"),
+    `themes/` (material/dekor/kromka qoidalari).
+  - `50`§4: **"A Catalog ships geometry. A Theme ships rules."** — Catalog = geometriya (mebel/Type);
+    Theme = material/dekor/kromka/hardware.
+  - `52`§5 GOLDEN RULE: "har fizik narsa — o'z fayli."
+  - (Men buni "solishtirish formati" savoli qilgandim — XATO. Format shundan kelib chiqadi:
+    mebel geometriyasi = Type fayl; material = Theme/materials fayl; alohida.)
+- **10 ta mebel** ✅ foydalanuvchi aytdi: BIZ yasaymiz (yasaganda fayl chiqadi), founderdan ro'yxat
+  kutilmaydi. (Men Q3 qilgandim — XATO.)
+- **Teshik ma'lumoti** ✅ `52`§3: `hardware/hinges|handles` ("drilling"), `joints/` (confirmat/minifix/
+  dowel/domino) + eski engine SWJ008. Ma'lumot bor.
 
-1. **poligon yadro kodi (ixtiyoriy).** `54_ROADMAP` §4: *«roles.ts, facets.ts, cascade.ts (16 test),
-   apps/app/src/poligon/model/ — allaqachon yetkazilgan»*. Bizda YO'Q (mebelchi-2app + mebely
-   tekshirildi, 2026-09-08). Sizda bormi? Yuborasizmi, yoki noldan yozaveraylikmi? *(Kutmasa ham
-   bo'ladi — biz noldan yoza olamiz; T6/T7.)*
+## HAQIQIY (kichik) ochiq nuqtalar — bloklamaydi
+- **poligon yadro kodi** — `54`§4 "allaqachon yetkazilgan" deydi, bizda yo'q → biz noldan yozyapmiz
+  (T1–T4 tayyor). Founderda tayyori bo'lsa — yuborsa oladi; bo'lmasa muammo yo'q.
+- **`49_SHEET_REDTEAM` vs `49_VERDICTS`** — nom aniqligi (mayda).
 
-2. **Teshik / сверловка (MUHIM).** `48–54` hujjatlar List→qism→kesim ro'yxatini yozadi, ammo
-   **teshik/сверловкани chuqur spec qilmaydi** (faqat `52` `joints/`, `50` P6 qisqacha). Sizning
-   so'rovingizda *«qanday teshadi»* bor. Yangi versiyada teshik qayerdan: eski engine primitivlaridan
-   (SWJ008 / panelDecomposition) ko'chiraylikmi, yoki teshik uchun alohida yangi spec berasizmi?
-
-3. **10 ta mebel.** Solishtirish uchun aynan qaysi 10 ta? (Eski versiyada saqlangan real loyihalar?
-   Nomlari bilan?) Bizda «golden» to'plam faqat 7 ta alohida **panel** — to'liq mebel emas.
-
-4. **Kichik aniqlik.** `50_AUTOGROUPING` §0 `49_SHEET_REDTEAM.md`ga havola qiladi; papkada esa
-   `49_VERDICTS.md`. O'sha faylning yangi nomimi, yoki alohida fayl tushib qolganmi?
-
-5. **Solishtirish natijasi formati.** «Ikkala versiya chiqargan fayllar»ni qanday ko'rinishda
-   kutasiz — kesim ro'yxati (parts) + teshik (drilling) yonma-yon jadval/faylmi? Aniq format.
-
-## Ustuvorlik
-- **#1, #2** — eng muhim (yadro + teshik tomoni). Qolgani engine yadrosini (T1–T11) to'smaydi.
+## Xulosa
+Founder deyarli hammasini bergan. Yangi versiya `48–54` + eski system (mebelchi-2app) asosida
+quriladi; material va mebel alohida fayl sifatida (Catalog/Type vs Theme/materials).

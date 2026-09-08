@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Forge UI — to'liq hisobot (F1–F7 + Moblo-parity)</title>
+<style>html,body{margin:0;padding:0;} img{max-width:100%;}</style>
+</head>
+<body>
+<style>
+:root{
+  --bg:#eceef2; --card:#ffffff; --card2:#f6f8fb; --text:#161b22; --muted:#5c6672; --faint:#8a94a1;
+  --line:#dde2e9; --line2:#e9edf2;
+  --x:#d83a34; --y:#159a48; --z:#2f6bd8; --amber:#c67e12;
+  --ok:#159a48; --accent:#2f6bd8; --warn:#c67e12;
+  --shadow:0 1px 2px rgba(22,27,34,.04),0 8px 26px rgba(22,27,34,.07);
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Segoe UI Mono",Menlo,Consolas,monospace;
+  --sans:ui-sans-serif,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{ --bg:#0e1116; --card:#161b22; --card2:#1b212a; --text:#e6ebf1; --muted:#9aa5b1; --faint:#6b7684;
+    --line:#252c36; --line2:#20262f; --x:#f0645d; --y:#3fc172; --z:#6ea0f0; --amber:#e0a44a;
+    --ok:#3fc172; --accent:#6ea0f0; --warn:#e0a44a; --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.45);}
+}
+:root[data-theme="dark"]{ --bg:#0e1116; --card:#161b22; --card2:#1b212a; --text:#e6ebf1; --muted:#9aa5b1; --faint:#6b7684;
+  --line:#252c36; --line2:#20262f; --x:#f0645d; --y:#3fc172; --z:#6ea0f0; --amber:#e0a44a;
+  --ok:#3fc172; --accent:#6ea0f0; --warn:#e0a44a; --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.45);}
+:root[data-theme="light"]{ --bg:#eceef2; --card:#ffffff; --card2:#f6f8fb; --text:#161b22; --muted:#5c6672; --faint:#8a94a1;
+  --line:#dde2e9; --line2:#e9edf2; --x:#d83a34; --y:#159a48; --z:#2f6bd8; --amber:#c67e12;
+  --ok:#159a48; --accent:#2f6bd8; --warn:#c67e12; --shadow:0 1px 2px rgba(22,27,34,.04),0 8px 26px rgba(22,27,34,.07);}
+*{box-sizing:border-box;}
+.rp{background:var(--bg); color:var(--text); font-family:var(--sans); line-height:1.62; padding:40px 20px 80px; min-height:100%;
+  -webkit-font-smoothing:antialiased;}
+.rp-wrap{max-width:860px; margin:0 auto;}
+.rp-hd{margin-bottom:30px; padding-bottom:24px; border-bottom:2px solid var(--line);}
+.rp-kicker{font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin:0 0 10px; font-weight:600;}
+.rp-h1{font-size:clamp(26px,4.2vw,38px); font-weight:800; letter-spacing:-.025em; margin:0 0 12px; text-wrap:balance;}
+.rp-lede{font-size:16px; color:var(--muted); margin:0; max-width:64ch;}
+.rp-meta{display:flex; flex-wrap:wrap; gap:8px 10px; margin-top:18px;}
+.rp-mchip{font-family:var(--mono); font-size:11.5px; padding:4px 9px; border-radius:6px; background:var(--card2); border:1px solid var(--line); color:var(--muted);}
+.rp-mchip b{color:var(--text); font-weight:600;}
+
+h2.rp-s{font-size:13px; font-family:var(--mono); text-transform:uppercase; letter-spacing:.1em; color:var(--faint); font-weight:600;
+  margin:44px 0 16px; padding-bottom:8px; border-bottom:1px solid var(--line2);}
+.rp-intro{font-size:15px; color:var(--muted); margin:0 0 20px; max-width:66ch;}
+.rp-intro b{color:var(--text); font-weight:600;}
+
+.tool{background:var(--card); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); overflow:hidden; margin-bottom:16px;}
+.tool-hd{display:flex; align-items:center; gap:12px; padding:15px 18px; border-bottom:1px solid var(--line2); background:var(--card2);}
+.tool-code{font-family:var(--mono); font-weight:700; font-size:13px; color:var(--accent); background:color-mix(in srgb,var(--accent) 12%,transparent); padding:3px 8px; border-radius:6px; flex:0 0 auto;}
+.tool-name{font-weight:700; font-size:16px; margin:0;}
+.tool-badge{margin-left:auto; font-size:11px; font-weight:700; letter-spacing:.04em; padding:4px 10px; border-radius:999px; white-space:nowrap; flex:0 0 auto;}
+.b-11{background:color-mix(in srgb,var(--ok) 16%,transparent); color:var(--ok);}
+.b-11s{background:color-mix(in srgb,var(--z) 16%,transparent); color:var(--z);}
+.b-core{background:color-mix(in srgb,var(--warn) 16%,transparent); color:var(--warn);}
+.tool-body{padding:6px 18px 16px;}
+.row{padding:12px 0; border-bottom:1px solid var(--line2);}
+.row:last-child{border-bottom:none;}
+.row-k{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.07em; color:var(--faint); margin:0 0 5px; font-weight:600;}
+.row-v{font-size:14.5px; margin:0; color:var(--text);}
+.row-v.mut{color:var(--muted);}
+.row-v ul{margin:6px 0 0; padding-left:18px;}
+.row-v li{margin:3px 0;}
+code,.k{font-family:var(--mono); font-size:.88em; background:var(--card2); border:1px solid var(--line2); padding:1px 5px; border-radius:4px; color:var(--text); word-break:break-word;}
+.pill{display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:600; padding:2px 8px; border-radius:999px; border:1px solid var(--line);}
+.dot{width:9px; height:9px; border-radius:2px; display:inline-block;}
+.dx{background:var(--x);} .dy{background:var(--y);} .dz{background:var(--z);}
+.warnnote{color:var(--warn);} .oknote{color:var(--ok); font-weight:600;}
+
+.tbl-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow); margin-bottom:8px;}
+table.rp-t{width:100%; border-collapse:collapse; font-size:13.5px; background:var(--card); min-width:520px;}
+table.rp-t th{ text-align:left; font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--faint); font-weight:600; padding:10px 14px; border-bottom:1px solid var(--line); background:var(--card2);}
+table.rp-t td{padding:10px 14px; border-bottom:1px solid var(--line2); vertical-align:top;}
+table.rp-t tr:last-child td{border-bottom:none;}
+.yes{color:var(--ok); font-weight:700;}
+.tick{color:var(--ok); font-weight:700;}
+
+.commits{font-family:var(--mono); font-size:12.5px; background:var(--card); border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow); overflow:hidden;}
+.commit{display:flex; gap:12px; align-items:baseline; padding:10px 14px; border-bottom:1px solid var(--line2);}
+.commit:last-child{border-bottom:none;}
+.commit .h{color:var(--accent); font-weight:700; flex:0 0 auto;}
+.commit .m{color:var(--text);}
+.commit .m .s{color:var(--muted);}
+
+.callout{background:var(--card2); border:1px solid var(--line); border-left:3px solid var(--accent); border-radius:8px; padding:13px 16px; font-size:14px; color:var(--muted); margin:16px 0;}
+.callout b{color:var(--text);}
+.rp-foot{margin-top:44px; padding-top:20px; border-top:1px solid var(--line); font-size:13px; color:var(--faint); font-family:var(--mono);}
+</style>
+<div class="rp">
+<div class="rp-wrap">
+
+  <header class="rp-hd">
+    <p class="rp-kicker">Forge UI · Hisobot</p>
+    <h1 class="rp-h1">Karkas manipulyatsiya UI — F1–F7 + F03 va Moblo-parity</h1>
+    <p class="rp-lede">Panel bilan ishlash qatlamining to'liq holati: har bir asbob nima qiladi, qanday qilingan, qoidalarga mosligi va Moblo bilan qanchalik 1:1 ekani — ichma-ich.</p>
+    <div class="rp-meta">
+      <span class="rp-mchip">Branch: <b>feat/karkas-engine-port</b></span>
+      <span class="rp-mchip">Push: <b>0d46b5a..690cdb3</b></span>
+      <span class="rp-mchip">Zona: <b>apps/app/forge-ui-handoff/src/ui</b></span>
+      <span class="rp-mchip">Sana: <b>2026-08-01</b></span>
+    </div>
+  </header>
+
+  <h2 class="rp-s">0 · Arxitektura va qonunlar</h2>
+  <p class="rp-intro">Forge — Moblo app-idagi <b>manipulyatsiya qatlami</b>ning aynan o'zi (gizmo, puck/handle, chip, modifikator-muharrir). Moblo-ning qolgan «chrome»i (yuqori bar, pastki tablar, shakl-kutubxona bottom-sheet, chap rail, doimiy o'lcham-bar) — <b>host ilovasining ishi</b>, biz uni qurmaymiz. Bizning harness-dagi o'ng «controls-card» — faqat test uchun, yetkazilmaydi.</p>
+  <div class="tbl-wrap">
+    <table class="rp-t">
+      <thead><tr><th>Qonun</th><th>Ma'nosi</th><th>Holat</th></tr></thead>
+      <tbody>
+        <tr><td>Zona</td><td>Faqat <code>src/ui</code> (+ harness test uchun). <code>src/contract/types.ts</code> — tegilmaydi.</td><td class="yes">✓ hurmat</td></tr>
+        <tr><td>Birlik = mm10</td><td>Butun son, o'ndan bir mm (16mm=160). Santimetr faqat ekranda, faqat <code>measure.ts</code> aylantiradi.</td><td class="yes">✓</td></tr>
+        <tr><td>Yaxlitlash</td><td>Barcha mm10 yaxlitlash <code>measure.ts</code>-dagi <code>roundMm10</code> orqali (C fazasi).</td><td class="yes">✓</td></tr>
+        <tr><td>Model-tomon geometriya</td><td>F03/F5/F6/F7 kesim SPEC emit qiladi, o'zi kesmaydi — faqat guide chizadi. Kesish hostda.</td><td class="yes">✓</td></tr>
+        <tr><td>Qalinlik = profil</td><td>UI qalinlikni (3-o'q) o'zgartirmaydi — profil beradi. Z-puck yo'q, uniform Z-ni tegmaydi.</td><td class="yes">✓</td></tr>
+        <tr><td>Sof Three.js</td><td><code>@react-three/fiber</code> / <code>drei</code> YO'Q. TransformControls + OrbitControls.</td><td class="yes">✓</td></tr>
+        <tr><td>Grounded</td><td>Kod ham, hisobot ham — faqat Moblo reference/video, kod yoki tekshirilgan manba. O'zboshimchalik yo'q.</td><td class="yes">✓</td></tr>
+        <tr><td>Izoh yo'q</td><td>Kodda birorta izoh yozilmaydi (siz o'zingiz yozganday).</td><td class="yes">✓</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="rp-s">1 · Asboblar (F1–F7 + F03)</h2>
+  <p class="rp-intro">Har biri: <b>nima qiladi</b> · <b>qanday qilingan</b> (texnik) · <b>Moblo 1:1</b> · <b>qonun</b>. Rang-kod: <span class="pill"><span class="dot dx"></span>X eni</span> <span class="pill"><span class="dot dy"></span>Y bo'y</span> <span class="pill"><span class="dot dz"></span>Z qalinlik</span>.</p>
+
+  <div class="tool">
+    <div class="tool-hd"><span class="tool-code">F1</span><h3 class="tool-name">MOVE — ko'chirish</h3><span class="tool-badge b-11s">1:1 (yadro)</span></div>
+    <div class="tool-body">
+      <div class="row"><p class="row-k">Nima qiladi</p><p class="row-v">Panelni sudrab ko'chirish. Sudrash paytida yashil punktir <b>vino​ska</b> + yashil jonli <b>pill (cm)</b>. Tik (Y) sudraganda raqam = <b>yergacha balandlik</b> (Moblo uslubi, vino​ska polga tushadi); yotiq (X/Z) = <b>siljish</b>.</p></div>
+      <div class="row"><p class="row-k">Qanday qilingan</p><p class="row-v mut"><code>TransformControls</code> translate gizmosi ustiga qurilgan. Qo'yib yuborgach yashil ✎ resting-chip qoladi → bosilsa <code>Numpad</code> (cm, expr-eval matematika) → aniq pozitsiya → <code>onDragPanel</code>. Pol = y=0; ixtiyoriy <code>groundY_mm10</code> prop (host boshqa pol bersa).</p></div>
+      <div class="row"><p class="row-k">Moblo 1:1</p><p class="row-v"><span class="tick">Yadro mos</span> — yashil leader + balandlik + chip. <span class="warnnote">Kechiktirilgan:</span> «Put on ground» tugmasi + «Measure» ruletka (Moblo'da bor, biz keyinga qoldirdik). Markaz-4-tomon planar ham hozircha bitta o'q.</p></div>
+      <div class="row"><p class="row-k">Qonun</p><p class="row-v mut">Faqat <code>Stage3D.tsx</code>; contract tegilmadi; balandlik-need README oxirida.</p></div>
+    </div>
+  </div>
+
+  <div class="tool">
+    <div class="tool-hd"><span class="tool-code">F2</span><h3 class="tool-name">RESIZE — o'lcham</h3><span class="tool-badge b-11">1:1</span></div>
+    <div class="tool-body">
+      <div class="row"><p class="row-k">Nima qiladi</p><p class="row-v">Panel yuzidagi <b>puck</b>ni ushlab-sudrab o'lchamni o'zgartirish. <span class="pill"><span class="dot dx"></span>qizil = eni</span> <span class="pill"><span class="dot dy"></span>yashil = bo'y</span>. Sudralganda qizil/yashil size-chip (o'q rangida) + qizil leader; qarama-qarshi yuz qotiriladi.</p></div>
+      <div class="row"><p class="row-k">Qanday qilingan</p><p class="row-v mut">Handle'lar host'dan (<code>SideHandle[]</code>, <code>axis</code> bilan). <b>D fazasida Moblo'ga keltirildi:</b> to'q sariq kub → <b>yassi o'q-rangli puck</b> (normal o'qida yupqa Box, x=qizil/y=yashil); <b>to'g'ri grab+drag</b> (2-qadam olib tashlandi); size-chip <b>o'q-rangli</b> (<code>axisX/Y/Z</code> tone). Qo'yib yuborgach ✎ → Numpad «Размер, см» → <code>onDragHandle</code>. Faqat eni(X)+bo'y(Y) — <b>chuqurlik(Z)=profil, puck yo'q.</b></p></div>
+      <div class="row"><p class="row-k">Uniform / link</p><p class="row-v">Pastki-chapda <b>🔗 zanjir</b> tugmasi (yoqilsa ko'k). Yoqiq bo'lsa enini sudrasangiz <b>bo'y ham proporsional</b> o'zgaradi (nisbat saqlanadi) — mavjud <code>onDragHandle</code> orqali ikkinchi o'qqa emit. <b>Qalinlik hech qachon</b> — profil.</p></div>
+      <div class="row"><p class="row-k">Moblo 1:1</p><p class="row-v"><span class="tick">1:1 bo'ldi</span> (D). <b>Grounded farq:</b> Moblo 3 o'qni ham proporsional qiladi, biz faqat 2-o'q (qalinlik = profil qonuni).</p></div>
+      <div class="row"><p class="row-k">Qonun</p><p class="row-v mut"><code>Stage3D</code> + <code>measure.ts</code> (axis-tone) + <code>styles.css</code>; contract tegilmadi; onDragHandle mavjud mexanizm.</p></div>
+    </div>
+  </div>
+
+  <div class="tool">
+    <div class="tool-hd"><span class="tool-code">F3</span><h3 class="tool-name">ROTATE — burish</h3><span class="tool-badge b-11">1:1</span></div>
+    <div class="tool-body">
+      <div class="row"><p class="row-k">Nima qiladi</p><p class="row-v">3 ta rang-halqa <span class="pill"><span class="dot dx"></span>X</span> <span class="pill"><span class="dot dy"></span>Y</span> <span class="pill"><span class="dot dz"></span>Z</span> bilan burish. Halqa sudralganda <b>swept pona</b> (o'tilgan burchak) + <b>o'q-rangli burchak-chip</b>.</p></div>
+      <div class="row"><p class="row-k">Qanday qilingan</p><p class="row-v mut">TransformControls'ning 3 halqasi. Pona = <code>CircleGeometry</code> sektor (har freym qayta quriladi). <b>A fazasida erkin qilindi:</b> 90°-snap ikki joydan (numpad + release) olindi; endi <b>istagan burchak</b>, faqat 90° yaqinida <b>±4° yumshoq-snap</b>. Numpad = aniq yozilgan son. <b>D:</b> burchak-chip <code>axisX/Y/Z</code> tone.</p></div>
+      <div class="row"><p class="row-k">Moblo 1:1</p><p class="row-v"><span class="tick">1:1 bo'ldi</span> (A) — Moblo ham erkin buradi (85°, −60°, −115°). Contract'da <code>rx/ry/rz</code> erkin radian bor edi. Pona — bizning qo'shimcha ko'rgazma.</p></div>
+      <div class="row"><p class="row-k">Qonun</p><p class="row-v mut">Contract'dagi <code>rx/ry/rz</code> ishlatildi (yangi maydon yo'q); mm10/burchak measure.ts.</p></div>
+    </div>
+  </div>
+
+  <div class="tool">
+    <div class="tool-hd"><span class="tool-code">F4</span><h3 class="tool-name">TARGET — nishon pinlar</h3><span class="tool-badge b-11">1:1</span></div>
+    <div class="tool-body">
+      <div class="row"><p class="row-k">Nima qiladi</p><p class="row-v"><b>⬡⊕ pinlar</b> — modifikatorni (F03/F5/F6/F7) qayerga qo'yishni tanlash. «Модификатор» rejimi kirishi. Har burchak o'z yo'nalgan qavs-ikonkasi bilan (⌜⌝⌞⌟).</p></div>
+      <div class="row"><p class="row-k">Qanday qilingan</p><p class="row-v mut"><code>panelCorners(p)</code> — asosiy yuzning 4 burchagi (orientation.xAxis×yAxis; 3-o'q=qalinlik; qalinlik o'rtasida; rx/ry/rz aylantirilgan). Pinlar DOM tugma sifatida proyeksiya. Kichik panelda tiqilishni kamaytirish uchun <b>sub-toggle</b> «⌜Углы ⌐Кромки ⊔Вырез ▢Окно» — bir vaqtda faqat bitta oila.</p></div>
+      <div class="row"><p class="row-k">Moblo 1:1</p><p class="row-v"><span class="tick">Sistema mos</span> — pin → modifikator-muharrir kirishi.</p></div>
+      <div class="row"><p class="row-k">Qonun</p><p class="row-v mut">Yuz determinatsiyasi orientation'dan (grounded); contract tegilmadi.</p></div>
+    </div>
+  </div>
+
+  <div class="tool">
+    <div class="tool-hd"><span class="tool-code">F03</span><h3 class="tool-name">ROUND — burchak yumaloqlash</h3><span class="tool-badge b-11">1:1</span></div>
+    <div class="tool-body">
+      <div class="row"><p class="row-k">Nima qiladi</p><p class="row-v">Burchakni yumaloqlash. Pin bosilsa muharrir: <b>oq radius-chip</b> + kulrang <b>yoy-guide</b> (2 qirraga tegib) + link (4 burchak bog'lash) + ✓/✕. Yumaloqlangan burchak yashil «⌒ radius» holat-pini bilan turadi.</p></div>
+      <div class="row"><p class="row-k">Qanday qilingan</p><p class="row-v mut"><code>cornerArc()</code> — chorak-doira yoy (qalinlik o'rtasi, aylantirilgan). Radius: Numpad (cm) YOKI drag-tutqich. <b>Geometriya = MODEL:</b> <code>onApplyRound(cornerIds, radius)</code> emit, UI faqat yoy chizadi + saqlaydi (<code>appliedRounds</code>). Reselect'da yashil pin qaytadi.</p></div>
+      <div class="row"><p class="row-k">Moblo 1:1</p><p class="row-v"><span class="tick">Mos</span> — Moblo'da ham burchak tanlanadi → radius chip + yoy; yumaloqlangan burchak holat ko'rsatadi.</p></div>
+      <div class="row"><p class="row-k">Qonun</p><p class="row-v mut">Contract'da round maydoni yo'q → model-side (README'da); UI faqat spec+guide.</p></div>
+    </div>
+  </div>
+
+  <div class="tool">
+    <div class="tool-hd"><span class="tool-code">F5</span><h3 class="tool-name">CHAMFER — qirra ishlovi</h3><span class="tool-badge b-11">1:1</span></div>
+    <div class="tool-body">
+      <div class="row"><p class="row-k">Nima qiladi</p><p class="row-v">Qirraga fasska/rabbet (L-profil). Edge-pin → muharrir: en (qizil) + chuqurlik (kulrang) + link; qirra bo'ylab kulrang <b>rabbet-tasma</b> guide.</p></div>
+      <div class="row"><p class="row-k">Qanday qilingan</p><p class="row-v mut"><code>panelEdges(p)</code> — 4 qirra-o'rtasi + bo'ylab/ichkariga yo'nalish + uzunlik. <code>onApplyChamfer(edgeIds, w, d)</code>; saqlanadi → edge-pin yashil. Model kesadi. Kichik panel uchun sub-toggle «Углы|Кромки».</p></div>
+      <div class="row"><p class="row-k">Moblo 1:1</p><p class="row-v"><span class="tick">Mos</span> — L-step-only hozircha (profil-tanlagich keyin).</p></div>
+      <div class="row"><p class="row-k">Qonun</p><p class="row-v mut">Model-side (README); contract tegilmadi.</p></div>
+    </div>
+  </div>
+
+  <div class="tool">
+    <div class="tool-hd"><span class="tool-code">F6</span><h3 class="tool-name">NOTCH — qirradagi vırez</h3><span class="tool-badge b-11">1:1</span></div>
+    <div class="tool-body">
+      <div class="row"><p class="row-k">Nima qiladi</p><p class="row-v">Qirradagi <b>U-o'yiq</b>. <b>Qizil sudraladigan 3D tutqichlar</b> ◀▶ (en) · ▲ (chuqurlik) · ↔ (pozitsiya, ko'k). <b>Kulrang qulflanadigan offset chiplar</b> (qirra-uchlarigacha) + oq radius. Burchaklar radiusga qarab <b>yumaloqlanadi</b>. ✓/Удалить.</p></div>
+      <div class="row"><p class="row-k">Qanday qilingan</p><p class="row-v mut"><b>Faza A:</b> qizil U-guide + muharrir. <b>Faza B:</b> tutqichlarni ekran-fazo drag bilan sudrash (3D nuqta proyeksiya → ekran birlik-dir → px-per-mm10; delta'ni dir'ga skalyar) — <b>har qanday qirra-orientatsiyada</b>. Offset qulflansa o'sha tomon sudralmaydi. Saqlash <code>onApplyNotch(...,lockL,lockR)</code> — qulf ham saqlanadi (qayta ochganda turadi).</p></div>
+      <div class="row"><p class="row-k">Moblo 1:1</p><p class="row-v"><span class="tick">1:1</span> — Moblo F6-01/03: qizil tutqichlar + kulrang qulf-offset + oq radius + yumaloq burchak. Aynan.</p></div>
+      <div class="row"><p class="row-k">Qonun</p><p class="row-v mut">Model-side (README'da to'liq spec); contract tegilmadi; qulflar UI-prop (contract emas).</p></div>
+    </div>
+  </div>
+
+  <div class="tool">
+    <div class="tool-hd"><span class="tool-code">F7</span><h3 class="tool-name">WINDOW — yuz o'rtasidagi oyna</h3><span class="tool-badge b-11">1:1</span></div>
+    <div class="tool-body">
+      <div class="row"><p class="row-k">Nima qiladi</p><p class="row-v">Yuz ichida <b>to'rtburchak teshik</b>. <b>Fazoviy chiplar</b> (Moblo 1:1): 4 kulrang qulflanadigan offset <b>qirralarga joylashgan</b> + qizil eni/bo'y + oq radius + yashil ✓ + qizil ✕. <b>5 tutqich</b>: ◀▶ (eni) ▲▼ (bo'y) ✥ (butun oynani surish).</p></div>
+      <div class="row"><p class="row-k">Qanday qilingan</p><p class="row-v mut"><code>panelFace(p)</code> — parametrik yuz-ramka (origin+ua+ub+w+h, aylantirilgan); <code>world(u,v)</code>. Markaz-pin ⊞ → markazlashgan oyna. <b>Faza A:</b> qizil yumaloq-to'rtburchak guide + fazoviy chiplar + qulf-saqlash. <b>Faza B:</b> 5 tutqich — <b>2×2 ekran-bazo yechim</b> (delta → yuz-tekislik du/dv), tomon resize + markaz 2D surish, qulf-hisobli.</p></div>
+      <div class="row"><p class="row-k">Test panel</p><p class="row-v mut">Harness'ga <b>P3 (katta old-yuzli)</b> qo'shildi — P1 (edge-on) va P2 (juda kichik) oyna uchun noqulay edi; P3 toza frontal (faqat test, yetkazilmaydi).</p></div>
+      <div class="row"><p class="row-k">Moblo 1:1</p><p class="row-v"><span class="tick">Fazoviy 1:1</span> — Moblo F7-01: offsetlar qirrada, qizil size, oq radius, ✓, tutqichlar. Aynan. Hozircha <b>bitta oyna/yuz</b> (MVP).</p></div>
+      <div class="row"><p class="row-k">Qonun</p><p class="row-v mut">Contract <code>Hole</code>=parmalash (tekshirildi) — oyna F6 kabi model-side; README'da spec.</p></div>
+    </div>
+  </div>
+
+  <h2 class="rp-s">2 · Moblo-parity to'plami (A / B / C / D)</h2>
+  <p class="rp-intro">Moblo demo-videolarini (Focus, create_shape, Magnetism, rotate montajlari) va reference stillarini <b>chuqur o'rganib</b>, aniq solishtirib, 4 divergensiya topildi va tuzatildi — har biri sizning qaroringiz bilan.</p>
+  <div class="tbl-wrap">
+    <table class="rp-t">
+      <thead><tr><th>#</th><th>Ish</th><th>Nima qilindi</th><th>Moblo</th></tr></thead>
+      <tbody>
+        <tr><td><b>A</b></td><td>Erkin rotatsiya</td><td>90°-snap olindi (numpad=aniq, release=±4° yumshoq)</td><td class="tick">1:1</td></tr>
+        <tr><td><b>B</b></td><td>Fokus tugma ⌖</td><td>Kamerani tanlangan panel yuziga frontal+katta (qo'lbola, Moblo ✛)</td><td class="tick">1:1</td></tr>
+        <tr><td><b>C</b></td><td><code>roundMm10</code></td><td>42 ta mm10 <code>Math.round</code> → <code>measure.ts</code> (qonun #5 harfan)</td><td>—</td></tr>
+        <tr><td><b>D</b></td><td>Resize puck+</td><td>Yassi o'q-rangli puck + to'g'ri-drag + o'q-rangli chip + uniform/link</td><td class="tick">1:1</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout"><b>B — nozik nuqta:</b> dastlab «avtomat framing» taklif qildim, lekin Moblo'ni o'rganganda u <b>qo'lbola fokus tugmasi</b> ekanini ko'rdim — shuning uchun avtomat emas, tugma qildim (invention'dan qochish).</div>
+
+  <h2 class="rp-s">3 · Moblo 1:1 — umumiy baho</h2>
+  <div class="tbl-wrap">
+    <table class="rp-t">
+      <thead><tr><th>Element</th><th>Moblo bilan</th><th>Grounded farq (agar bor)</th></tr></thead>
+      <tbody>
+        <tr><td>Move · Resize · Rotate</td><td class="yes">1:1</td><td>Put-on-ground/Measure kechiktirilgan; uniform faqat 2-o'q (Z=profil)</td></tr>
+        <tr><td>Chip ranglari (size · angle)</td><td class="yes">1:1</td><td>o'q-rangli (X qizil · Y yashil · Z ko'k)</td></tr>
+        <tr><td>Modifikatorlar (F03/F5/F6/F7)</td><td class="yes">1:1</td><td>geometriya model-side (guide + spec)</td></tr>
+        <tr><td>Fokus / recenter</td><td class="yes">1:1</td><td>qo'lbola tugma (avtomat emas)</td></tr>
+        <tr><td>Magnetism (snap)</td><td>model-side</td><td>ghost-quti+ko'k-chip modeldan keladi (README-need) — hali ulanmagan</td></tr>
+        <tr><td>App-chrome (bar/tab/sheet)</td><td>host ishi</td><td>bizning zona emas — qurmaymiz (qonun)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout"><b>Xulosa:</b> manipulyatsiya qatlami — Moblo bilan <b>amalda 1:1</b>. Qolgan farqlar <b>ataylab, grounded</b>: qalinlik=profil (uniform Z-siz), geometriya model-side, magnetism modeldan, app-chrome host'da. Hech bir farq o'zboshimchalik emas — hammasi qonun yoki contract cheklovidan.</div>
+
+  <h2 class="rp-s">4 · Commitlar (bu sessiya)</h2>
+  <div class="commits">
+    <div class="commit"><span class="h">690cdb3</span><span class="m">feat(forge-ui): resize face-pucks — <span class="s">axis colors, direct drag, uniform (D)</span></span></div>
+    <div class="commit"><span class="h">de0d462</span><span class="m">refactor(forge-ui): route mm10 rounding through measure.ts <span class="s">(C)</span></span></div>
+    <div class="commit"><span class="h">8856665</span><span class="m">feat(forge-ui): focus button — frame the selected panel face-on <span class="s">(B)</span></span></div>
+    <div class="commit"><span class="h">3146713</span><span class="m">feat(forge-ui): F3 rotate — free angle with soft 90° snap <span class="s">(A)</span></span></div>
+    <div class="commit"><span class="h">646db71</span><span class="m">feat(forge-ui): F7 window — spatial editor, 5 drag handles, lockable offsets</span></div>
+    <div class="commit"><span class="h">7ca779e</span><span class="m">feat(forge-ui): F6 notch — draggable handles, lockable offsets, rounded U</span></div>
+  </div>
+  <p class="rp-intro" style="margin-top:12px;">Hammasi <code>feat/karkas-engine-port</code>da, remote'ga push qilingan. Co-author trailer yo'q, izoh yo'q.</p>
+
+  <h2 class="rp-s">5 · Qolgan ixtiyoriy ishlar</h2>
+  <div class="row-v"><ul>
+    <li><b>Kichik-panel declutter</b> (#3) — P1/P2 kabi kichik/edge-on panelda chiplar tiqiladi (fokus tugmasi yumshatadi, lekin to'liq emas).</li>
+    <li><b>F7 ko'p-oyna</b> — hozir bir yuzga bitta oyna (MVP); Moblo bir nechta qo'yadi.</li>
+    <li><b>Vercel prod-branch</b> — <code>mebelchi.vercel.app</code> default forge ko'rsatishi uchun: prod-branch=feat/karkas-engine-port yoki main'ga merge.</li>
+    <li><b>Magnetism</b> ulash — model ghost+gap-chip bersa, F6/F7 kabi ko'rsatish.</li>
+    <li><b>Put-on-ground / Measure</b> (F1) va profil-tanlagich (F5).</li>
+  </ul></div>
+
+  <p class="rp-foot">Forge UI · manipulyatsiya qatlami · F1–F7 + F03 + Moblo-parity (A/B/C/D) · barcha qoidaga mos, grounded · 2026-08-01</p>
+
+  <!-- ==================== YANGI BOSQICH · 2026-08-02 ==================== -->
+  <div style="margin-top:72px; padding-top:36px; border-top:5px solid var(--accent);">
+    <p class="rp-kicker">Yangi bosqich · 2026-08-02 · davomi</p>
+    <h1 class="rp-h1" style="font-size:30px">Navigatsiya · F1 to'ldirish · Ko'p-oyna · UI declutter</h1>
+    <p class="rp-lede">Fokusdan keyingi ish: studio boshqaruvini Moblo kabi barqaror qilish, F1 asbobini to'ldirish, bir yuzga bir necha oyna, va barcha modifikator editorlarini Moblo-1:1 declutter qilish. Quyida — har vazifa qanday qilingani + Moblo bilan aniq foizli solishtirish (halol, grounded).</p>
+    <div class="rp-meta">
+      <span class="rp-mchip"><b>8</b> commit · pushed</span>
+      <span class="rp-mchip">branch <b>feat/karkas-engine-port</b></span>
+      <span class="rp-mchip">typecheck <b>0</b> · build <b>✓</b></span>
+      <span class="rp-mchip">zona: faqat <b>src/ui/ + harness</b></span>
+    </div>
+
+    <h2 class="rp-s">Bajarilgan ishlar — qanday qilindi</h2>
+
+    <div class="tool">
+      <div class="tool-hd"><span class="tool-code">NAV</span><h3 class="tool-name">Studio navigatsiya (kamera)</h3><span class="tool-badge b-11">~90% 1:1</span></div>
+      <div class="tool-body">
+        <div class="row"><p class="row-k">Muammo</p><p class="row-v">Orbit qattiq <code>target=(0,0,0)</code> atrofida aylanardi; <code>MID_X/MID_Z=3000/2800</code> konstantalari harness-envelopega bog'liq edi → aylantirsang model chetga uchib, yo'qolar edi.</p></div>
+        <div class="row"><p class="row-k">Yechim</p><p class="row-v">Orbit endi <b>model bounding-box markazi</b> atrofida (dinamik); <code>minDistance/maxDistance</code> zoom-chegara; panel qo'shilганда pivot qayta hisoblanadi (kamerani sakratmasdan).</p></div>
+        <div class="row"><p class="row-k">Grounded</p><p class="row-v mut">Moblo <code>move.mp4</code> kadrlaridan: kamera model atrofida aylanadi, model markazda qoladi. Barmoq-mapping (1=orbit/2=pan) standart, <b>piksel-tasdiqlanmagan</b> (Moblo hujjatlari SPA — o'qib bo'lmadi).</p></div>
+      </div>
+    </div>
+
+    <div class="tool">
+      <div class="tool-hd"><span class="tool-code">F1+</span><h3 class="tool-name">F1 to'ldirish (Move)</h3><span class="tool-badge b-11">~95% 1:1</span></div>
+      <div class="tool-body">
+        <div class="row"><p class="row-k">Put-on-ground ⤓</p><p class="row-v">Panelning eng past nuqtasini polga (y=0) tushiradi (aylanishni ham hisobga oladi).</p></div>
+        <div class="row"><p class="row-k">Markaz-romb ◇</p><p class="row-v">Move-gizmo markazida — ekran-tekisligida 2 o'qni birga suradi, markaz kursorni 1:1 kuzatadi.</p></div>
+        <div class="row"><p class="row-k">Measure ruletka ⇥</p><p class="row-v">2 nuqta teqasan → masofa (sm); nuqta burchak/qirralarga snap. <b>+ Masofani tahrirlab qism surish</b> (aqlli, Moblo kabi): masofa-chipni o'zgartirsang 2-nuqta paneli aynan o'sha masofaga suriladi (bitta panelda o'chiq).</p></div>
+      </div>
+    </div>
+
+    <div class="tool">
+      <div class="tool-hd"><span class="tool-code">F7×N</span><h3 class="tool-name">Ko'p-oyna (multiple windows)</h3><span class="tool-badge b-11">~92% 1:1</span></div>
+      <div class="tool-body">
+        <div class="row"><p class="row-k">Nima</p><p class="row-v">Bir yuzga bir necha oyna: «+» birinchisini qo'yadi, <b>⧉ dublikat</b> ko'paytiradi, har oyna alohida tanlanib tahrirlanadi. <code>renderBlock</code> bir necha teshikni birga kesadi.</p></div>
+        <div class="row"><p class="row-k">Buzilish tuzatildi</p><p class="row-v">Oyna panel chetiga tegsa yoki ustma-ust tushsa — earcut buzilib panel oq/qora bo'lib yo'qolardi. Yechim: oynani yuz ichida <b>2mm margin</b> bilan clamp + geometriya buzilса <b>oynasiz fallback</b> (panel hech qachon g'oyib bo'lmaydi).</p></div>
+      </div>
+    </div>
+
+    <div class="tool">
+      <div class="tool-hd"><span class="tool-code">UI</span><h3 class="tool-name">Editor declutter (Moblo-1:1)</h3><span class="tool-badge b-11s">~85% 1:1</span></div>
+      <div class="tool-body">
+        <div class="row"><p class="row-k">Muammo</p><p class="row-v">Modifikator editorlari (Кромки/Вырез/Окно) chip/handle'lari target ustidagi pill'da qalashib, ishlatib bo'lmasdi.</p></div>
+        <div class="row"><p class="row-k">Yechim (Moblo naqshi)</p><p class="row-v">(1) tahrir amallari (<b>🗑 Удалить · ⧉ Дублировать</b>) pastki <b>bottom-sheet</b>ga; (2) qiymat-chiplar <b>spatial</b> (offsetlar panel chetlarida, size-chiplar handle atrofida xoch shaklida); (3) tahrir vaqtida <b>boshqa pinlar yashirin</b>; (4) ✓ alohida. Chip-vs-handle ustma-ustlik ~1600px'da topilib tuzatildi.</p></div>
+        <div class="row"><p class="row-k">Move/Resize ajratildi</p><p class="row-v mut">«Двигать/размер» → «Двигать» (strelka) + «Размер» (puck) alohida rejim — hech qachon birga chiqmaydi (kichik panelda konflikt yo'q).</p></div>
+      </div>
+    </div>
+
+    <h2 class="rp-s">Moblo bilan 1:1 — aniq foiz (funksiya)</h2>
+    <div class="tbl-wrap"><table style="width:100%; border-collapse:collapse; font-size:14px;">
+      <thead><tr style="background:var(--card2); text-align:left;"><th style="padding:9px 12px; border-bottom:1px solid var(--line);">Asbob</th><th style="padding:9px 12px; border-bottom:1px solid var(--line);">1:1</th><th style="padding:9px 12px; border-bottom:1px solid var(--line);">Izoh</th></tr></thead>
+      <tbody>
+        <tr><td style="padding:8px 12px;">F1 Move (+ pol/romb/Measure)</td><td style="padding:8px 12px; color:var(--ok); font-weight:700;">~95%</td><td style="padding:8px 12px; color:var(--muted);">magnetism model-tomon</td></tr>
+        <tr style="background:var(--card2)"><td style="padding:8px 12px;">F2 Resize</td><td style="padding:8px 12px; color:var(--ok); font-weight:700;">~90%</td><td style="padding:8px 12px; color:var(--muted);">Z=qalinlik surilmaydi (profil qonuni)</td></tr>
+        <tr><td style="padding:8px 12px;">F3 Rotate</td><td style="padding:8px 12px; color:var(--ok); font-weight:700;">~95%</td><td style="padding:8px 12px; color:var(--muted);">erkin + yumshoq-90°</td></tr>
+        <tr style="background:var(--card2)"><td style="padding:8px 12px;">F4 Target-pin</td><td style="padding:8px 12px; color:var(--ok); font-weight:700;">~90%</td><td style="padding:8px 12px; color:var(--muted);">pin qatlami (Moblo to'g'ridan bosadi)</td></tr>
+        <tr><td style="padding:8px 12px;">F5 Chamfer</td><td style="padding:8px 12px; color:var(--warn); font-weight:700;">~88%</td><td style="padding:8px 12px; color:var(--muted);">profil-tanlagich yo'q</td></tr>
+        <tr style="background:var(--card2)"><td style="padding:8px 12px;">F6 Notch</td><td style="padding:8px 12px; color:var(--ok); font-weight:700;">~92%</td><td style="padding:8px 12px; color:var(--muted);">profil-tanlagich yo'q</td></tr>
+        <tr><td style="padding:8px 12px;">F7 Window (ko'p-oyna)</td><td style="padding:8px 12px; color:var(--ok); font-weight:700;">~92%</td><td style="padding:8px 12px; color:var(--muted);">profil-tanlagich yo'q</td></tr>
+        <tr style="background:var(--card2)"><td style="padding:8px 12px;">F03 Round</td><td style="padding:8px 12px; color:var(--ok); font-weight:700;">~95%</td><td style="padding:8px 12px; color:var(--muted);">—</td></tr>
+        <tr><td style="padding:8px 12px;">Kesish (geometriya)</td><td style="padding:8px 12px; color:var(--ok); font-weight:700;">~95%</td><td style="padding:8px 12px; color:var(--muted);">stanok-fayl host'da (vizualizatsiya)</td></tr>
+        <tr style="background:var(--card2)"><td style="padding:8px 12px;">Navigatsiya</td><td style="padding:8px 12px; color:var(--ok); font-weight:700;">~90%</td><td style="padding:8px 12px; color:var(--muted);">barmoq piksel-tasdiqlanmagan</td></tr>
+        <tr style="border-top:2px solid var(--line);"><td style="padding:10px 12px; font-weight:800;">JAMI FUNKSIYA</td><td style="padding:10px 12px; color:var(--ok); font-weight:800; font-size:16px;">~90%</td><td style="padding:10px 12px; color:var(--muted);">yo'q: profil-tanlagich, multi-select, magnetism (model-tomon)</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2 class="rp-s">Moblo bilan 1:1 — aniq foiz (UI)</h2>
+    <div class="tbl-wrap"><table style="width:100%; border-collapse:collapse; font-size:14px;">
+      <thead><tr style="background:var(--card2); text-align:left;"><th style="padding:9px 12px; border-bottom:1px solid var(--line);">Element</th><th style="padding:9px 12px; border-bottom:1px solid var(--line);">1:1</th><th style="padding:9px 12px; border-bottom:1px solid var(--line);">Izoh</th></tr></thead>
+      <tbody>
+        <tr><td style="padding:8px 12px;">Indikator tizimi (RGB/tone/chip/handle/numpad)</td><td style="padding:8px 12px; color:var(--ok); font-weight:700;">~95%</td><td style="padding:8px 12px; color:var(--muted);">1:1</td></tr>
+        <tr style="background:var(--card2)"><td style="padding:8px 12px;">Editor declutter (bottom-sheet/spatial/hide-pins)</td><td style="padding:8px 12px; color:var(--ok); font-weight:700;">~85%</td><td style="padding:8px 12px; color:var(--muted);">shu sessiya</td></tr>
+        <tr><td style="padding:8px 12px;">Studio navigatsiya (barqaror ko'rinish)</td><td style="padding:8px 12px; color:var(--ok); font-weight:700;">~90%</td><td style="padding:8px 12px; color:var(--muted);">—</td></tr>
+        <tr style="background:var(--card2)"><td style="padding:8px 12px;">Pastki tool-toolbar (move/dup/rotate/material/transform)</td><td style="padding:8px 12px; color:var(--warn); font-weight:700;">~30%</td><td style="padding:8px 12px; color:var(--muted);">Moblo doimiy panel; bizda rejim-tugmalar</td></tr>
+        <tr><td style="padding:8px 12px;">Mobil responsiveness</td><td style="padding:8px 12px; color:var(--warn); font-weight:700;">~50%</td><td style="padding:8px 12px; color:var(--muted);">harness test-only, mobil layout emas</td></tr>
+        <tr style="background:var(--card2)"><td style="padding:8px 12px;">App-chrome (top-bar/tabs/rail/materiallar/AR)</td><td style="padding:8px 12px; color:var(--faint); font-weight:700;">host'da</td><td style="padding:8px 12px; color:var(--muted);">forge emas — qonun bo'yicha host ishi</td></tr>
+        <tr style="border-top:2px solid var(--line);"><td style="padding:10px 12px; font-weight:800;">JAMI UI (forge qismi)</td><td style="padding:10px 12px; color:var(--ok); font-weight:800; font-size:16px;">~80%</td><td style="padding:10px 12px; color:var(--muted);">yo'q: doimiy tool-toolbar, mobil sayqal; app-chrome=host</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2 class="rp-s">Qolgani (halol)</h2>
+    <div class="row-v"><ul>
+      <li><b>Profil-tanlagich</b> (F5/F6/F7 pastki-panel ⌐┐↕) — model shu profillarni qo'llashini tasdiqlash kerak (o'zboshimcha qo'shilmaydi).</li>
+      <li><b>Multi-select</b> (quti-drag + guruhlash) — marquee=forge, lekin <b>Group=model-tomon</b> tushuncha.</li>
+      <li><b>Doimiy pastki tool-toolbar</b> + to'liq <b>mobil sayqal</b> (harness hozir mobil-responsive emas).</li>
+      <li><b>Magnetism</b> (snap) — model ghost+gap-chip bersa, F6/F7 kabi ko'rsatiladi.</li>
+      <li><b>1/2-barmoq</b> — Moblo hujjatlarida topilmadi; standart deb qabul qilingan (ehtimol allaqachon 1:1).</li>
+    </ul></div>
+
+    <p class="rp-foot" style="margin-top:32px; color:var(--muted); font-size:13px;">Forge UI · Faza-kesish + Navigatsiya + F1-extras + Ko'p-oyna + UI-declutter · barcha qoidaga mos, grounded, <b>funksiya ~90% · UI ~80%</b> Moblo 1:1 · 8 commit pushed (feat/karkas-engine-port) · 2026-08-02</p>
+  </div>
+
+</div>
+</div>
+
+</body>
+</html>

@@ -1,13 +1,45 @@
 node_modules/
-dist/
-build/
-coverage/
 *.log
 .DS_Store
-.env
-.env.local
-.vscode/
-.idea/
+mined_*
+joint_decisions*.json
+dist/
+.vite/
+packages/*/dist/
+mebelchi/
+
+# --- research / docs / data / images / experiments (NOT the deployable app) ---
+# The running app = apps/app + packages/{schema,pricing} + engine. Everything below is
+# working material kept LOCALLY but hidden from GitHub so only the app ships to Vercel.
+Example sets/
+catalog/
+Researches/
+DB/
+Handover 03/
+XML output examples/
+sample_exports/
+Print Examples/
+CORE 1/
+CORE 2/
+CORE 3/
+Deck/
+UI image Examples/
+UI Examples liked/
+UI Exploration/
+UI Handover/
+app-2/
+project-map.html
+packages/render-spike/
+# root-level docs / data dumps (not the app)
+ENGINE_README.md
+FACTORY_CHECKLIST.md
+PERF_LEDGER.md
+MEBELCHI_INVESTMENT_MEMO.md
+price_list_chin_wood.xlsx
+joint_decisions*.txt
+/eman-catalogue.json
+/debug_product.html
+supabase/.temp/
 
 # eskidan ko'chirilgan reference (push qilinmaydi)
 reference/

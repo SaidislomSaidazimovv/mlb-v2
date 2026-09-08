@@ -1,0 +1,8170 @@
+/* Design tokens from the Figma onboarding frame (393×852, Inter, #000 on #fff,
+   #D1D1D1 borders/placeholders, square cards, 40px-radius pill button). */
+:root {
+  --bg: #ffffff;
+  --ink: #000000;
+  --line: #d1d1d1;
+  --line2: #e2e2e2;
+  --placeholder: #ededed;
+  --muted: #8a8a8a;
+  --accent: #00AC7A;
+  /* reserved for later phases; onboarding is black/white */
+  --good: #2f7d52;
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Native-app feel (Capacitor iOS): the UI is a tool surface, not a document, so a stray
+   double-tap — e.g. on the 3D canvas — must never start a text selection that flashes the
+   whole scene blue. Text fields and anything marked .selectable keep normal selection + copy. */
+html {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+input,
+textarea,
+select,
+[contenteditable],
+.selectable {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #e9e7e2;
+  font-family: var(--sans);
+  color: var(--ink);
+}
+
+/* device-width column (Figma frame = 393px); fills a real phone, framed on desktop */
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  /* fallback for WebViews without dvh */
+  height: 100dvh;
+  max-width: 100%;
+  margin: 0 auto;
+  background: var(--bg);
+  position: relative;
+  overflow: hidden;
+  /* navbar removed — keep clear of the notch; content fills the reclaimed space */
+  padding-top: env(safe-area-inset-top);
+}
+
+/* floating journey-menu button (replaces the old navbar's hamburger) */
+.menu-fab {
+  position: absolute;
+  top: calc(env(safe-area-inset-top) + 20px);
+  right: 20px;
+  z-index: 12;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  width: 31px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.menu-fab span {
+  display: block;
+  width: 31px;
+  height: 2px;
+  background: #000;
+}
+
+@media (min-width: 440px) {
+  .app {
+    box-shadow: 0 0 0 1px var(--line), 0 24px 60px rgba(0, 0, 0, 0.18);
+  }
+}
+
+/* ---- navbar ---- */
+.topbar {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: calc(20px + env(safe-area-inset-top)) 20px 20px;
+}
+
+.brand {
+  font: 700 16px/19px var(--sans);
+  text-transform: capitalize;
+  color: #000;
+}
+
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  width: 31px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.hamburger span {
+  display: block;
+  width: 31px;
+  height: 2px;
+  background: #000;
+}
+
+.price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.price-lbl {
+  font: 10px/1 var(--mono);
+  color: var(--muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.price-val {
+  font: 700 14px/1 var(--sans);
+  color: #000;
+}
+
+.price-val.flash {
+  animation: flash 0.5s;
+}
+
+@keyframes flash {
+  0% {
+    color: var(--accent);
+  }
+
+  100% {
+    color: #000;
+  }
+}
+
+/* ---- screen body ---- */
+.body {
+  flex: 1 1 auto;
+  min-height: 0;
+  /* allow the flex child to shrink so it actually scrolls (iOS/WebKit) */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+.screen {
+  padding: 20px;
+  animation: fade 0.3s;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* the Figma "Questions with options" block: 20px vertical rhythm */
+.qblock {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: -4px;
+}
+
+.qnum {
+  font: 400 14px/17px var(--sans);
+  color: #000;
+  padding-bottom: 10px;
+}
+
+.h1 {
+  font: 600 24px/29px var(--sans);
+  color: #000;
+  margin: 0;
+}
+
+.sub {
+  font: 400 16px/24px var(--sans);
+  color: #000;
+  margin: 0;
+}
+
+/* small field label (Figma "Форма помещения": 14/400) */
+.flabel {
+  font: 400 14px/21px var(--sans);
+  color: #000;
+}
+
+/* ---- option cards (Figma "Option 1/2") ---- */
+.cards {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+/* 3+ options (e.g. the 5 kitchen layouts) wrap into a 2-column grid */
+.cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.cards .opt {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* all-quiz-on-one-screen: each question is a labelled group */
+.quiz-q {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.quiz-q-head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.quiz-q-title {
+  font: 600 17px/22px var(--sans);
+  color: #000;
+}
+
+.quiz-q-sub {
+  font: 400 13px/18px var(--sans);
+  color: var(--muted);
+}
+
+.opt {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  position: relative;
+  transition: 0.12s;
+  border-radius: 20px;
+  height: 100%;
+}
+
+.opt:active {
+  transform: scale(0.98);
+}
+
+.opt.sel {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px #000;
+}
+
+.opt .pic {
+  align-self: stretch;
+  height: 106px;
+  background: var(--placeholder);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* room-type cards (Figma "5"): square image area with the shape diagram */
+.opt.square .pic {
+  height: auto;
+  aspect-ratio: 1;
+  background: #f5f5f5;
+}
+
+.opt .pic .ill {
+  width: 100%;
+  height: 100%;
+}
+
+.opt .meta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-self: stretch;
+}
+
+.opt .t {
+  font: 600 16px/19px var(--sans);
+  color: #000;
+}
+
+.opt .d {
+  font: 400 14px/17px var(--sans);
+  color: #000;
+}
+
+.opt .chk {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+/* ---- summary screen (review & edit) ---- */
+.summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.summary-card {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  border-radius: 20px;
+}
+
+.summary-card .pic {
+  align-self: stretch;
+  height: 106px;
+  background: var(--placeholder);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.summary-card .pic .ill {
+  width: 100%;
+  height: 100%;
+}
+
+.summary-card .meta {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.summary-card .t {
+  font: 600 16px/19px var(--sans);
+  color: #000;
+}
+
+.btn-change {
+  background: #fff;
+  border: 1px solid #000;
+  border-radius: 40px;
+  padding: 10px 22px;
+  font: 600 14px/17px var(--sans);
+  color: #000;
+  cursor: pointer;
+}
+
+.btn-change:active {
+  transform: translateY(1px);
+}
+
+/* ---- form controls (space screen), Figma tokens ---- */
+.field-lbl {
+  font: 600 16px/19px var(--sans);
+  margin: 24px 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #000;
+}
+
+.field-lbl .i {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #000;
+  color: #fff;
+  font: 700 11px/18px var(--mono);
+  text-align: center;
+}
+
+.field-lbl .hint-inline {
+  font: 400 12px/1 var(--sans);
+  color: var(--muted);
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--line);
+  overflow: hidden;
+  width: max-content;
+  background: var(--bg);
+}
+
+.stepper button {
+  width: 48px;
+  height: 46px;
+  border: none;
+  background: var(--bg);
+  font-size: 22px;
+  cursor: pointer;
+  color: #000;
+}
+
+.stepper button:active {
+  background: #f3f3f3;
+}
+
+.stepper .num {
+  min-width: 120px;
+  text-align: center;
+  font: 600 17px/1 var(--sans);
+}
+
+.stepper .num small {
+  display: block;
+  font: 10px/1 var(--mono);
+  color: var(--muted);
+  margin-top: 5px;
+  letter-spacing: 0.06em;
+}
+
+.pillrow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  border: 1px solid var(--line);
+  background: var(--bg);
+  border-radius: 40px;
+  padding: 10px 16px;
+  font: 500 14px/1 var(--sans);
+  cursor: pointer;
+  color: #000;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: 0.12s;
+}
+
+.chip.sel {
+  background: #000;
+  color: #fff;
+  border-color: #000;
+}
+
+.chip .x {
+  opacity: 0.6;
+}
+
+.planbox {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 12px;
+  margin-top: 20px;
+}
+
+.planbox .plan {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ---- placeholder ---- */
+.ph-box {
+  margin-top: 20px;
+  height: 200px;
+  border: 1px dashed var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font: 600 14px var(--sans);
+  background: #fafafa;
+}
+
+/* ---- room design scene (Figma "12") ---- */
+.roomscene {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.stepbar {
+  flex: 0 0 auto;
+  background: #f5f5f5;
+  /* right pad clears the floating menu button */
+  padding: 10px 70px 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.step-back {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 30px;
+  padding: 7px 14px;
+  font: 600 14px/17px var(--sans);
+  color: #000;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.step-next {
+  background: var(--accent);
+  border: none;
+  border-radius: 30px;
+  padding: 8px 16px;
+  font: 600 14px/17px var(--sans);
+  color: #fff;
+  cursor: pointer;
+  text-transform: capitalize;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.scene-area {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  background: #fff;
+  overflow: hidden;
+}
+
+/* см⇄мм units button in the view menu (CF4 §12.3). */
+.vm-unit {
+  border: 1px solid #d1d9e0;
+  border-radius: 7px;
+  padding: 3px 12px;
+  background: #f1f5f9;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  min-width: 44px;
+}
+.vm-unit:hover { background: #e2e8f0; }
+
+.scene-canvas,
+.floor-plan {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #f5f5f5;
+}
+
+/* 3D constructor: the canvas + the move/rotate handle overlay share this box.
+   touch-action:none here (a block-level ancestor — browsers ignore it on inner
+   SVG elements) so dragging a handle on a touch screen doesn't pan the page and
+   fire pointercancel mid-gesture. */
+.cab3d-wrap {
+  position: relative;
+  touch-action: none;
+}
+
+.cab3d-wrap>canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #f5f5f5;
+}
+
+.cab3d-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 4;
+  pointer-events: none;
+  /* only the handles below catch events */
+  overflow: visible;
+  touch-action: none;
+}
+
+.cab3d-handle {
+  pointer-events: auto;
+  cursor: grab;
+  touch-action: none;
+}
+
+.cab3d-handle:active {
+  cursor: grabbing;
+}
+
+.cab3d-handle circle {
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.28));
+}
+
+/* camera-walk joystick (3D view, bottom-centre) */
+.nav-joy {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  width: 104px;
+  height: 104px;
+  z-index: 5;
+  touch-action: none;
+  cursor: grab;
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  border-radius: 50%;
+}
+
+.nav-joy:active {
+  cursor: grabbing;
+}
+
+.nav-joy svg {
+  display: block;
+}
+
+.floor-plan {
+  touch-action: none;
+  /* drag corners without scrolling the page */
+}
+
+/* inline number editor (appears right on the tapped dimension) */
+.num-edit {
+  position: fixed;
+  transform: translate(-50%, -50%);
+  width: 88px;
+  text-align: center;
+  border: 1.5px solid var(--accent);
+  border-radius: 9px;
+  padding: 6px 4px;
+  font: 700 14px/1 var(--sans);
+  color: #000;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+  z-index: 30;
+}
+
+.num-edit.name-edit {
+  width: 170px;
+}
+
+/* inline dimension editor with − / + steppers (front + plan views) */
+.num-stepper {
+  position: fixed;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 30;
+}
+
+.num-stepper .num-edit {
+  position: static;
+  transform: none;
+  box-shadow: none;
+}
+
+.num-step {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  border: none;
+  background: #f2f2f2;
+  color: var(--accent);
+  font: 700 22px/1 var(--sans);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.num-step:active {
+  background: #eef3ff;
+}
+
+.plan-hint {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(20, 20, 20, 0.82);
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font: 500 12px/1.3 var(--sans);
+  text-align: center;
+  max-width: 90%;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.scene-ctl {
+  position: absolute;
+}
+
+.plan-toggle {
+  left: 28px;
+  bottom: 24px;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* view switch — 3D | 2D floor plan, both always visible (bottom-left, mirrors undo/redo) */
+.view-toggle {
+  left: 20px;
+  bottom: 20px;
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 30px;
+  background: #fff;
+}
+
+.view-toggle button {
+  background: none;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  border-radius: 22px;
+}
+
+.view-toggle button.active {
+  background: #1c1b18;
+}
+
+.view-toggle button.active svg path {
+  fill: #fff;
+}
+
+.undo-redo {
+  right: 20px;
+  bottom: 20px;
+  display: flex;
+  gap: 22px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 30px;
+  background: #fff;
+}
+
+.undo-redo button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+}
+
+.undo-redo button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.view-menu {
+  position: absolute;
+  left: 10px;
+  bottom: 78px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  min-width: 210px;
+  z-index: 6;
+}
+
+.view-menu button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  background: none;
+  border: none;
+  font: 500 15px/1 var(--sans);
+  color: #000;
+  cursor: pointer;
+  border-radius: 10px;
+  text-align: left;
+}
+
+.view-menu button:active {
+  background: #f3f3f3;
+}
+
+.view-menu button.view-disabled {
+  color: #b6b6b6;
+  cursor: default;
+}
+
+.view-menu button.view-disabled:active {
+  background: none;
+}
+
+.view-menu button.view-disabled svg path {
+  fill: #c4c4c4;
+  stroke: #c4c4c4;
+}
+
+.soon-tag {
+  margin-left: auto;
+  font: 600 10px/1 var(--mono);
+  letter-spacing: 0.06em;
+  color: #b6b6b6;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  padding: 3px 8px;
+}
+
+.toolbar {
+  flex: 0 0 auto;
+  background: #ffffff;
+  border-radius: 30px 30px 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* CONTENT-DRIVEN, with a stable floor. The band chips are always shown; when a module is selected
+     the swap strip appears below them and the chips collapse to a slim pill row, so the two states
+     come out within ~10px of each other — no meaningful "panel jump" (the big 3D-resizing jump we
+     fixed before was 100px). A fixed height risked clipping the swap strip once the safe-area inset
+     ate into it, so we clamp with min/max instead. */
+  min-height: 148px;
+  height: 130px;
+  max-height: 280px;
+  overflow: hidden;
+  transition: max-height 0.28s ease;
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 1;
+  box-shadow: #f5f5f5 0px -8px 15px 13px;
+}
+
+.toolbar.collapsed {
+  min-height: 0;
+  max-height: 38px;
+}
+
+.toolbar-grip {
+  flex: 0 0 auto;
+  width: 72px;
+  height: 26px;
+  margin-top: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toolbar-grip::after {
+  content: "";
+  width: 44px;
+  height: 5px;
+  border-radius: 5px;
+  background: #d4d4d4;
+}
+
+.toolbar-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 4px 0 18px;
+}
+
+/* tap-to-place hint — what a wall tap will drop */
+.place-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 2px auto 8px;
+  padding: 7px 14px;
+  max-width: max-content;
+  border-radius: 999px;
+  background: rgba(0, 172, 122, 0.12);
+  color: #04966b;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* the hint is retired — the box only holds the toolbar's height (see ConfigScreen) */
+.place-hint.ghost {
+  visibility: hidden;
+}
+
+.place-hint-ico {
+  font-size: 15px;
+  line-height: 1;
+}
+
+.place-hint-txt {
+  white-space: nowrap;
+}
+
+/* the tap-to-place panel: band tabs + a strip of items for the active band */
+.place-panel {
+  width: 100%;
+  padding: 0 0 6px;
+}
+
+/* FIVE furniture chips (image + label), one per build band. A single row, evenly spread; scrolls
+   sideways if the screen is very narrow. The active band's chip gets the green ring. */
+.place-chips {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 2px 12px 4px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* COMPACT — while a module is selected, the band chips share the toolbar with the swap strip below
+   them. Image chips would make the bar too tall, so they collapse to a slim row of TEXT PILLS: still
+   a full tap target ("switch to placing this band"), just one line high. */
+.place-chips.compact {
+  padding: 6px 12px 4px;
+  gap: 6px;
+}
+
+.place-chips.compact .place-chip {
+  flex: 1 1 0;
+  flex-direction: row;
+  justify-content: center;
+  min-width: 0;
+  padding: 7px 6px;
+  border-radius: 999px;
+  background: #f1f1f2;
+}
+
+.place-chips.compact .place-chip .add-img,
+.place-chips.compact .place-chip .add-glyph {
+  display: none;
+}
+
+.place-chips.compact .place-chip-name {
+  font-size: 11px;
+}
+
+.place-chip {
+  flex: 1 1 0;
+  min-width: 62px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 6px 4px;
+  border: 2px solid transparent;
+  border-radius: 14px;
+  background: #f6f6f7;
+  cursor: pointer;
+}
+
+.place-chip.on {
+  border-color: #00ac7a;
+  background: rgba(0, 172, 122, 0.08);
+}
+
+.place-chip .add-img {
+  width: 100%;
+  max-width: 60px;
+  height: 46px;
+  object-fit: contain;
+}
+
+.place-chip .add-glyph {
+  font-size: 26px;
+  line-height: 46px;
+}
+
+.place-chip-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  line-height: 1.15;
+}
+
+.tool-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 81px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.tool-btn .ico {
+  width: 50px;
+  height: 50px;
+  border-radius: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border: 1px solid var(--line);
+}
+
+.tool-btn .lbl {
+  font: 500 10px/12px var(--sans);
+  color: #000;
+  text-transform: capitalize;
+  text-align: center;
+}
+
+/* bottom sheet + view-menu backdrop */
+.sheet-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+}
+
+/* darken the scene behind a bottom sheet so the white sheet stands out */
+.sheet-backdrop.dim {
+  animation: fadeIn 0.24s ease;
+}
+
+.sheet-backdrop.dim.closing {
+  animation: fadeOut 0.23s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+.bottom-sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  border-radius: 30px 30px 0 0;
+  box-shadow: 0 -3px 13.8px rgba(0, 0, 0, 0.1);
+  padding: 14px 20px calc(20px + env(safe-area-inset-bottom));
+  z-index: 10;
+  animation: sheetUp 0.26s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.bottom-sheet.tall {
+  max-height: 45%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* sheets without an inner scroll list still cap + scroll if content is long */
+.bottom-sheet:not(.tall) {
+  max-height: 88%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+.sheet-grip {
+  width: 43px;
+  height: 5px;
+  background: var(--line);
+  border-radius: 5px;
+  margin: 0 auto 16px;
+}
+
+.sheet-title {
+  font: 700 16px/19px var(--sans);
+  margin-bottom: 6px;
+}
+
+.sheet-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 14px 0;
+  font: 400 16px/19px var(--sans);
+  color: #000;
+  cursor: pointer;
+  border-top: 1px solid var(--line);
+}
+
+.bottom-sheet .stepper {
+  margin-top: 10px;
+}
+
+/* ---- animations ---- */
+@keyframes sheetUp {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(14px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.pop-anim {
+  animation: slideUp 0.22s ease;
+}
+
+@keyframes sheetDown {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(100%);
+  }
+}
+
+.bottom-sheet.closing {
+  animation: sheetDown 0.23s ease forwards;
+}
+
+@keyframes menuDown {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  to {
+    transform: translateY(14px);
+    opacity: 0;
+  }
+}
+
+.view-menu.closing {
+  animation: menuDown 0.2s ease forwards;
+}
+
+/* ---- edit / covering sheets ---- */
+.sheet-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.sheet-x {
+  flex: 0 0 auto;
+  border: none;
+  background: var(--bg);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--ink);
+}
+
+.edit-area-lbl {
+  font: 700 18px/1.2 var(--sans);
+}
+
+.edit-area-val {
+  font: 400 14px/1.3 var(--sans);
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.edit-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+
+.edit-row-lbl {
+  font: 500 15px/1 var(--sans);
+}
+
+.edit-input,
+.edit-select {
+  border: 1px solid var(--line2);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font: 500 15px/1 var(--sans);
+  color: var(--ink);
+  background: #fafafa;
+  min-width: 150px;
+  text-align: left;
+}
+
+.edit-select {
+  cursor: pointer;
+}
+
+.cover-search {
+  width: 100%;
+  border: 1px solid var(--line2);
+  border-radius: 14px;
+  padding: 11px 14px;
+  font: 500 14px/1 var(--sans);
+  background: #fafafa;
+  margin-bottom: 12px;
+}
+
+.cover-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  /* required so the list scrolls inside the max-height sheet (iOS/WebKit) */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  /* drag-to-scroll anywhere on touch, not just the scrollbar */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* list/sheet items must keep their natural height — without this they shrink to fit the
+   panel (flex default) and squish instead of letting the scroll container scroll */
+.cover-list>*,
+.cfg-sheet-body>* {
+  flex-shrink: 0;
+}
+
+/* When a .cover-list is nested in a scrolling .cfg-sheet-body (the constructor style
+   picker), it must NOT be its own scroll container — a nested scroller swallows the
+   touch/wheel intent so only its scrollbar worked. Make it FLOW (like the pickCab add-grid
+   that scrolls fine) so .cfg-sheet-body is the single scroller. */
+.cfg-sheet-body>.cover-list {
+  flex: 0 0 auto;
+  overflow: visible;
+  min-height: 0;
+}
+
+.cover-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  background: #f5f5f5;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.cover-item.sel {
+  border-color: #000;
+  box-shadow: inset 0 0 0 1px #000;
+}
+
+.cover-sw {
+  flex: 0 0 auto;
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  border: 1px solid var(--line2);
+}
+
+.cover-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cover-name {
+  font: 600 15px/1.2 var(--sans);
+  color: #000;
+}
+
+.cover-desc {
+  font: 400 13px/1.3 var(--sans);
+  color: var(--muted);
+}
+
+/* back chevron in a sheet header (electric items → elements list) */
+.sheet-back {
+  flex: 0 0 auto;
+  border: none;
+  background: var(--bg);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--ink);
+}
+
+/* ---- Elements category list (Electricity / Water / Heating / Ventilation) ---- */
+.elem-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 14px 2px;
+  background: none;
+  border: none;
+  border-top: 1px solid var(--line);
+  font: 500 16px/1.2 var(--sans);
+  color: #000;
+  cursor: pointer;
+  text-align: left;
+}
+
+.elem-row:active {
+  background: #f6f6f6;
+}
+
+.elem-row .ei {
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #f2f2f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.elem-row .el {
+  flex: 1 1 auto;
+}
+
+.elem-row .chev {
+  flex: 0 0 auto;
+  color: var(--muted);
+  font-size: 22px;
+  line-height: 1;
+}
+
+/* ---- fully-rounded search bar with trailing icon (fittings lists) ---- */
+.search-box {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.search-input {
+  width: 100%;
+  border: 1px solid var(--line2);
+  border-radius: 999px;
+  padding: 12px 44px 12px 18px;
+  font: 500 14px/1 var(--sans);
+  background: #fafafa;
+  color: var(--ink);
+}
+
+.search-ic {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+  display: flex;
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+/* ---- fitting-item cards (Figma "Добавить Электротовары") — square corners ---- */
+.fit-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: #f5f5f5;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.fit-item:active {
+  background: #fafafa;
+}
+
+.fit-thumb {
+  flex: 0 0 auto;
+  width: 92px;
+  height: 92px;
+  background: #a8a8a8;
+}
+
+.thumb {
+  flex: 0 0 auto;
+  width: 92px;
+  height: 92px;
+  background: none;
+  border-radius: 4px;
+}
+
+/* ---- selected-item info card (top of the scene) ---- */
+/* kept deliberately small + translucent so it doesn't block the furniture behind */
+.item-card {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  right: auto;
+  max-width: 62%;
+  background: rgba(250, 250, 250, 0.55);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  padding: 7px 11px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+  z-index: 4;
+  pointer-events: none;
+}
+
+/* contextual "fill empty space" chip — top-right of the scene, mirrors the item card */
+.fill-chip {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 13px;
+  background: #000000;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font: 600 13px/1 var(--sans);
+  cursor: pointer;
+}
+
+.fill-chip:active {
+  transform: scale(0.97);
+}
+
+.fill-chip svg {
+  flex: none;
+}
+
+.item-card-name {
+  font: 700 13px/1.2 var(--sans);
+  color: #000;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.item-card-i {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.item-card-desc {
+  font: 400 11px/1.3 var(--sans);
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* ---- item edit sheet ---- */
+.item-edit-sub {
+  font: 400 13px/1.3 var(--sans);
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.item-edit-replace {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 0;
+  margin-top: 6px;
+  border-top: 1px solid var(--line);
+  font: 400 15px/1.3 var(--sans);
+  color: #000;
+}
+
+.replace-btn {
+  flex: 0 0 auto;
+  background: #2a6df0;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 18px;
+  font: 600 14px/1 var(--sans);
+  cursor: pointer;
+}
+
+.replace-btn:active {
+  transform: translateY(1px);
+}
+
+.item-edit-section {
+  font: 700 15px/1.2 var(--sans);
+  margin: 14px 0 2px;
+}
+
+.dim-input {
+  min-width: 130px;
+  text-align: left;
+}
+
+/* ± stepper around an item-edit dimension field (width / height / sill) */
+.dim-stepper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dim-stepper .dim-input {
+  min-width: 76px;
+  text-align: center;
+}
+
+.side-toggle {
+  width: 66px;
+  height: 38px;
+  border: 1px solid var(--line2);
+  border-radius: 10px;
+  background: #fafafa;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 12px;
+  cursor: pointer;
+  font-size: 18px;
+  color: #000;
+}
+
+.side-toggle.flip {
+  justify-content: flex-start;
+}
+
+.side-toggle.flip .side-leaf {
+  display: inline-block;
+  transform: scaleX(-1);
+}
+
+/* ---- wall colour (paint) catalog ---- */
+.color-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.color-count {
+  font: 400 14px/1 var(--sans);
+  color: #000;
+}
+
+.filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  border-radius: 40px;
+  padding: 8px 16px;
+  font: 500 14px/1 var(--sans);
+  color: #000;
+  cursor: pointer;
+}
+
+.color-thumb {
+  flex: 0 0 auto;
+  width: 92px;
+  height: 92px;
+  border-radius: 4px;
+  border: 1px solid var(--line2);
+}
+
+.color-sw {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1px solid var(--line2);
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+.cur-color {
+  display: flex;
+  align-items: center;
+  font: 500 15px/1.2 var(--sans);
+  color: #000;
+}
+
+/* filter popup */
+.filter-sheet {
+  background: #fff;
+  border-radius: 18px;
+  padding: 18px;
+  width: 100%;
+  max-width: 340px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+}
+
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 2px;
+  background: none;
+  border: none;
+  border-top: 1px solid var(--line);
+  font: 500 15px/1.2 var(--sans);
+  color: #000;
+  cursor: pointer;
+  text-align: left;
+}
+
+.chk-box {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  border: 1.5px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #fff;
+}
+
+.chk-box.on {
+  background: #2a6df0;
+  border-color: #2a6df0;
+}
+
+.fam-sw {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1px solid var(--line2);
+}
+
+.fam-count {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+/* ---- customize-surface editor ---- */
+.surf-editor {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  background: #eceae6;
+  display: flex;
+  flex-direction: column;
+}
+
+.surf-head {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: calc(12px + env(safe-area-inset-top)) 16px 12px;
+  background: #f5f5f5;
+  border-bottom: 1px solid var(--line);
+}
+
+.surf-title {
+  font: 600 15px/1.2 var(--sans);
+  color: #000;
+}
+
+.surf-stage {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  min-height: 0;
+}
+
+.surf-canvas {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 16 / 9;
+  background: #ededed;
+  border: 2px solid #c4c0b8;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+}
+
+.surf-leaf {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+}
+
+.surf-leaf.sel {
+  outline: 3px solid var(--accent);
+  outline-offset: -3px;
+  z-index: 1;
+}
+
+.surf-menu {
+  flex: 0 0 auto;
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -3px 14px rgba(0, 0, 0, 0.12);
+  padding: 18px 20px calc(20px + env(safe-area-inset-bottom));
+}
+
+.surf-menu-title {
+  font: 700 18px/1.2 var(--sans);
+  margin-bottom: 8px;
+}
+
+.surf-menu-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+  font: 400 16px/1.2 var(--sans);
+  color: #000;
+}
+
+/* ---- water-supply pick mode ---- */
+.water-plan {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  background: #fff;
+}
+
+.water-bar {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 20px calc(20px + env(safe-area-inset-bottom));
+  background: #fff;
+  border-radius: 30px 30px 0 0;
+}
+
+.water-bar-hint {
+  text-align: center;
+  font: 600 15px/1.2 var(--sans);
+  color: #000;
+}
+
+.water-bar-row {
+  display: flex;
+  gap: 10px;
+}
+
+/* ---- add-wall bar ---- */
+.addwall-bar {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 10px;
+  padding: 14px 20px calc(20px + env(safe-area-inset-bottom));
+  background: #fff;
+  box-shadow: 0 -3px 13.8px rgba(0, 0, 0, 0.1);
+  border-radius: 30px 30px 0 0;
+}
+
+/* ---- overwrite confirmation ---- */
+.confirm-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 40;
+  padding: 24px;
+}
+
+.confirm-box {
+  background: #fff;
+  border-radius: 18px;
+  padding: 22px;
+  width: 100%;
+  max-width: 320px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+}
+
+.confirm-title {
+  font: 700 18px/1.2 var(--sans);
+  margin-bottom: 8px;
+}
+
+.confirm-body {
+  font: 400 14px/1.5 var(--sans);
+  color: var(--muted);
+  margin-bottom: 18px;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* ---- Phase C: constructor (configure) ---- */
+.cfg {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  gap: 10px;
+  animation: fade 0.3s;
+}
+
+.cfg-panel {
+  flex: 0 0 auto;
+  max-height: 48%;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cfg-chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 2px;
+}
+
+.cfg-chip {
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  border-radius: 40px;
+  padding: 8px 14px;
+  font: 500 13px/1 var(--sans);
+  color: #000;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.cfg-chip.on {
+  background: #000;
+  border-color: #000;
+  color: #fff;
+}
+
+.cfg-ctl {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cfg-ctl-lbl {
+  font: 600 16px/1 var(--sans);
+  color: #000;
+}
+
+.cfg-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cfg-field-row {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cfg-field-lbl {
+  font: 500 13px/1 var(--sans);
+  color: var(--muted);
+}
+
+.cfg-mat-row {
+  display: flex;
+  gap: 10px;
+}
+
+.cfg-sw {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  cursor: pointer;
+  padding: 0;
+}
+
+.cfg-sw.on {
+  box-shadow: 0 0 0 2px #000;
+  border-color: #fff;
+}
+
+/* ---- constructor chrome (room-editor look) ---- */
+.cfg-bar {
+  /* ☰ menu · ← back (left) · title/price (absolutely centred) · Next → (right) */
+  position: relative;
+  padding: 8px 16px;
+  gap: 10px;
+}
+
+.cfg-bar-l {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Next sits at its own width on the right — it must NOT stretch (that pushed the title off-centre) */
+.cfg-bar .step-next {
+  width: auto;
+  flex: 0 0 auto;
+}
+
+.cfg-burger {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  width: 24px;
+  height: 24px;
+  padding: 4px 1px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.cfg-burger span {
+  height: 2px;
+  border-radius: 2px;
+  background: #1c1c1e;
+}
+
+/* absolutely centred so the title/price is dead-centre regardless of the side buttons' widths */
+.cfg-title {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 52%;
+  text-align: center;
+  font: 700 17px/1 var(--sans);
+  color: #000;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cfg-price {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font: 700 17px/1 var(--sans);
+  color: #000;
+}
+
+.cfg-price-i {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* empty left slot when the seller has pricing hidden — keeps the nav right-aligned */
+.cfg-price-spacer {
+  flex: 1;
+}
+
+.cfg-nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cfg-back {
+  border: 1px solid var(--line);
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border-radius: 30px;
+  padding: 8px 10px;
+  font: 600 14px / 17px var(--sans);
+  cursor: pointer;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+/* bottom-left round toggles (view + render style) */
+.cfg-toolset {
+  left: 20px;
+  bottom: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.round-ctl {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.round-ctl.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* ── MULTI-SELECT batch panel (3D) ─────────────────────────────────────── */
+.multi-hint {
+  padding: 14px 18px;
+  text-align: center;
+  color: #8b929c;
+  font-size: 14px;
+}
+
+.multi-width {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.multi-width input {
+  width: 64px;
+  padding: 2px 6px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  font: inherit;
+  text-align: right;
+  color: var(--accent);
+  background: #fff;
+}
+
+/* ── РАЗМЕР (resize) panel — icon · label · slider · number ─────────────── */
+.dim-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 24px;
+}
+
+.dim-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  /* a long-press / double-tap while dragging must not pop the browser's select/callout menu */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* …but the exact-value field stays selectable so you can still type into it */
+.dim-num {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.dim-ico {
+  flex: 0 0 22px;
+  color: #4a4f57;
+  display: flex;
+}
+
+.dim-lbl {
+  flex: 0 0 68px;
+  font-size: 14px;
+  color: #2b2f36;
+}
+
+.dim-slider {
+  flex: 1 1 auto;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: #e6e9ee;
+  outline: none;
+  touch-action: none;
+  /* the thumb handles the drag itself — no page scroll / long-press callout */
+}
+
+.dim-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #fff;
+  border: 0.5px solid rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 3px 6px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+}
+
+.dim-slider::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.dim-num {
+  flex: 0 0 58px;
+  width: 58px;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: #2b2f36;
+  background: #fff;
+}
+
+.dim-num.wide {
+  flex-basis: 84px;
+  width: 84px;
+}
+
+.dim-num:disabled {
+  opacity: 0.5;
+}
+
+.dim-unit {
+  flex: 0 0 auto;
+  font-size: 13px;
+  color: #8b929c;
+}
+
+.dim-fill {
+  margin-top: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  border: none;
+  border-radius: 16px;
+  background: #1c1c1e;
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ── СТИЛЬ (style) panel — part tabs on top + a no-price finish grid ─────── */
+/* 4 circular part tabs in a soft pill, active one filled brand-green (horizontal left-stack look) */
+.style-tabs {
+  display: flex;
+  gap: 6px;
+  align-self: center;
+  margin: 2px auto 12px;
+  padding: 5px;
+  background: #eef0f3;
+  border-radius: 28px;
+}
+
+.style-tab {
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #4a4f57;
+  cursor: pointer;
+}
+
+.style-tab.on {
+  background: var(--accent);
+  color: #fff;
+  width: auto;
+  gap: 7px;
+  padding: 0 16px 0 11px;
+  border-radius: 23px;
+}
+
+.style-tab-lbl {
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.style-applyall {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0px 12px;
+  font-size: 15px;
+  color: #2b2f36;
+}
+
+.style-body {
+  padding-top: 4px;
+}
+
+.style-profiles {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 0 0px 14px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.style-profile {
+  flex: 0 0 auto;
+  padding: 8px 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+  font-size: 13px;
+  color: #2b2f36;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.style-profile:active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.style-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 0 3px 20px;
+}
+
+.style-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.style-swatch-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+}
+
+.style-swatch {
+  aspect-ratio: 1 / 1;
+  border-radius: 140px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+
+.mat-code-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: var(--accent, #00ac7a);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  line-height: 1.2;
+}
+
+.style-cell:active .style-swatch {
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08), 0 0 0 2px var(--accent);
+}
+
+.style-name {
+  font-size: 12px;
+  color: #4a4f57;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.mat-spec-desc {
+  font-size: 10px;
+  color: #888;
+  text-align: center;
+  line-height: 1.1;
+  margin-top: -2px;
+}
+
+/* section heading above each option list */
+.style-heading {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #8b929c;
+  padding: 10px 0px 8px;
+}
+
+/* the option the selected module currently has → brand-green highlight (chips + swatch) */
+.style-profile.on {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: #eaf7f2;
+  font-weight: 600;
+}
+
+.style-cell.on .style-swatch {
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08), 0 0 0 2.5px var(--accent);
+}
+
+.style-cell.on .style-name {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* content fades/slides in when a panel opens or its tab switches */
+@keyframes panelFade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.style-body,
+.dim-panel,
+.cab-grid {
+  animation: panelFade 0.22s ease;
+}
+
+/* ── ШКАФЫ (cabinets) panel — actions · filter · type grid ─────────────── */
+.cab-actions {
+  display: flex;
+  gap: 10px;
+  padding: 4px 18px 12px;
+}
+
+.cab-act {
+  flex: 1 1 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+  font: inherit;
+  font-weight: 600;
+  color: #2b2f36;
+  cursor: pointer;
+}
+
+.cab-act.primary {
+  background: #1c1c1e;
+  border-color: #1c1c1e;
+  color: #fff;
+}
+
+.cab-filter {
+  display: flex;
+  flex-wrap: wrap; /* 6 categories: wrap onto a second row rather than scroll the last ones off-screen */
+  gap: 8px;
+  padding: 0 18px 12px;
+}
+
+.cab-fchip {
+  flex: 0 0 auto;
+  padding: 7px 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+  font-size: 13px;
+  color: #4a4f57;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.cab-fchip.on {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: #eaf7f2;
+}
+
+.cab-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 0 18px 20px;
+}
+
+.cab-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+  padding: 10px 6px;
+  cursor: pointer;
+}
+
+.cab-cell:active {
+  border-color: var(--accent);
+}
+
+.cab-cname {
+  font-size: 12px;
+  color: #4a4f57;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.multi-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px 12px 8px;
+}
+
+.multi-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.multi-lbl {
+  flex: 0 0 48px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #8b929c;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.multi-chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.multi-chip {
+  flex: 0 0 auto;
+  padding: 8px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: #fff;
+  font-size: 13px;
+  color: #2b2f36;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.multi-chip:active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.multi-swatch {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 17px;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px var(--line);
+  cursor: pointer;
+}
+
+.multi-swatch:active {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+/* view / render-style menu: tick the active option */
+.view-menu button.vm-on {
+  font-weight: 600;
+}
+
+.vm-check {
+  margin-left: auto;
+  font-size: 13px;
+}
+
+/* magnet / guide toggle rows in the view menu */
+.vm-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 12px;
+  font: 500 14px/1 var(--sans);
+  color: #000;
+}
+
+.vm-sep {
+  height: 1px;
+  background: var(--line);
+  margin: 4px 8px;
+}
+
+/* the +/− stepper in the view menu (shelf-load kg/m) */
+.vm-step {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.vm-step button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid #d1d9e0;
+  border-radius: 7px;
+  background: #fff;
+  font: 600 16px/1 var(--sans);
+  color: #000;
+  cursor: pointer;
+}
+.vm-step button:hover { background: #e2e8f0; }
+.vm-step-val {
+  min-width: 22px;
+  text-align: center;
+  font: 600 14px/1 var(--sans);
+  color: #000;
+}
+
+/* the light-preset row in the view menu — a label over a chip row (День / Вечер / Витрина) */
+.vm-lights {
+  padding: 6px 12px 10px;
+  font: 500 14px/1 var(--sans);
+  color: #000;
+}
+
+.vm-lights>span {
+  display: block;
+  margin-bottom: 7px;
+}
+
+.vm-lights .pillrow {
+  display: flex;
+  gap: 6px;
+}
+
+.view-menu .vm-lights .chip {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 7px 4px;
+  font: 500 12px/1 var(--sans);
+  white-space: nowrap;
+}
+
+/* keep the toggle switch intact inside the view menu (override .view-menu button) */
+.view-menu .switch {
+  width: 46px;
+  height: 28px;
+  flex: 0 0 auto;
+  padding: 0;
+  border-radius: 20px;
+  background: #d4d4d4;
+  gap: 0;
+}
+
+.view-menu .switch.on {
+  background: #000;
+}
+
+/* front-view wall-side switcher (← Стена →) */
+.wall-switcher {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 8px 20px 8px 20px;
+  background: #f5f5f5;
+}
+
+.wall-arrow {
+  width: 60px;
+  height: 34px;
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: #fff;
+  font-size: 16px;
+  line-height: 1;
+  color: #000;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+}
+
+.wall-arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.wall-label {
+  min-width: 130px;
+  width: stretch;
+  text-align: center;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 8px 18px;
+  font: 600 14px/1 var(--sans);
+  color: #000;
+}
+
+/* render-mode applied to the furniture body in the 2D (SVG) views; selection /
+   overlap / dimension UI live OUTSIDE these groups so they stay visible */
+.svg-wire rect,
+.svg-wire polygon,
+.svg-wire circle,
+.svg-wire path,
+.svg-wire line {
+  fill: none;
+  stroke: #2f2a24;
+  stroke-width: 16;
+}
+
+/* Front view: thin wireframe outlines to match the realistic mode (not the plan's 16) */
+.svg-wire.elev-wire rect,
+.svg-wire.elev-wire polygon,
+.svg-wire.elev-wire circle,
+.svg-wire.elev-wire path,
+.svg-wire.elev-wire line {
+  stroke-width: 5;
+}
+
+/* Plan (2D floor) view: thinner wireframe outlines too */
+.svg-wire.plan-wire rect,
+.svg-wire.plan-wire polygon,
+.svg-wire.plan-wire circle,
+.svg-wire.plan-wire path,
+.svg-wire.plan-wire line {
+  stroke-width: 8;
+}
+
+.svg-xray {
+  opacity: 0.42;
+}
+
+/* selected-module dimensions line in the info card */
+.item-card-dim {
+  font: 600 10px/1 var(--mono);
+  color: var(--muted);
+  margin-top: 3px;
+  letter-spacing: 0.03em;
+}
+
+/* info-tap material line (§7): a colour dot + the facade material name. */
+.item-card-mat {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 4px;
+  font: 600 10px/1.1 var(--mono);
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+.item-card-mat-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  flex: none;
+}
+
+/* Назначение (§8.4) picker — declare a space's purpose (boiler hero + contents) */
+.item-card-purpose {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 6px;
+  font: 600 10px/1.1 var(--mono);
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+.item-card-purpose select {
+  flex: 1;
+  min-width: 0;
+  max-width: 130px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 3px 6px;
+  font: 500 11px/1 var(--sans);
+  color: #000;
+  background: #fff;
+  cursor: pointer;
+}
+
+/* Слои (layers) panel (§15.2) — toggle button (free top-right, away from the bottom-right
+   item/undo cluster so nothing overlaps) + a right-side tree that opens below it. */
+.layers-ctl { right: 16px; top: 16px; }
+.layers-ctl button {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.layers-ctl button.on { background: #00ac7a; color: #fff; border-color: #00ac7a; }
+.layers-panel {
+  position: absolute;
+  top: 64px;
+  right: 12px;
+  z-index: 12;
+  width: 210px;
+  max-height: calc(100% - 180px);
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.97);
+  border-radius: 12px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.16);
+  overflow: hidden;
+  font-size: 13px;
+}
+.layers-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 12px;
+  font-weight: 700;
+  color: #1f2937;
+  border-bottom: 1px solid #eef0f3;
+}
+.layers-close {
+  border: none;
+  background: none;
+  color: #94a3b8;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}
+.layers-body { overflow-y: auto; padding: 6px; }
+.layers-run-head {
+  padding: 6px 6px 3px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.layers-rowline { display: flex; align-items: stretch; border-radius: 7px; }
+.layers-rowline.on { background: #e0f2ec; }
+.layers-rowline:hover:not(.on) { background: #f8fafc; }
+.layers-expand {
+  flex: none;
+  width: 22px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #94a3b8;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px 0 0 7px;
+}
+.layers-expand:hover { color: #475569; }
+.layers-row {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  padding: 6px 8px;
+  border: none;
+  border-radius: 7px;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+.layers-row-name { font-weight: 600; color: #1f2937; }
+.layers-row-dim { font: 600 10px/1 var(--mono); color: #94a3b8; }
+.layers-parts {
+  margin: 1px 0 5px 22px;
+  padding-left: 7px;
+  border-left: 2px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.layers-part {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  padding: 4px 8px;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+.layers-part:hover { background: #f1f5f9; }
+.layers-part-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; width: 100%; }
+.layers-part-name { font-weight: 600; font-size: 12px; color: #334155; }
+.layers-part-dim { flex: none; font: 600 10px/1.3 var(--mono); color: #94a3b8; }
+.layers-part-kromka { font-size: 10px; color: #00875a; }
+.layers-empty { padding: 12px; color: #94a3b8; text-align: center; }
+
+/* §5 selection modes — a vertical 2-button pill on the left, mid-height. Active = black. */
+.sel-mode {
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+.sel-mode button {
+  width: 38px;
+  height: 38px;
+  border-radius: 19px;
+  border: none;
+  background: none;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.sel-mode button.on { background: #111827; color: #fff; }
+
+/* scrollable body for the tall category sheets */
+.cfg-sheet-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ---- module chooser (pickCab / pickAppl) ---- */
+.pick-hint {
+  font: 500 12px/1.3 var(--sans);
+  color: var(--muted);
+}
+
+.pick-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  background: none;
+  border: none;
+  border-top: 1px solid var(--line);
+  cursor: pointer;
+  text-align: left;
+}
+
+.pick-thumb {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: #c9c9c9;
+}
+
+.pick-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.pick-name {
+  font: 600 15px/1.2 var(--sans);
+  color: #000;
+}
+
+.pick-sub {
+  font: 400 13px/1.2 var(--sans);
+  color: var(--muted);
+}
+
+/* ---- add-new catalog (insert a fresh module) ---- */
+.add-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.add-head {
+  font: 600 13px/1.2 var(--sans);
+  color: #000;
+}
+
+.add-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.add-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 12px 6px 9px;
+  background: #f5f5f5;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.12s, background 0.12s, transform 0.06s;
+}
+
+.add-chip:active {
+  transform: scale(0.96);
+  background: #eeeeee;
+}
+
+.add-glyph {
+  font-size: 22px;
+  line-height: 1;
+  color: #000;
+}
+
+/* real module render on the catalog chip — big + clearly visible (falls back to .add-glyph) */
+.add-img {
+  width: 100%;
+  max-width: 84px;
+  height: 78px;
+  object-fit: contain;
+  display: block;
+}
+
+.add-name {
+  font: 600 13px/1.15 var(--sans);
+  color: #000;
+}
+
+.add-sub {
+  font: 400 11px/1.15 var(--sans);
+  color: var(--muted);
+}
+
+/* ---- furniture editor ---- */
+.fe-sub {
+  font: 400 14px/1.3 var(--sans);
+  color: #000;
+  margin-top: 4px;
+}
+
+.fe-dim {
+  font: 400 13px/1 var(--sans);
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.fe-subhead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.fe-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 30px;
+  padding: 8px 16px;
+  font: 600 14px/1 var(--sans);
+  color: #000;
+  cursor: pointer;
+}
+
+.fe-subtitle {
+  font: 500 15px/1 var(--sans);
+  color: var(--muted);
+}
+
+.fe-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.fe-field-lbl2 {
+  font: 500 15px/1 var(--sans);
+  color: #000;
+}
+
+/* corner-unit shelf counter (− value +), reuses the .num-step buttons */
+.fe-counter {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fe-counter .fe-input {
+  min-width: 78px;
+  padding: 11px 12px;
+}
+
+.fe-counter .fe-input input {
+  width: 40px;
+}
+
+.fe-counter-val {
+  min-width: 20px;
+  text-align: center;
+  font: 700 17px/1 var(--sans);
+  color: #000;
+  font-variant-numeric: tabular-nums;
+}
+
+/* small muted helper under an editor field (e.g. the base-height "applies to all" note) */
+.fe-hint {
+  font: 400 12px/1.35 var(--sans);
+  color: var(--muted);
+  margin: -4px 0 4px;
+}
+
+/* the onboarding questions, now a sheet OVER the variants they generate (they used to be a gate in
+   front of the room editor). Two buttons in the bar → they need a row. */
+.var-bar-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.var-opts-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(20, 22, 25, 0.45);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.var-opts-card {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  max-height: 88vh;
+  overflow-y: auto;
+  background: var(--bg, #fff);
+  border-radius: 18px 18px 0 0;
+  padding-bottom: calc(80px + env(safe-area-inset-bottom));
+}
+
+.var-opts-card .sheet-x {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 1;
+}
+
+/* «↻ Заново» — top-right of the options card, tucked left of the ✕ close */
+.var-opts-again {
+  position: absolute;
+  top: 12px;
+  right: 52px;
+  z-index: 1;
+}
+
+/* the quiz section renders full-height on its own screen; inside the sheet it's just content */
+.var-opts-card .quiz-all {
+  min-height: 0;
+  padding-bottom: 0;
+}
+
+.var-opts-apply {
+  position: sticky;
+  bottom: 0;
+  width: calc(100% - 32px);
+  margin: 8px 16px calc(12px + env(safe-area-inset-bottom));
+}
+
+/* «Применить ко всему ряду», ON THE CANVAS — top-centre, where .plan-hint sits. The two can never
+   collide: plan-hint needs `!sel`, this needs `sel`. z-index 5 puts it over the gizmo overlay (4)
+   and the item-card (4), matching .fill-chip. */
+.row-pill {
+  position: absolute;
+  top: 12px;
+  left: 10px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px 7px 8px;
+  border-radius: 22px;
+  border: 1.5px solid var(--line, #d9dce1);
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(6px);
+  font: 600 12px/1 var(--sans);
+  color: var(--ink, #23262b);
+  white-space: nowrap;
+  box-shadow: 0 2px 10px rgba(20, 22, 25, 0.12);
+  cursor: pointer;
+}
+
+.row-pill.on {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, #fff);
+}
+
+/* the switch is a touch smaller here than in the editor sheet */
+.row-pill .switch {
+  width: 36px;
+  height: 22px;
+  flex: 0 0 auto;
+}
+
+.row-pill .switch .knob {
+  width: 17px;
+  height: 17px;
+}
+
+.row-pill .switch.on .knob {
+  transform: translateX(14px);
+}
+
+/* «Применить ко всему ряду» — a persistent editing mode, so it reads as a switch (like the
+   Инженерия toggles), not as a one-shot button */
+.fe-rowscope {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  margin: 10px 0 2px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1.5px solid var(--line, #d9dce1);
+  background: #fff;
+  cursor: pointer;
+}
+
+.fe-rowscope.on {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 7%, #fff);
+}
+
+.fe-rowscope-txt {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+}
+
+.fe-rowscope-name {
+  font: 600 13px/1.2 var(--sans);
+  color: var(--ink, #23262b);
+}
+
+.fe-rowscope-note {
+  font: 400 11px/1.35 var(--sans);
+  color: var(--muted);
+}
+
+/* «Объединить в один корпус» — build the row as ONE carcass (shared stiles) instead of a box per
+   cabinet. A structural choice with a real price attached, so it reads as a switch beside the
+   dimensions, exactly like «Применить ко всему ряду» above it. */
+.fe-merge {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  margin: 10px 0 2px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1.5px solid var(--line, #d9dce1);
+  background: #fff;
+  cursor: pointer;
+}
+
+.fe-merge.on {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 7%, #fff);
+}
+
+.fe-merge-lbl {
+  flex: 1;
+  font: 600 13px/1.2 var(--sans);
+  color: var(--ink, #23262b);
+}
+
+/* the same 40×24 track the sheet's other switches use */
+.fe-merge-sw {
+  position: relative;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 24px;
+  border-radius: 12px;
+  background: #d9dce1;
+  transition: background 0.15s ease;
+}
+
+.fe-merge-sw::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(20, 22, 25, 0.28);
+  transition: transform 0.15s ease;
+}
+
+.fe-merge.on .fe-merge-sw {
+  background: var(--accent);
+}
+
+.fe-merge.on .fe-merge-sw::after {
+  transform: translateX(16px);
+}
+
+/* one-tap floor-to-ceiling — the gesture every custom kitchen needs and a 5cm stepper can't give */
+.fe-ceiling {
+  display: block;
+  width: 100%;
+  margin: 2px 0 6px;
+  padding: 9px 12px;
+  border: 1px solid var(--line, #d9dce1);
+  border-radius: 10px;
+  background: transparent;
+  font: 600 13px/1 var(--sans);
+  color: var(--ink, #23262b);
+  cursor: pointer;
+}
+
+.fe-ceiling:active {
+  background: #f1f3f6;
+}
+
+.fe-input {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #f2f2f2;
+  border-radius: 12px;
+  padding: 12px 16px;
+  min-width: 120px;
+  justify-content: flex-end;
+}
+
+.fe-input.sm {
+  min-width: 96px;
+  padding: 10px 12px;
+}
+
+.fe-input input {
+  border: none;
+  background: none;
+  font: 600 15px/1 var(--sans);
+  color: #000;
+  width: 48px;
+  text-align: right;
+  outline: none;
+  padding: 0;
+}
+
+.fe-input span {
+  font: 500 14px/1 var(--sans);
+  color: var(--muted);
+}
+
+.fe-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.fe-action {
+  flex: 1 1 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #000000;
+  border: none;
+  border-radius: 30px;
+  padding: 13px 12px;
+  font: 600 14px/1 var(--sans);
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.fe-action-2 {
+  background: var(--accent);
+}
+
+/* "Save to my cabinets" — a lighter outlined action under the main two */
+.fe-save-cab {
+  width: 100%;
+  margin-top: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #fff;
+  border: 1.5px solid var(--accent);
+  border-radius: 30px;
+  padding: 12px;
+  font: 600 14px/1 var(--sans);
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.fe-save-cab:active {
+  background: color-mix(in srgb, var(--accent) 8%, #fff);
+}
+
+/* a saved-cabinet chip in the picker: relative so the delete ✕ can pin to its corner */
+.saved-chip {
+  position: relative;
+}
+
+.saved-del {
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  z-index: 1;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: 11px;
+  line-height: 1;
+}
+
+.fe-action-ic {
+  font-size: 16px;
+}
+
+.fe-list-title {
+  font: 600 15px/1 var(--sans);
+  color: #000;
+  margin-top: 2px;
+}
+
+.part-card {
+  display: flex;
+  gap: 12px;
+  border-top: 1px solid var(--line);
+  padding: 18px 0 0;
+}
+
+.part-thumb {
+  position: relative;
+  flex: 0 0 auto;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: #9c9c9c;
+  overflow: hidden;
+}
+
+/* the part-type line illustration over the material swatch — white strokes + a dark
+   drop-shadow so it reads on any material (light marble or dark walnut) */
+.part-ico {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.95);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.6));
+}
+
+.part-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.part-name {
+  font: 600 14px/1.2 var(--sans);
+  color: #000;
+}
+
+.part-sub {
+  font: 400 12px/1.2 var(--sans);
+  color: var(--muted);
+}
+
+.part-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+
+.part-btn {
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 30px;
+  padding: 6px 14px;
+  font: 500 12px/1 var(--sans);
+  color: #000;
+  cursor: pointer;
+}
+
+.part-btn:active {
+  background: #f3f3f3;
+}
+
+.addon-row,
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid var(--line);
+  padding: 14px 0;
+  font: 500 14px/1.3 var(--sans);
+  color: #000;
+}
+
+.addon-add {
+  flex: 0 0 auto;
+  border: 1px solid #000;
+  background: #fff;
+  border-radius: 30px;
+  padding: 8px 18px;
+  font: 600 13px/1 var(--sans);
+  color: #000;
+  cursor: pointer;
+}
+
+.addon-add.on {
+  background: #000;
+  color: #fff;
+}
+
+/* iOS-style switch */
+.switch {
+  flex: 0 0 auto;
+  width: 46px;
+  height: 28px;
+  border-radius: 20px;
+  border: none;
+  background: #d4d4d4;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+
+.switch.on {
+  background: #000;
+}
+
+.switch .knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.18s;
+}
+
+.switch.on .knob {
+  transform: translateX(18px);
+}
+
+/* part-edit panel (left/right etc.) */
+.fe-side-lbl {
+  font: 500 15px/1 var(--sans);
+  color: #000;
+}
+
+.fe-pair {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.apply-all {
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 30px;
+  padding: 10px 16px;
+  font: 600 13px/1 var(--sans);
+  color: #000;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* style-panel "apply to all" — full-width CTA under the material list */
+.fe-apply-all {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 13px 16px;
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+/* scope prompt — after a material/handle change: a centered modal over a darkened
+   backdrop asking to apply to this module or all */
+.scope-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.5);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  animation: scope-fade 0.15s ease;
+}
+
+@keyframes scope-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.scope-card {
+  width: 100%;
+  max-width: 340px;
+  background: #fff;
+  border-radius: 18px;
+  padding: 22px 20px 16px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.scope-title {
+  font: 700 17px/1.2 var(--sans);
+  color: #000;
+}
+
+.scope-sub {
+  margin-top: 6px;
+  font: 400 14px/1.4 var(--sans);
+  color: var(--muted);
+}
+
+.scope-actions {
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+}
+
+.scope-this,
+.scope-all {
+  flex: 1 1 0;
+  padding: 14px 12px;
+  border-radius: 12px;
+  font: 600 14px/1 var(--sans);
+  cursor: pointer;
+  border: 1px solid var(--line);
+}
+
+.scope-this {
+  background: #fff;
+  color: #000;
+}
+
+.scope-all {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+/* Eman material card (Стиль) */
+.mat-card {
+  display: flex;
+  flex-direction: column;
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+}
+
+.mat-card.sel {
+  border-color: #000;
+  box-shadow: inset 0 0 0 1px #000;
+}
+
+.mat-top {
+  display: flex;
+  gap: 14px;
+  padding: 14px;
+}
+
+.mat-thumb {
+  flex: 0 0 auto;
+  width: 64px;
+  height: 64px;
+  border-radius: 6px;
+  background: #c9c9c9;
+}
+
+.mat-foot {
+  border-top: 1px solid var(--line);
+  padding: 12px 14px;
+  text-align: right;
+  font: 600 13px/1 var(--sans);
+  color: #000;
+}
+
+/* ---- home + projects ---- */
+.home {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.home-recent {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- home card grid (2-col project cards) ---- */
+.home-grid-screen {
+  padding-bottom: 100px;
+  /* space for the sticky CTA */
+  /* opacity-only fade (NOT the `fade` keyframe): its `transform` would make the fixed
+     "New project" CTA anchor to this animating element — it flashed at centre then snapped
+     to the bottom. No transform → the CTA stays pinned to the viewport bottom throughout. */
+  animation: fadeIn 0.3s ease;
+}
+
+.hc-filters {
+  display: flex;
+  gap: 8px;
+}
+
+.hc-filter-pill {
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--muted);
+  font: 600 13px/1 var(--sans);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.hc-filter-pill.on {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: #fff;
+}
+
+.hc-filter-pill:active {
+  transform: scale(0.96);
+}
+
+.hc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding-bottom: 10px;
+}
+
+/* ---- bottom tab bar (app hub) — styled like the room-editor toolbar (light rounded
+   bar, each tab an icon in a white circle + label; active tab tints accent) ---- */
+.tabbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+  display: flex;
+  background: #f5f5f5;
+  border-radius: 30px 30px 0 0;
+  padding: 6px 0 env(safe-area-inset-bottom);
+}
+
+.tab-item {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #000;
+  transition: color 0.12s;
+}
+
+.tab-item.on {
+  color: var(--accent);
+}
+
+.tab-ico {
+  width: 46px;
+  height: 46px;
+  border-radius: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 1px solid var(--line);
+}
+
+.tab-ico svg {
+  width: 24px;
+  height: 24px;
+}
+
+.tab-lbl {
+  font: 500 10px/12px var(--sans);
+  text-transform: capitalize;
+}
+
+/* hub screens: clear the fixed tab bar; the sticky CTA sits directly above it */
+.body-tabbed {
+  padding-bottom: calc(100px + env(safe-area-inset-bottom));
+}
+
+.body-tabbed .hc-bottom-cta,
+.body-tabbed .hc-bottom {
+  bottom: calc(96px + env(safe-area-inset-bottom));
+  padding-bottom: 12px;
+}
+
+/* home: "Recent" section head + "see all" link */
+.hc-sec-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.hc-sec-title {
+  font: 700 15px/1 var(--sans);
+  color: #000;
+}
+
+.hc-sec-all {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font: 600 13px/1 var(--sans);
+  cursor: pointer;
+}
+
+/* projects: search + sort row */
+.proj-search {
+  margin: 8px 0 10px;
+}
+
+.proj-sort {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.proj-dir {
+  min-width: 44px;
+  font-weight: 700;
+}
+
+/* user tab: profile card */
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  margin: 6px 0 16px;
+}
+
+.user-avatar {
+  flex: 0 0 auto;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 700 22px/1 var(--sans);
+}
+
+.user-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.user-name {
+  font: 700 16px/1.2 var(--sans);
+  color: #000;
+}
+
+.user-email {
+  font: 500 13px/1.2 var(--sans);
+  color: var(--muted);
+  word-break: break-all;
+}
+
+.user-count {
+  font: 500 12px/1 var(--sans);
+  color: var(--muted);
+}
+
+.hc-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+  cursor: pointer;
+  transition: box-shadow 0.15s, transform 0.1s;
+}
+
+.hc-card:active {
+  transform: scale(0.98);
+}
+
+/* thumbnail */
+.hc-thumb {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: var(--placeholder);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 15px 15px 0 0;
+}
+
+.hc-thumb-icon {
+  width: 40%;
+  height: 40%;
+  color: var(--muted);
+  opacity: 0.5;
+}
+
+.hc-thumb-img {
+  width: 100%;
+  height: 300%;
+  object-fit: fill;
+  display: block;
+}
+
+/* card body: name + date + dots */
+.hc-card-body {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 10px 10px 12px;
+}
+
+.hc-card-info {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.hc-card-name {
+  font: 600 14px/1.25 var(--sans);
+  color: #000;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hc-card-date {
+  font: 400 12px/1 var(--sans);
+  color: var(--muted);
+}
+
+/* 3-dot menu */
+.hc-menu-wrap {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.hc-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background 0.12s;
+}
+
+.hc-dots:hover {
+  background: var(--line2);
+}
+
+.hc-dropdown {
+  position: absolute;
+  right: 0;
+  top: 32px;
+  z-index: 30;
+  min-width: 140px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.14);
+  overflow: hidden;
+  animation: hc-drop-in 0.12s ease-out;
+}
+
+@keyframes hc-drop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.96);
+  }
+}
+
+.hc-drop-item {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  background: none;
+  text-align: left;
+  font: 500 14px/1 var(--sans);
+  color: #000;
+  cursor: pointer;
+}
+
+.hc-drop-item:not(:last-child) {
+  border-bottom: 1px solid var(--line2);
+}
+
+.hc-drop-item:active {
+  background: var(--line2);
+}
+
+.hc-drop-danger {
+  color: #c0392b;
+}
+
+/* sticky bottom CTA */
+.hc-bottom-cta {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  padding: 12px 20px calc(16px + env(safe-area-inset-bottom));
+}
+
+.hc-new-btn {
+  width: 100%;
+  padding: 16px 24px;
+  border: none;
+  border-radius: 30px;
+  background: var(--accent);
+  color: #fff;
+  font: 700 16px/1 var(--sans);
+  cursor: pointer;
+  transition: transform 0.1s, opacity 0.1s;
+}
+
+.hc-new-btn:active {
+  transform: scale(0.97);
+  opacity: 0.9;
+}
+
+/* rename / delete modal */
+.hc-rename-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.45);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  animation: scope-fade 0.15s ease;
+}
+
+.hc-rename-card {
+  width: 100%;
+  max-width: 340px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 22px 20px 18px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.hc-rename-title {
+  font: 700 18px/1.2 var(--sans);
+  color: #000;
+  margin: 0;
+}
+
+.hc-rename-input {
+  width: 100%;
+  border: 1px solid var(--line) !important;
+  border-radius: 12px !important;
+  padding: 12px 14px !important;
+  font: 500 15px/1.3 var(--sans) !important;
+}
+
+.hc-rename-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.hc-rename-cancel,
+.hc-rename-save {
+  flex: 1 1 0;
+  padding: 13px 12px;
+  border-radius: 12px;
+  font: 600 14px/1 var(--sans);
+  cursor: pointer;
+  border: 1px solid var(--line);
+}
+
+.hc-rename-cancel {
+  background: #fff;
+  color: #000;
+}
+
+.hc-rename-save {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+.hc-rename-danger {
+  background: #c0392b;
+  border-color: #c0392b;
+}
+
+.proj-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 0;
+  background: none;
+  border: none;
+  border-top: 1px solid var(--line);
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+}
+
+.proj-row-name {
+  font: 500 16px/1.2 var(--sans);
+  color: #000;
+}
+
+.proj-row-date {
+  font: 400 13px/1 var(--sans);
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.link-btn {
+  align-self: flex-start;
+  margin-top: 10px;
+  background: none;
+  border: none;
+  padding: 0;
+  font: 600 14px/1 var(--sans);
+  color: #000;
+  cursor: pointer;
+}
+
+.proj-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.proj-card {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.proj-card-main {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px;
+  background: var(--bg);
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.proj-card-name {
+  font: 600 16px/1.2 var(--sans);
+  color: #000;
+}
+
+.proj-card-meta {
+  font: 400 13px/1 var(--sans);
+  color: var(--muted);
+}
+
+.proj-del {
+  flex: 0 0 auto;
+  width: 48px;
+  border: none;
+  border-left: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.proj-confirm {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.proj-confirm-yes,
+.proj-confirm-no {
+  flex: 1 1 0;
+  border: none;
+  border-left: 1px solid var(--line);
+  padding: 14px;
+  font: 600 13px/1 var(--sans);
+  cursor: pointer;
+}
+
+.proj-confirm-yes {
+  background: #000;
+  color: #fff;
+}
+
+.proj-confirm-no {
+  background: var(--bg);
+  color: #000;
+  border-top: 1px solid var(--line);
+}
+
+/* ---- navbar hamburger drawer (journey progress + navigation) ---- */
+.menu-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 60;
+  animation: fadeIn 0.2s ease;
+}
+
+.menu-drawer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 80%;
+  max-width: 300px;
+  background: #fff;
+  z-index: 61;
+  display: flex;
+  flex-direction: column;
+  padding: calc(20px + env(safe-area-inset-top)) 22px calc(20px + env(safe-area-inset-bottom));
+  box-shadow: 4px 0 28px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  min-height: 0;
+  animation: drawerIn 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
+  margin: 10px;
+  border-radius: 22px;
+}
+
+@keyframes drawerIn {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: none;
+  }
+}
+
+.menu-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.menu-x {
+  border: none;
+  background: var(--bg);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--ink);
+}
+
+.menu-sec-title {
+  font: 600 11px/1 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 6px 0 10px;
+}
+
+.menu-steps {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 22px;
+}
+
+.menu-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 0;
+  background: none;
+  border: none;
+  text-align: left;
+  font-family: inherit;
+  width: 100%;
+  cursor: pointer;
+}
+
+.menu-step:disabled {
+  cursor: default;
+}
+
+.menu-step-dot {
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 700 12px/1 var(--sans);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  background: var(--bg);
+}
+
+.menu-step.done .menu-step-dot {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.menu-step.current .menu-step-dot {
+  border-color: #000;
+  color: #000;
+  box-shadow: inset 0 0 0 1px #000;
+}
+
+.menu-step-lbl {
+  font: 500 15px/1.2 var(--sans);
+  color: #000;
+}
+
+.menu-step.locked .menu-step-lbl {
+  color: var(--muted);
+}
+
+.menu-items {
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-item {
+  padding: 14px 0;
+  background: none;
+  border: none;
+  border-top: 1px solid var(--line);
+  text-align: left;
+  font: 400 16px/1.2 var(--sans);
+  color: #000;
+  cursor: pointer;
+  width: 100%;
+}
+
+/* toast */
+.toast {
+  position: absolute;
+  left: 50%;
+  bottom: 120px;
+  transform: translateX(-50%);
+  background: #000;
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font: 600 13px/1 var(--sans);
+  z-index: 50;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  white-space: nowrap;
+}
+
+/* ---- footer (Figma "Buttons": outline Back + filled Next, equal halves) ---- */
+.footer {
+  flex: 0 0 auto;
+  padding: 12px 20px calc(20px + env(safe-area-inset-bottom));
+  background: var(--bg);
+}
+
+.footrow {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  flex: 1 1 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 10px;
+  border-radius: 40px;
+  text-transform: capitalize;
+  cursor: pointer;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-next {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  font: 700 14px/19px var(--sans);
+}
+
+.btn-next:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.btn-back {
+  background: #fff;
+  border: 1px solid #000;
+  color: #000;
+  font: 600 14px/19px var(--sans);
+}
+
+/* ---- Phase B: variant generation ---- */
+.var-screen {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.var-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.gen-btn {
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: #000;
+  border-radius: 40px;
+  padding: 9px 16px;
+  font: 600 13px/1 var(--sans);
+  cursor: pointer;
+}
+
+.gen-btn:active {
+  transform: translateY(1px);
+}
+
+.gen-btn-lg {
+  align-self: flex-start;
+  background: #000;
+  border-color: #000;
+  color: #fff;
+  padding: 14px 24px;
+  font: 700 15px/1 var(--sans);
+}
+
+/* IKEA-style 3D preview: name+price bar, big stage, 1·2·3·4 stepper */
+.var-screen-3d {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  gap: 10px;
+  animation: fade 0.3s;
+}
+
+/* the top bar uses the shared cfg-bar layout (☰ left · layout type centred · ⚙ Параметры right).
+   cfg-bar only sets position/padding — the flex row itself lives here (the stepbar class supplies it
+   on the other bars, which var-bar doesn't carry). */
+.var-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 6px;
+}
+
+/* «⚙ Параметры» is icon-only now — the same settings gear the home hub uses, in a bordered circle */
+.var-settings {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: #000;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.var-settings:active {
+  transform: translateY(1px);
+}
+
+/* the price, centred just under the top bar (the bar's title shows the layout type; the strategy
+   name is the blurb under the stage) */
+.var-caption {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 10px;
+  margin-top: -2px;
+}
+
+.var-price {
+  font: 700 15px/1 var(--sans);
+  color: #000;
+  white-space: nowrap;
+}
+
+.var-stage {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  background: linear-gradient(#f4f2ec, #e9e6df);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.var-hint {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(20, 20, 20, 0.7);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font: 500 11px/1 var(--sans);
+  pointer-events: none;
+}
+
+/* «↻ Заново» — regenerate, floating on the scene (top-right). A white pill so it reads over the
+   render; sits inside the stage the way the constructor's round tools do. */
+.var-regen {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  border: none;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+  color: #000;
+  border-radius: 40px;
+  padding: 9px 15px;
+  font: 600 13px/1 var(--sans);
+  cursor: pointer;
+}
+
+.var-regen:active {
+  transform: translateY(1px);
+}
+
+.var-blurb {
+  font: 400 13px/18px var(--sans);
+  color: var(--muted);
+  text-align: center;
+}
+
+.var-steps {
+  display: flex;
+  flex-wrap: wrap;
+  /* up to 8 variants → wrap to a second row */
+  justify-content: center;
+  gap: 10px;
+  padding: 2px 0 4px;
+}
+
+.var-step {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--muted);
+  font: 700 16px/1 var(--sans);
+  cursor: pointer;
+  transition: 0.12s;
+}
+
+.var-step.on {
+  background: #000;
+  border-color: #000;
+  color: #fff;
+}
+
+.var-step:active {
+  transform: translateY(1px);
+}
+
+/* "Start from scratch" — the alternative to picking a generated variant. A quiet full-width
+   button under the stepper: not competing with the numbered options, but clearly a second path. */
+.var-scratch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin: 4px auto 0;
+  padding: 11px 20px;
+  border: 1px dashed var(--line);
+  border-radius: 14px;
+  background: transparent;
+  cursor: pointer;
+  transition: 0.14s;
+}
+
+.var-scratch:hover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+}
+
+.var-scratch:active {
+  transform: translateY(1px);
+}
+
+.var-scratch-name {
+  font: 700 14px/1.2 var(--sans);
+  color: var(--accent);
+}
+
+.var-scratch-sub {
+  font: 400 12px/1.3 var(--sans);
+  color: var(--muted);
+}
+
+/* loading screen while the solver runs */
+.loader-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 60vh;
+  text-align: center;
+}
+
+.spinner {
+  width: 44px;
+  height: 44px;
+  border: 4px solid var(--line);
+  border-top-color: #000;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loader-title {
+  font: 600 17px/1.2 var(--sans);
+  color: #000;
+}
+
+.loader-sub {
+  font: 400 14px/20px var(--sans);
+  color: var(--muted);
+  max-width: 260px;
+}
+
+/* ---- Preview / AI render step ---- */
+.preview-title {
+  font: 700 15px/1.2 var(--sans);
+  color: #000;
+}
+
+.render-bar {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 10px;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  background: #fff;
+  border-top: 1px solid var(--line);
+}
+
+.render-primary {
+  flex: 1 1 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 18px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #2a6df0, #6b4df0);
+  color: #fff;
+  font: 700 15px/1 var(--sans);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.render-primary:disabled {
+  opacity: 0.55;
+}
+
+.render-secondary {
+  flex: 0 0 auto;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  color: #000;
+  font: 600 14px/1 var(--sans);
+  cursor: pointer;
+}
+
+/* before / after comparison */
+.ba {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  touch-action: none;
+  background: #111;
+  cursor: ew-resize;
+}
+
+.ba-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.ba-divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+
+.ba-knob {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #fff;
+  color: #2a6df0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 700 13px/1 var(--sans);
+  letter-spacing: 1px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.ba-tag {
+  position: absolute;
+  top: 12px;
+  padding: 4px 9px;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font: 600 11px/1 var(--sans);
+  pointer-events: none;
+}
+
+.ba-tag-l {
+  left: 12px;
+}
+
+.ba-tag-r {
+  right: 12px;
+}
+
+/* loading overlay */
+.render-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: rgba(245, 245, 247, 0.82);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
+
+.render-spinner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid rgba(42, 109, 240, 0.2);
+  border-top-color: #2a6df0;
+  animation: render-spin 0.8s linear infinite;
+}
+
+@keyframes render-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.render-stage {
+  font: 600 14px/1.2 var(--sans);
+  color: #000;
+}
+
+.render-progress {
+  width: 180px;
+  height: 5px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.render-progress span {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #2a6df0, #6b4df0);
+  transition: width 0.4s ease;
+}
+
+.render-hint {
+  font: 400 12px/1.2 var(--sans);
+  color: var(--muted);
+}
+
+.render-cancel {
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font: 600 13px/1 var(--sans);
+  cursor: pointer;
+}
+
+.render-error {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  z-index: 7;
+  padding: 11px 14px;
+  border-radius: 10px;
+  background: #fdecec;
+  border: 1px solid #f5c2c2;
+  color: #9a2a2a;
+  font: 500 13px/1.4 var(--sans);
+}
+
+/* ---- Смета (cost screen) ---- */
+.cost-screen {
+  padding-bottom: 24px;
+}
+
+.cost-total {
+  font: 800 40px/1.1 var(--sans);
+  color: #000;
+  margin-top: 14px;
+  letter-spacing: -0.5px;
+}
+
+.cost-total-sub {
+  font: 500 13px/1.3 var(--sans);
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.cost-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.cost-group-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.cost-group-name {
+  font: 600 14px/1.2 var(--sans);
+  color: #000;
+}
+
+.cost-group-amt {
+  font: 600 14px/1.2 var(--sans);
+  color: #000;
+  white-space: nowrap;
+}
+
+.cost-bar {
+  margin-top: 7px;
+  height: 8px;
+  border-radius: 5px;
+  background: #ededed;
+  overflow: hidden;
+}
+
+.cost-bar>span {
+  display: block;
+  height: 100%;
+  border-radius: 5px;
+  background: var(--accent);
+}
+
+.cost-sec-title {
+  font: 700 15px/1.2 var(--sans);
+  color: #000;
+  margin: 26px 0 10px;
+}
+
+.cost-items {
+  display: flex;
+  flex-direction: column;
+}
+
+.cost-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 11px 0;
+  border-top: 1px solid var(--line2);
+}
+
+.cost-item-name {
+  font: 500 14px/1.3 var(--sans);
+  color: #000;
+}
+
+.cost-item-dim {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+/* a merged row is ONE line on the смета — this says why it is one line and not four */
+.cost-item-tag {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 7px;
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--accent) 12%, #fff);
+  color: var(--accent);
+  font: 600 10px/1.4 var(--sans);
+  vertical-align: 1px;
+  white-space: nowrap;
+}
+
+.cost-item-amt {
+  font: 600 14px/1.3 var(--sans);
+  color: #000;
+  white-space: nowrap;
+}
+
+/* per-m² summary (facade area × rate, then — when both modes are on — the seller's cost + margin) */
+.cost-sqm {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.cost-sqm-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 11px 0;
+  border-top: 1px solid var(--line2);
+  font: 500 14px/1.3 var(--sans);
+  color: #000;
+}
+
+/* seller cost — the summary line, made prominent so it reads at a glance */
+.cost-sqm-cost {
+  align-items: center;
+  padding: 14px 0 6px;
+  border-top: 2px solid var(--line);
+}
+
+.cost-sqm-cost>span:first-child {
+  font-weight: 700;
+}
+
+.cost-sqm-cost-val {
+  font: 800 26px/1 var(--sans);
+  letter-spacing: -0.4px;
+}
+
+.cost-sqm-margin {
+  border-top: none;
+  padding-top: 0;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* delivery line at the foot of По модулям — so the list visibly sums to the total */
+.cost-item-delivery {
+  color: var(--muted);
+}
+
+.cost-note {
+  font: 400 12px/1.45 var(--sans);
+  color: var(--muted);
+  margin-top: 22px;
+}
+
+/* ---- Передача (handoff / CNC export) ---- */
+.ho-stats {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.ho-stat {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 14px 6px;
+  background: #eeeeee;
+  border-radius: 12px;
+}
+
+.ho-stat-n {
+  font: 800 22px/1 var(--sans);
+  color: #000;
+}
+
+.ho-stat-l {
+  font: 500 11px/1.2 var(--sans);
+  color: var(--muted);
+}
+
+.ho-download {
+  width: 100%;
+  margin-top: 16px;
+  padding: 14px;
+  border: none;
+  border-radius: 999px;
+  background: #000;
+  color: #fff;
+  font: 700 15px/1 var(--sans);
+  cursor: pointer;
+}
+
+.ho-download:active {
+  opacity: 0.85;
+}
+
+.ho-table {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--line2);
+}
+
+.ho-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line2);
+  font: 400 13px/1.3 var(--sans);
+  color: #000;
+}
+
+.ho-head {
+  font-weight: 600;
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ho-c-part {
+  flex: 1 1 40%;
+  display: flex;
+  flex-direction: column;
+}
+
+.ho-c-mod {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.ho-c-mat {
+  flex: 1 1 35%;
+  color: var(--muted);
+}
+
+.ho-c-dim {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.ho-items {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- handoff: drawing sheet + dual export buttons ---- */
+.ho-draw {
+  margin-top: 8px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.ho-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.ho-actions .ho-download {
+  margin-top: 0;
+  flex: 1 1 0;
+  font-size: 14px;
+  padding: 13px 8px;
+}
+
+.ho-download-2 {
+  background: #fff;
+  color: #000;
+  border: 1px solid var(--line);
+}
+
+.ho-download:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Раскрой mode switch — Ручная резка (пила) ↔ ЧПУ станок */
+.ho-cutmode {
+  display: flex;
+  gap: 4px;
+  margin-top: 12px;
+  padding: 4px;
+  background: var(--line2);
+  border-radius: 12px;
+}
+
+.ho-cutmode-tab {
+  flex: 1 1 0;
+  padding: 10px 8px;
+  border: none;
+  border-radius: 9px;
+  background: none;
+  color: var(--muted);
+  font: 600 13px/1 var(--sans);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+
+.ho-cutmode-tab.active {
+  background: var(--bg);
+  color: var(--accent);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.ho-cutmode-hint {
+  margin-top: 8px;
+}
+
+.ho-share {
+  background: #2aabee;
+  color: #fff;
+  border: none;
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.ho-share:active {
+  background: #2096d3;
+}
+
+/* CNC (SWJ008) file — the primary machine file, so it gets the accent colour */
+.ho-cnc {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* drawings as compact 2-per-row download cards (less scroll than stacked full sheets) */
+.ho-draw-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.ho-draw-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  text-align: center;
+}
+
+.ho-draw-card:active {
+  background: var(--line2, #f2f0ec);
+}
+
+.ho-draw-card-img {
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.ho-draw-card-img svg {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+}
+
+.ho-draw-card-lbl {
+  font: 700 13px/1 var(--sans);
+  color: #000;
+}
+
+/* sheet nesting — cut maps stacked full-width (each board readable), tap to save PNG */
+.ho-cutmaps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.ho-cutmap-card {
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  width: 100%;
+}
+
+.ho-cutmap-card:active {
+  background: var(--line2, #f2f0ec);
+}
+
+.ho-cutmap-card svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* offcut / remains input */
+.ho-remains {
+  margin-top: 12px;
+}
+
+.ho-remains-label {
+  display: block;
+  font: 600 13px/1.3 var(--sans);
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.ho-remains-hint {
+  margin: 0 0 10px;
+}
+
+.ho-remains-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.ho-remain-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 6px 5px 12px;
+  border-radius: 999px;
+  background: var(--line2, #f2f0ec);
+  font: 600 13px/1 var(--sans);
+}
+
+.ho-remain-chip button {
+  border: none;
+  background: #d9d5cd;
+  color: #333;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+}
+
+/* offcut entry: two number fields on one row, the add button full-width below (so the
+   button can never be pushed off a narrow screen, and the fields never collapse) */
+.ho-remains-add {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ho-remains-fields {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ho-remains-input {
+  flex: 1 1 0;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 13px 12px;
+  font: 500 16px/1.2 var(--sans);
+  background: #fff;
+  color: #000;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.ho-remains-x {
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.ho-remains-btn {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--accent) 12%, #fff);
+  color: var(--accent);
+  font: 700 15px/1 var(--sans);
+  cursor: pointer;
+}
+
+.ho-remains-btn:disabled {
+  opacity: 0.4;
+}
+
+.ho-oversize {
+  color: #b4453a;
+}
+
+/* engineering spec line on the handoff (фурнитура / усиление → factory) */
+.ho-spec {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 6px 0 2px;
+  font: 500 13px/1.4 var(--sans);
+  color: var(--muted, #777);
+}
+
+.ho-spec b {
+  color: #000;
+  font-weight: 700;
+}
+
+/* --- Инженерия (Фаза Г) --- */
+.eng-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1.5px solid var(--line);
+  background: #fff;
+  cursor: pointer;
+}
+
+.eng-toggle.on {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 7%, #fff);
+}
+
+.eng-toggle-txt {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+}
+
+.eng-toggle-name {
+  font: 600 15px/1.2 var(--sans);
+  color: #000;
+}
+
+.eng-toggle-note {
+  font: 500 12px/1.3 var(--sans);
+  color: var(--muted, #777);
+}
+
+.eng-switch {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 26px;
+  border-radius: 13px;
+  background: #d8d4cc;
+  position: relative;
+  transition: background 0.15s;
+}
+
+.eng-switch::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px #0003;
+  transition: transform 0.15s;
+}
+
+.eng-toggle.on .eng-switch {
+  background: var(--accent);
+}
+
+.eng-toggle.on .eng-switch::after {
+  transform: translateX(18px);
+}
+
+.eng-grades {
+  display: flex;
+  gap: 10px;
+}
+
+.eng-grade {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 10px;
+  border-radius: 12px;
+  border: 1.5px solid var(--line);
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+}
+
+.eng-grade.on {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 7%, #fff);
+}
+
+.eng-grade-name {
+  font: 700 14px/1 var(--sans);
+  color: #000;
+}
+
+.eng-grade-note {
+  font: 500 11px/1.3 var(--sans);
+  color: var(--muted, #777);
+}
+
+.eng-summary {
+  margin-top: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.eng-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 11px 14px;
+  font: 500 13px/1.2 var(--sans);
+  border-bottom: 1px solid var(--line);
+}
+
+.eng-row:last-child {
+  border-bottom: none;
+}
+
+.eng-row span:first-child {
+  color: var(--muted, #777);
+}
+
+.eng-row span:last-child {
+  color: #000;
+  font-weight: 600;
+}
+
+.eng-ok {
+  color: #1c6b38 !important;
+}
+
+.eng-bad {
+  color: #9b2c22 !important;
+}
+
+/* modules the drilling solver had to leave out (custom cell-tree interiors) — a real omission
+   from the machine file, so it reads as a warning rather than a footnote */
+.eng-skipped {
+  margin-top: 14px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #fdf3e7;
+  border: 1px solid #e8c9a0;
+  color: #7a4a12;
+}
+
+/* pre-flight safety panel — the engine's validateParts result, gating the SWJ008 file */
+.ho-preflight {
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin: 6px 0 12px;
+  border: 1.5px solid;
+}
+
+.ho-preflight.ok {
+  background: #eef9f0;
+  border-color: #2faf5a;
+  color: #1c6b38;
+}
+
+.ho-preflight.bad {
+  background: #fdf0ef;
+  border-color: #e05246;
+  color: #9b2c22;
+}
+
+.ho-pf-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.ho-pf-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 15px;
+  flex: 0 0 auto;
+}
+
+.ho-preflight.ok .ho-pf-icon {
+  background: #2faf5a;
+}
+
+.ho-preflight.bad .ho-pf-icon {
+  background: #e05246;
+}
+
+.ho-pf-meta {
+  margin-left: auto;
+  font-weight: 500;
+  opacity: 0.7;
+  font-size: 13px;
+  text-align: right;
+}
+
+.ho-pf-list {
+  margin: 10px 0 0;
+  padding-left: 20px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.ho-pf-list li {
+  margin: 3px 0;
+}
+
+/* "show all / collapse" toggle under the handoff lists */
+.ho-more {
+  width: 100%;
+  margin-top: 10px;
+  padding: 11px;
+  background: #eeeeee;
+  border: none;
+  border-radius: 10px;
+  color: #000;
+  font: 600 13px/1 var(--sans);
+  cursor: pointer;
+}
+
+.ho-more:active {
+  background: #e9e6df;
+}
+
+/* live 3D "общий вид" card in the handoff */
+.ho-3d {
+  position: relative;
+  margin-top: 8px;
+  height: 58vw;
+  max-height: 340px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #eef0f2;
+}
+
+.ho-3d>* {
+  position: absolute;
+  inset: 0;
+}
+
+/* seller header on the Смета (from the designer's Настройки) */
+.cost-from {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: -4px 0 4px;
+}
+
+.cost-from-co {
+  font: 700 15px/1.2 var(--sans);
+  color: #000;
+}
+
+.cost-from-meta {
+  font: 500 13px/1.2 var(--sans);
+  color: var(--muted);
+  padding-top: 6px;
+}
+
+/* ===== Shell pages: Home · Projects · Settings ===== */
+
+/* home: profile nudge + recent list */
+.home-nudge {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  text-align: left;
+  padding: 13px 15px;
+  border-radius: 12px;
+  border: 1px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, #fff);
+  color: #000;
+  font: 600 14px/1.2 var(--sans);
+  cursor: pointer;
+}
+
+.home-nudge-sub {
+  font: 500 12px/1.3 var(--sans);
+  color: var(--muted);
+}
+
+.home-recent-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.home-recent-head .link-btn {
+  margin-top: 0;
+}
+
+.home-empty {
+  margin-top: 4px;
+}
+
+.proj-row {
+  align-items: center;
+}
+
+.proj-row-main {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.proj-row-client {
+  font: 400 13px/1 var(--sans);
+  color: var(--muted);
+}
+
+/* projects: cloud-sync status line */
+.proj-cloud {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: -6px 0 14px;
+  font: 500 13px/1 var(--sans);
+}
+
+.proj-cloud-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+
+.proj-cloud.ok {
+  color: #1c6b38;
+  padding-top: 10px;
+}
+
+.proj-cloud.ok .proj-cloud-dot {
+  background: #2faf5a;
+}
+
+.proj-cloud.busy {
+  color: #3a5570;
+}
+
+.proj-cloud.busy .proj-cloud-dot {
+  background: #3a5570;
+  animation: sync-pulse 1s ease-in-out infinite;
+}
+
+.proj-cloud.err {
+  color: #9b2c22;
+}
+
+.proj-cloud.err .proj-cloud-dot {
+  background: #e05246;
+}
+
+@keyframes sync-pulse {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* projects: edit/delete actions + inline rename */
+.proj-actions {
+  flex: 0 0 auto;
+  display: flex;
+}
+
+.proj-icon-btn {
+  flex: 0 0 auto;
+  width: 46px;
+  border: none;
+  border-left: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.proj-icon-btn:active {
+  background: var(--line2);
+}
+
+.proj-edit {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+}
+
+/* settings: grouped fields */
+.set-screen {
+  display: flex;
+  flex-direction: column;
+}
+
+.set-group {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.set-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.set-group>.set-field:last-child,
+.set-group>.set-pref:last-child {
+  border-bottom: none;
+}
+
+.set-label {
+  font: 500 12px/1 var(--sans);
+  color: var(--muted);
+}
+
+.set-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: none;
+  padding: 0;
+  font: 500 16px/1.3 var(--sans);
+  color: #000;
+}
+
+.set-input::placeholder {
+  color: #bdbdbd;
+  font-weight: 400;
+}
+
+.set-pref {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.set-pref-val {
+  font: 600 15px/1 var(--sans);
+  color: #000;
+}
+
+.set-lang {
+  display: flex;
+  gap: 6px;
+}
+
+.set-lang-btn {
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--muted);
+  font: 600 13px/1 var(--sans);
+  cursor: pointer;
+}
+
+.set-lang-btn.on {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, #fff);
+  color: #000;
+}
+
+/* small helper text under a settings field (bare — the parent .set-field pads it) */
+.set-hint {
+  font: 400 12px/1.4 var(--sans);
+  color: var(--muted);
+}
+
+/* a hint that sits directly in a .set-group (not inside a field) — pad it to align with rows */
+.set-block-hint {
+  display: block;
+  padding: 10px 14px 12px;
+  border-top: 1px solid var(--line);
+  font: 400 12px/1.4 var(--sans);
+  color: var(--muted);
+  background: #fafafa;
+}
+
+.set-joint-info {
+  margin: 10px 14px;
+  padding: 10px 12px;
+  background: color-mix(in srgb, var(--accent, #00ac7a) 8%, #f8f9fa);
+  border: 1px solid color-mix(in srgb, var(--accent, #00ac7a) 25%, #e9ecef);
+  border-radius: 10px;
+}
+
+.set-joint-title {
+  font: 600 13px/1.3 var(--sans);
+  color: #1b4d3e;
+  margin-bottom: 3px;
+}
+
+.set-joint-desc {
+  font: 400 12px/1.45 var(--sans);
+  color: #4a4f57;
+}
+
+.set-screen .menu-sec-title {
+  margin: 16px 0 6px;
+  font: 700 11px/1 var(--mono);
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+/* section sub-heading inside the seller's editable price list */
+.set-subhead {
+  font: 700 11px/1.3 var(--sans);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 12px 14px 4px;
+}
+
+.set-pricelist-hint {
+  padding: 2px 4px 8px;
+  margin: 0;
+}
+
+/* Настройки popup — an overlay over the current screen (keeps work in progress) */
+.settings-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(0, 0, 0, 0.32);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: calc(20px + env(safe-area-inset-top)) 12px calc(20px + env(safe-area-inset-bottom));
+  animation: fadeIn 0.2s ease;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.settings-modal {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  margin: auto;
+  background: #fff;
+  border-radius: 22px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.22);
+  animation: sheetUp 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* the embedded SettingsScreen keeps its own padding; trim its top so the ✕ has room */
+.settings-modal .set-screen {
+  padding-top: 6px;
+}
+
+.settings-modal-x {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 1;
+}
+
+/* auth: login / registration */
+.auth-splash {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  color: var(--muted);
+  font: 500 15px var(--sans);
+}
+
+.auth-screen {
+  display: flex;
+}
+
+.auth-box {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  margin: 6vh auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.auth-close {
+  position: absolute;
+  top: -6px;
+  right: -4px;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: none;
+  font: 400 22px/1 var(--sans);
+  color: #555;
+  cursor: pointer;
+}
+
+/* soft one-time "sign in to sync" nudge (after a guest's first project) */
+.nudge-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 130;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 16px;
+}
+
+.nudge-card {
+  width: 100%;
+  max-width: 393px;
+  background: #fff;
+  border-radius: 22px;
+  padding: 22px 20px calc(18px + env(safe-area-inset-bottom));
+  box-shadow: 0 -6px 28px rgba(0, 0, 0, 0.22);
+  text-align: center;
+  animation: nudgeUp 0.2s ease;
+}
+
+@keyframes nudgeUp {
+  from {
+    transform: translateY(18px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.nudge-ico {
+  font-size: 34px;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.nudge-title {
+  margin-top: 8px;
+  font: 700 18px/1.25 var(--sans);
+  color: #000;
+}
+
+.nudge-body {
+  margin-top: 6px;
+  font: 500 14px/1.45 var(--sans);
+  color: var(--muted);
+}
+
+.nudge-actions {
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+}
+
+.nudge-later,
+.nudge-signin {
+  flex: 1 1 0;
+  height: 48px;
+  border-radius: 14px;
+  font: 700 15px/1 var(--sans);
+  cursor: pointer;
+}
+
+.nudge-later {
+  border: 1px solid var(--line);
+  background: #fff;
+  color: #333;
+}
+
+.nudge-signin {
+  border: none;
+  background: var(--accent);
+  color: #fff;
+}
+
+.auth-field {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.auth-error {
+  color: #9b2c22;
+  background: #fdf0ef;
+  border: 1px solid #e05246;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font: 500 13px/1.35 var(--sans);
+}
+
+.auth-box .gen-btn-lg {
+  margin-top: 4px;
+}
+
+.auth-switch {
+  align-self: center;
+  margin-top: 4px;
+}
+
+.auth-links {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 2px;
+}
+
+.auth-links .link-btn {
+  margin-top: 0;
+}
+
+.auth-legal {
+  margin: 8px 0 0;
+  font: 400 12px/1.5 var(--sans);
+  color: var(--muted);
+  text-align: center;
+}
+
+.auth-lang {
+  align-self: flex-end;
+  margin-bottom: -6px;
+}
+
+/* settings: account section */
+.set-email {
+  font-weight: 500;
+  color: var(--muted);
+  max-width: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.set-signout {
+  margin-top: 8px;
+}
+
+.set-danger {
+  width: 100%;
+  padding: 13px;
+  border-radius: 12px;
+  border: 1px solid #e6a49e;
+  background: #fff;
+  color: #9b2c22;
+  font: 600 14px/1 var(--sans);
+  cursor: pointer;
+}
+
+.set-danger-box {
+  border: 1px solid #e6a49e;
+  background: #fdf0ef;
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.set-danger-txt {
+  margin: 0;
+  font: 500 13px/1.4 var(--sans);
+  color: #9b2c22;
+}
+
+.set-legal {
+  align-self: flex-start;
+  margin-top: 18px;
+  font: 500 13px/1 var(--sans);
+  color: var(--muted);
+  text-decoration: underline;
+}
+
+/* subtle cloud-sync indicator (fixed, non-intrusive) */
+.sync-ind {
+  position: fixed;
+  /* fixed → viewport-relative, so it must clear the notch/status bar itself */
+  right: calc(12px + env(safe-area-inset-right));
+  top: calc(12px + env(safe-area-inset-top));
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font: 600 12px/1 var(--sans);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  pointer-events: none;
+  animation: sync-in 0.16s ease-out;
+}
+
+.sync-ind-icon {
+  font-size: 13px;
+}
+
+.sync-syncing {
+  background: #eef2f7;
+  color: #3a5570;
+  border: 1px solid #cfdae6;
+}
+
+.sync-syncing .sync-ind-icon {
+  display: inline-block;
+  animation: sync-spin 0.9s linear infinite;
+}
+
+.sync-offline {
+  background: #fdf0ef;
+  color: #9b2c22;
+  border: 1px solid #e6a49e;
+}
+
+.sync-saved {
+  background: #eef9f0;
+  color: #1c6b38;
+  border: 1px solid #b7e0c3;
+}
+
+@keyframes sync-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes sync-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== Focused full-screen "Наполнение" (fill) editor ===== */
+.fill-editor {
+  position: fixed;
+  inset: 0;
+  max-width: 100%;
+  margin: 0 auto;
+  z-index: 120;
+  background: #f4f2ee;
+  display: flex;
+  flex-direction: column;
+  padding-top: env(safe-area-inset-top);
+  animation: fill-in 0.2s ease-out;
+}
+
+/* EMBEDDED in the V21 studio viewport: fill the wrapper instead of covering the screen. */
+.fill-editor.embedded {
+  position: absolute;
+  inset: 0;
+  z-index: auto;
+  height: 100%;
+  width: 100%;
+  background: transparent;
+  padding-top: 92px; /* clear the App2Shell top-1 + top-2 bars so the option bars never sit behind them (the grid keeps almost all its height) */
+  animation: none;
+}
+
+.fill-editor.embedded .fill-stage {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.fill-editor.embedded .fill-svg {
+  max-height: 100%;
+  padding: 10px 16px;
+}
+
+/* the option bars sit at the top of the embedded editor — start them clear of the top-left РАЗМЕР card */
+.fill-editor.embedded .fe-optbar {
+  padding-left: 118px;
+}
+
+/* the studio viewport slot that hosts the editable 2D canvas */
+.studio-fillwrap {
+  position: absolute;
+  inset: 0;
+  background: #f8fafc;
+}
+
+/* a contextual delete that floats over the embedded canvas (top-right) when something's selected */
+.fill-del-float {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 12;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  border: 1px solid #f0c9c9;
+  background: #fff;
+  color: #c0392b;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+}
+
+/* vertical tool rail on the studio viewport (bottom-right), like the main construction scene */
+.studio-rail {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 11;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.studio-rail-ur {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin-bottom: 2px;
+}
+
+.studio-rail-ur button {
+  width: 34px;
+  height: 34px;
+  border-radius: 17px;
+  border: 1px solid #e2e8f0;
+  background: rgba(255, 255, 255, 0.95);
+  color: #475569;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.studio-rail-ur button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.studio-tool {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 66px;
+  padding: 8px 4px;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  color: #475569;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+
+.studio-tool.sel {
+  background: #00ac7a;
+  border-color: #00ac7a;
+  color: #fff;
+}
+
+.studio-tool-ic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.studio-tool-ic svg {
+  width: 24px;
+  height: 24px;
+}
+
+.studio-tool-lbl {
+  font: 600 10.5px/1.1 var(--sans);
+  text-align: center;
+}
+
+/* bottom-LEFT: vertical view switch (3D/2D/Сетка) + the «Глубина» button that slides a slider out */
+.studio-views {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  z-index: 13;
+  /* above the centred undo/redo so the depth slider stays usable if they overlap */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.studio-viewcol {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 4px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.studio-viewcol svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* the «Глубина» button — a SEPARATE pill below the view pill; opens the depth slider to its right */
+.studio-depth-pill {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  color: #475569;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.studio-depth-pill.on {
+  background: #00ac7a;
+  border-color: #00ac7a;
+  color: #fff;
+}
+
+.studio-depth-pill svg {
+  width: 24px;
+  height: 24px;
+}
+
+.studio-depth {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.studio-depth-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: rgba(255, 255, 255, 0.95);
+  color: #475569;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.studio-depth-btn.on {
+  background: #00ac7a;
+  border-color: #00ac7a;
+  color: #fff;
+}
+
+.studio-depth-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.studio-depth-slider {
+  position: absolute;
+  left: 100%;
+  /* just to the right of the vertical pill */
+  bottom: 0;
+  margin-left: 8px;
+  background: rgba(255, 255, 255, 0.97);
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 4px 12px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* bottom-CENTER: undo/redo (mirrors the main construction scene) + a delete above it when selected */
+.studio-undoredo {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 12px;
+  z-index: 11;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  padding: 8px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.studio-undoredo button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  color: #334155;
+}
+
+.studio-undoredo button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.studio-del {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 58px;
+  z-index: 12;
+  border: 1px solid #f0c9c9;
+  background: #fff;
+  color: #c0392b;
+  font: 700 12px/1 var(--sans);
+  padding: 8px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes fill-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fill-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 16px 18px 8px;
+}
+
+.fill-title {
+  font: 700 17px/1.2 var(--sans);
+  color: #000;
+}
+
+.fill-sub {
+  font: 500 13px/1 var(--sans);
+  color: var(--muted);
+}
+
+.fill-done {
+  margin-left: auto;
+  background: none;
+  border: none;
+  padding: 0;
+  font: 700 15px/1 var(--sans);
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.fill-stage {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  position: relative;
+  /* 3D preview fills edge-to-edge; the 2D svg centres itself */
+}
+
+/* 2D zoom controls (+ / fit / −) — app palette; bottom-right of the 2D canvas */
+.fill-zoom {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid var(--line, #d1d1d1);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.14);
+}
+.fill-zoom button {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+  cursor: pointer;
+}
+.fill-zoom button + button { border-top: 1px solid var(--line2, #e2e2e2); }
+.fill-zoom button:active:not(:disabled) { background: rgba(15, 23, 42, 0.06); }
+.fill-zoom button:disabled { color: #cbd5e1; cursor: default; }
+
+.fill-svg {
+  max-width: 100%;
+  max-height: 60vh;
+  width: auto;
+  height: auto;
+  padding: 8px 20px;
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.12));
+  touch-action: none;
+  /* a shelf drag mustn't be hijacked by scroll → avoids pointercancel */
+}
+
+.fill-3d {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  align-self: stretch;
+  overflow: hidden;
+  background: linear-gradient(180deg, #f3f1ec 0%, #e7e3da 100%);
+  touch-action: none;
+}
+
+.fill-3d-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  background: rgba(28, 27, 24, 0.82);
+  color: #fff;
+  font: 600 12px/1.3 var(--sans);
+  padding: 8px 14px;
+  border-radius: 12px;
+  white-space: nowrap;
+  max-width: 90%;
+  pointer-events: none;
+}
+
+.fill-sep.horiz {
+  cursor: ns-resize;
+}
+
+.fill-sep.vert {
+  cursor: ew-resize;
+}
+
+.fill-edge.topedge {
+  cursor: ns-resize;
+}
+
+.fill-edge.rightedge {
+  cursor: ew-resize;
+}
+
+.fill-del {
+  cursor: pointer;
+}
+
+/* control bar: line tools (left) · 2D/3D toggle (centre) · undo/redo (right) */
+.fill-bar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px;
+}
+
+.fill-tools {
+  display: inline-flex;
+  background: #fff;
+  border: 1px solid var(--line, #e3ddd0);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.fill-tools button {
+  border: none;
+  background: #fff;
+  color: #9a8b6e;
+  width: 48px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.fill-tools button.sel {
+  background: #1c1b18;
+  color: #fff;
+}
+
+.fill-tools.drawers button {
+  font: 700 22px/1 var(--sans);
+  color: var(--accent);
+}
+
+.fill-tools.drawers .num {
+  min-width: 34px;
+  text-align: center;
+  font: 700 16px/1 var(--sans);
+  align-self: center;
+}
+
+.fill-vtog {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--line, #e3ddd0);
+  background: #fff;
+  font: 700 15px/1 var(--sans);
+  color: #000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+}
+
+.fill-ur {
+  display: inline-flex;
+  background: #fff;
+  border: 1px solid var(--line, #e3ddd0);
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.fill-ur button {
+  border: none;
+  background: none;
+  width: 50px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  cursor: pointer;
+}
+
+.fill-ur button:disabled {
+  opacity: 0.3;
+}
+
+/* selected-cell action row (count · split rows · split cols · delete) */
+.fill-cellrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fill-cellrow .stepper.sm {
+  margin-right: auto;
+}
+
+.cellbtn {
+  flex: 0 0 auto;
+  min-width: 46px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--line, #e3ddd0);
+  border-radius: 10px;
+  background: #fff;
+  font: 700 16px/1 var(--sans);
+  color: #1c1b18;
+  cursor: pointer;
+}
+
+.cellbtn:active {
+  background: #f2efe8;
+}
+
+.cellbtn.del {
+  border-color: #f2c9cb;
+  color: #e5484d;
+}
+
+.fill-hint {
+  font: 500 12px/1.3 var(--sans);
+  color: var(--muted);
+  text-align: center;
+}
+
+/* ── tool-based fill editor: door/drawer option bar ── */
+.fe-optbar {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 18px;
+  padding: 6px 18px 2px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* division-rule pill row (§4 CONSTRUCTION_FRAME_v4) — ONE cohesive pill per zone:
+   [ value · unit · ▾ ], thin bars mirroring the Lines, a dashed slot + a `+` pill. */
+.fe-rules { gap: 8px; }
+.fe-rule {
+  position: relative; /* anchors the rule-kind picker menu (§4 long-press) */
+  display: inline-flex;
+  align-items: center;
+  height: 38px;
+  padding: 0 4px 0 11px;
+  border: 1.5px solid var(--line, #e3ddd0);
+  border-radius: 19px;
+  background: #fff;
+  touch-action: none; /* let long-press hold without the browser scrolling/selecting */
+}
+.fe-rule-locked { border-color: var(--accent, #00a961); }   /* locked = a dimension the component owns */
+.fe-rule-val {
+  width: 42px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  font: 700 15px/1 var(--sans);
+  color: #000;
+  text-align: center;
+  -moz-appearance: textfield;
+}
+.fe-rule-val::-webkit-outer-spin-button,
+.fe-rule-val::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.fe-rule-val:focus { outline: none; }
+.fe-rule-flex { display: inline-flex; align-items: center; justify-content: center; color: var(--muted); font-size: 17px; }
+.fe-rule-unit { font: 600 11px/1 var(--sans); color: var(--muted); margin: 0 1px 0 -1px; }
+/* rule-kind picker trigger (§4): the ▾ inside the pill; long-press the pill opens the same menu */
+.fe-rule-kind { align-self: stretch; border: none; background: transparent; padding: 0 4px; font-size: 11px; color: var(--muted); cursor: pointer; }
+.fe-rule-menu { min-width: 96px; }
+/* thin bar between pills — mirrors the physical Line (§4) */
+.fe-rule-bar { width: 2px; height: 20px; background: var(--line, #e3ddd0); border-radius: 1px; opacity: 0.7; }
+/* dashed empty slot — where the next zone lands (§4 fixture) */
+.fe-rule-slot { width: 34px; height: 38px; border: 1.5px dashed var(--line, #e3ddd0); border-radius: 19px; opacity: 0.5; }
+/* `+` pill — appends a zone */
+.fe-rule-add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: 1.5px solid var(--line, #e3ddd0);
+  border-radius: 50%;
+  background: #fff;
+  font: 400 22px/1 var(--sans);
+  color: var(--accent, #00a961);
+  cursor: pointer;
+}
+.fe-rule-add:active { background: #f2efe8; }
+/* amber warning (§4): fixed+locked overflow, or a gap nothing can absorb — non-blocking */
+.fe-rules.amber .fe-rule-fixed, .fe-rules.amber .fe-rule-locked { border-color: #d98a1f; }
+.fe-rule-warn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 30px;
+  padding: 0 11px;
+  border-radius: 15px;
+  background: rgba(217, 138, 31, 0.13);
+  color: #b4740f;
+  font: 600 12px/1 var(--sans);
+  white-space: nowrap;
+}
+/* min-size gate (§11) — a drawer below its 80mm minimum; redder than the §4 overflow amber */
+.fe-rule-mingate { background: rgba(200, 60, 40, 0.13); color: #b0392b; }
+
+.fe-dd {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fe-dd-lbl {
+  font: 600 14px/1 var(--sans);
+  color: #000;
+}
+
+.fe-dd-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--line, #e3ddd0);
+  border-radius: 20px;
+  background: #fff;
+  padding: 12px;
+  font: 600 14px/1 var(--sans);
+  color: #000;
+  cursor: pointer;
+}
+
+.fe-dd-ch {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.fe-dd-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: #fff;
+  border: 1px solid var(--line, #e3ddd0);
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14);
+  overflow: hidden;
+  z-index: 5;
+  min-width: 130px;
+}
+
+.fe-dd-menu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: #fff;
+  padding: 9px 14px;
+  font: 600 13px/1 var(--sans);
+  color: #000;
+  cursor: pointer;
+}
+
+.fe-dd-menu button.sel {
+  color: var(--accent);
+}
+
+.fe-dd-menu button:active {
+  background: #f2efe8;
+}
+
+/* ── bottom row: 3D/2D toggle · delete · undo/redo ── */
+.fill-vtog2 {
+  display: inline-flex;
+  border: 1px solid var(--line, #e3ddd0);
+  border-radius: 22px;
+  overflow: hidden;
+  height: 42px;
+}
+
+.fill-vtog2 button {
+  border: none;
+  background: #fff;
+  padding: 8px 16px;
+  font: 700 13px/1 var(--sans);
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.fill-vtog2 button.sel {
+  background: #1c1b18;
+  color: #fff;
+}
+
+.fill-del2 {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: none;
+  background: #e5484d;
+  color: #fff;
+  font: 700 22px/1 var(--sans);
+  box-shadow: 0 4px 12px rgba(229, 72, 77, 0.4);
+  cursor: pointer;
+}
+
+/* ── 4-tool toolbar ── */
+.fill-toolbar {
+  flex: 0 0 auto;
+  position: relative;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 8px calc(10px + env(safe-area-inset-bottom));
+  background: #fff;
+  border-radius: 22px;
+  box-shadow: 0 -3px 14px rgba(0, 0, 0, 0.08);
+  margin: 0px 10px 10px 10px;
+}
+
+.fe-tip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 8px;
+  background: #1c1b18;
+  color: #fff;
+  font: 600 12px/1.3 var(--sans);
+  padding: 8px 14px;
+  border-radius: 12px;
+  white-space: nowrap;
+  max-width: 92vw;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+  pointer-events: none;
+  z-index: 6;
+}
+
+.fe-tool {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.fe-tool-ic {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1.5px solid var(--line, #e3ddd0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1c1b18;
+}
+
+.fe-tool.sel .fe-tool-ic {
+  background: #1c1b18;
+  color: #fff;
+  border-color: #1c1b18;
+}
+
+.fe-tool-lbl {
+  font: 600 11px/1 var(--sans);
+  color: #333;
+}
+
+.fe-org-btn {
+  margin-left: auto;
+  align-self: center;
+  border: 1px solid var(--accent);
+  border-radius: 20px;
+  background: #fff;
+  color: var(--accent);
+  padding: 7px 14px;
+  font: 700 13px/1 var(--sans);
+  cursor: pointer;
+}
+
+/* §A/§B · «↳ ＋Ящик / ＋Полка внутрь» — add nested content into the selected front. In flow (no
+   margin-left:auto) so it groups with the rest of the drawer/door option row and centres in the studio. */
+.fe-inner-btn {
+  align-self: center;
+  border: 1px dashed var(--accent, #00a961);
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--accent, #00a961) 8%, #fff);
+  color: var(--accent, #00a961);
+  padding: 7px 12px;
+  font: 700 13px/1 var(--sans);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* ── drawer ORGANIZER popup (top view, dark backdrop) ── */
+.org-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.org-card {
+  width: 100%;
+  max-width: 360px;
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.org-head {
+  display: flex;
+  align-items: center;
+  padding: 16px 18px 6px;
+}
+
+.org-title {
+  font: 700 15px/1.2 var(--sans);
+  color: #000;
+}
+
+.org-x {
+  margin-left: auto;
+  width: 34px;
+  height: 34px;
+  border: none;
+  background: none;
+  font: 400 20px/1 var(--sans);
+  color: #444;
+  cursor: pointer;
+}
+
+.org-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 22px 4px;
+}
+
+.org-svg {
+  width: 100%;
+  max-height: 46vh;
+  height: auto;
+  touch-action: none;
+}
+
+.org-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 20px calc(16px + env(safe-area-inset-bottom));
+}
+
+.org-tools {
+  display: inline-flex;
+  border: 1px solid var(--line, #e3ddd0);
+  border-radius: 22px;
+  overflow: hidden;
+}
+
+.org-tools button {
+  border: none;
+  background: #fff;
+  color: #9a8b6e;
+  width: 48px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.org-tools button.sel {
+  background: #1c1b18;
+  color: #fff;
+}
+
+.org-del {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: #e5484d;
+  color: #fff;
+  font: 700 20px/1 var(--sans);
+  box-shadow: 0 4px 12px rgba(229, 72, 77, 0.4);
+  cursor: pointer;
+}
+
+.fill-controls {
+  flex: 0 0 auto;
+  background: #fff;
+  border-radius: 22px 22px 0 0;
+  box-shadow: 0 -3px 14px rgba(0, 0, 0, 0.08);
+  padding: 16px 18px calc(18px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fill-types {
+  justify-content: stretch;
+}
+
+.fill-types .chip {
+  flex: 1 1 0;
+}
+
+.fill-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fill-field-lbl {
+  font: 600 15px/1 var(--sans);
+  color: #000;
+}
+
+/* ── Quick-swap strip ──────────────────────────────────────────────────────────
+   The catalog for the SELECTED module, sitting on top of the toolbar so swapping is
+   ONE tap instead of Редактировать → Заменять → pick. It deliberately spans the full
+   width and scrolls horizontally — seeing the alternatives is worth more than a tidy row. */
+.swap-strip {
+  width: 100%;
+  display: flex;
+  gap: 8px;
+  padding: 10px 14px 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.swap-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.swap-chip {
+  flex: 0 0 auto;
+  width: 78px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 4px 5px;
+  background: #f5f5f5;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.12s, background 0.12s, transform 0.06s;
+}
+
+.swap-chip:active {
+  transform: scale(0.95);
+  background: #eeeeee;
+}
+
+/* the module you already have — shown, but not a no-op tap */
+.swap-chip.on {
+  border-color: var(--accent);
+  background: #eaf7f2;
+}
+
+.swap-chip .add-img {
+  max-width: 62px;
+  height: 46px;
+}
+
+.swap-chip .add-glyph {
+  font-size: 20px;
+}
+
+.swap-name {
+  font: 600 10px/1.15 var(--sans);
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* "Ещё" (More) chip — last item in the swap strip, opens the full cabinets panel */
+.swap-more {
+  background: #e8f0fe;
+  border-color: #c2d7f7;
+}
+
+.swap-more:active {
+  background: #d0e3fc;
+}
+
+.swap-more-icon {
+  font-size: 22px;
+  line-height: 46px;
+  color: #2f6fe4;
+}
+
+/* ── Selected-module action stack ─────────────────────────────────────────────
+   Right edge, above undo/redo. Edit / open / duplicate share one grouped pill —
+   they all act ON the module. Delete is a separate red button, so the destructive
+   action can't be hit by a thumb aiming for "duplicate". */
+.item-stack {
+  right: 20px;
+  bottom: 15%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.left-stack {
+  left: 20px;
+  bottom: 15%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+/* left stack = ONE combined white pill of circle buttons; the ACTIVE one is a solid BLACK circle so
+   the open panel is unmistakable. */
+.left-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 3px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 27px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* contextual band stepper (3D) — a vertical + · columns · − pill on the upper-left (below the info
+   card, clear of the info card / Fill button), shown when a gridded module is selected */
+.band-ctl {
+  left: 20px;
+  top: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 5px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.band-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: #f1f2f4;
+  color: #2b2f36;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.band-btn.add {
+  background: var(--accent);
+  color: #fff;
+}
+
+.band-ico {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 22px;
+  color: #aab2bd;
+}
+
+.band-sep {
+  width: 22px;
+  height: 1px;
+  background: var(--line);
+  margin: 1px 0;
+}
+
+.band-btn.row {
+  background: #1c1c1e;
+  color: #fff;
+}
+
+.left-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: #4a4f57;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.left-btn.on {
+  background: #1c1c1e;
+  color: #fff;
+}
+
+/* icons 28px on BOTH stacks */
+.left-btn svg,
+.item-group button svg,
+.item-del svg {
+  width: 28px;
+  height: 28px;
+}
+
+/* a non-modal edit panel is open → lift both side stacks above it so they stay tappable (switch
+   panels seamlessly) while the 3D above keeps rotating */
+.bottom-sheet.panel {
+  max-height: 58vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.left-stack,
+.item-stack {
+  transition: bottom 0.22s ease;
+}
+
+.left-stack.raised,
+.item-stack.raised {
+  bottom: 44vh;
+  z-index: 30;
+}
+
+.item-group {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.item-group button,
+.item-del {
+  width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* no divider lines between grouped buttons (per request) */
+
+.item-group button:active {
+  background: #f2f2f2;
+}
+
+/* the icons paint with fill: var(--accent) — rebinding it here turns this one red */
+.item-del {
+  --accent: #e53935;
+  background: #fff;
+  border: 1px solid #f2c9c8;
+  border-radius: 23px;
+}
+
+.item-del:active {
+  background: #fdecea;
+}
+
+.item-group button svg,
+.item-del svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* ── «Рендер» step ───────────────────────────────────────────────────────────────────────────────
+   The scene is the point here, so the controls fold away behind one button and the bottom bar stays
+   thin. Everything is over the canvas, nothing pushes it around. */
+
+/* THE SUN DIAL — a plan of the sky. Angle = the bearing the light comes from; distance from the
+   centre = how high it stands (centre is straight overhead, rim is the horizon). */
+.sun-dial {
+  display: block;
+  width: 132px;
+  height: 132px;
+  margin: 2px auto 6px;
+  touch-action: none;
+  /* the drag is ours — don't let the page scroll under it */
+  cursor: grab;
+}
+
+.sun-dial:active {
+  cursor: grabbing;
+}
+
+.sd-sky {
+  fill: #f2f4f7;
+  stroke: var(--line);
+  stroke-width: 1;
+}
+
+.sd-ring {
+  fill: none;
+  stroke: var(--line2);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.sd-cross {
+  stroke: var(--line2);
+  stroke-width: 1;
+}
+
+.sd-ray {
+  stroke: #f0b429;
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0.55;
+}
+
+.sd-sun {
+  fill: #f6c344;
+  stroke: #c98f10;
+  stroke-width: 1.5;
+}
+
+/* the fold-away control panel */
+.rnd-fab {
+  position: absolute;
+  top: 12px;
+  z-index: 6;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: #fff;
+  font-size: 19px;
+  line-height: 1;
+  box-shadow: 0 2px 10px #0000001f;
+}
+
+.rnd-fab-l {
+  left: 12px;
+}
+
+.rnd-fab.on {
+  background: var(--ink);
+  color: #fff;
+  border-color: var(--ink);
+}
+
+/* the AI pass — top right, where a "do the clever thing" button belongs. Disabled until the key can
+   live server-side, so it is a promise with a badge on it rather than a dead button. */
+.rnd-ai-fab {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 22px;
+  border: 1px solid var(--line);
+  background: #fff;
+  font: 600 13px/1 var(--sans);
+  color: var(--muted);
+  box-shadow: 0 2px 10px #0000001f;
+}
+
+.rnd-ai-fab .soon-tag {
+  margin-left: 0;
+}
+
+.rnd-panel {
+  position: absolute;
+  top: 64px;
+  z-index: 6;
+  width: 210px;
+  padding: 12px 14px 14px;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid var(--line);
+  box-shadow: 0 8px 28px #00000024;
+}
+
+.rnd-panel-l {
+  left: 12px;
+}
+
+.rnd-slider {
+  width: 100%;
+  margin: 0 0 12px;
+  accent-color: var(--ink);
+}
+
+.rnd-sec {
+  font: 600 12px/1 var(--sans);
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin: 4px 0 6px;
+}
+
+.rnd-hint {
+  font: 400 11px/1.35 var(--sans);
+  color: var(--muted);
+  margin: 0 0 10px;
+}
+
+.rnd-panel .pillrow {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.rnd-panel .chip {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 7px 4px;
+  font: 500 12px/1 var(--sans);
+  white-space: nowrap;
+}
+
+.rnd-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font: 500 13px/1 var(--sans);
+}
+
+/* THE SNAPSHOT VIEWER — a sheet over the whole app, like the hamburger menu.
+   `position: fixed` is load-bearing: without it the overlay is just a div in the page flow, and a 2048px
+   snapshot inside it grows the document instead of covering it — you get a cropped image, a scrolled
+   page, and a close button somewhere below the fold. */
+.lb {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: #0b0b0bf2;
+}
+
+.lb-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  touch-action: none;
+  /* the pinch/pan is ours */
+}
+
+.lb-img {
+  /* the shot fits INSIDE the screen, 20px clear of every edge — a 2K image is 2048px wide and would
+     otherwise render at its natural size and simply be cropped */
+  max-width: calc(100vw - 40px);
+  max-height: calc(100vh - 40px);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px #000000a6;
+  transform-origin: center;
+  will-change: transform;
+  user-select: none;
+}
+
+.lb-close,
+.lb-nav {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #ffffff26;
+  color: #fff;
+  border: 1px solid #ffffff33;
+  backdrop-filter: blur(6px);
+}
+
+.lb-close {
+  top: calc(14px + env(safe-area-inset-top));
+  right: 14px;
+  width: 42px;
+  height: 42px;
+  font-size: 17px;
+}
+
+.lb-nav {
+  top: 50%;
+  transform: translateY(-50%);
+  width: 42px;
+  height: 42px;
+  font-size: 26px;
+  line-height: 1;
+  padding-bottom: 3px;
+}
+
+.lb-prev {
+  left: 10px;
+}
+
+.lb-next {
+  right: 10px;
+}
+
+.lb-nav:disabled {
+  opacity: 0.25;
+}
+
+.lb-count {
+  position: absolute;
+  top: calc(24px + env(safe-area-inset-top));
+  left: 0;
+  right: 0;
+  text-align: center;
+  font: 500 13px/1 var(--sans);
+  color: #ffffffa8;
+  pointer-events: none;
+}
+
+.lb-save {
+  position: absolute;
+  z-index: 2;
+  bottom: calc(26px + env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 13px 26px;
+  border-radius: 24px;
+  background: #fff;
+  color: var(--ink);
+  font: 600 15px/1 var(--sans);
+}
+
+/* «Закрыть все» — the escape hatch once you have opened a few doors by tapping them */
+.rnd-close-all {
+  width: 100%;
+  padding: 9px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #fff;
+  font: 500 13px/1 var(--sans);
+  color: var(--ink);
+}
+
+.rnd-close-all:disabled {
+  color: #c4c4c4;
+  border-color: var(--line2);
+}
+
+/* the bottom bar: this session's shots + the actions */
+.rnd-bar {
+  flex: 0 0 auto;
+  background: #fff;
+  border-top: 1px solid var(--line);
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+}
+
+.rnd-strip {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  scrollbar-width: none;
+}
+
+.rnd-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.rnd-thumb {
+  flex: 0 0 auto;
+  width: 64px;
+  height: 48px;
+  padding: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  background: var(--placeholder);
+}
+
+.rnd-thumb.sel {
+  border-color: var(--accent);
+}
+
+.rnd-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.rnd-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.rnd-actions button {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 13px 8px;
+  border-radius: 12px;
+  font: 600 14px/1 var(--sans);
+  white-space: nowrap;
+}
+
+.rnd-snap {
+  background: var(--ink);
+  color: #fff;
+}
+
+.rnd-save {
+  background: #fff;
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+
+.rnd-save:disabled {
+  color: #c4c4c4;
+  border-color: var(--line2);
+}
+
+.rnd-ai {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #f4f2ee;
+  color: var(--muted);
+  border: 1px solid var(--line2);
+}
+
+.rnd-ai .soon-tag {
+  margin-left: 0;
+}
+
+/* ── Фаза Г · Корпуса ── the merged-carcass elevation.
+   A box is a property of a SET, so it has to be SHOWN as one: the members are tinted, the whole
+   group carries one heavy outline and a bracket with its built width. Tap any member to merge its
+   touching row, or to break the box. */
+.eng-sec-title {
+  font: 700 15px/1.3 Inter, sans-serif;
+  color: #1c1b18;
+  margin: 22px 0 6px;
+}
+
+.eng-sec-note {
+  font: 400 13px/1.45 Inter, sans-serif;
+  color: #6b7280;
+  margin: 0 0 12px;
+}
+
+.cbx {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cbx-wall {
+  background: #fff;
+  border: 1px solid #e6e8eb;
+  border-radius: 14px;
+  padding: 10px 12px 6px;
+}
+
+.cbx-wall-lbl {
+  font: 600 12px/1.2 Inter, sans-serif;
+  color: #8b929c;
+  margin-bottom: 6px;
+}
+
+.cbx-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 260px;
+}
+/* ===== App-2 studio shell (v9 «Единый шелл») — founder's App-2 layout, 1:1 (studio.html only) ===== */
+/* Chrome palette = the APP (Figma tokens: #fff bg · #0f172a ink · #64748b muted · #00AC7A accent),
+   matching V21's own white/slate overlays — NOT v9's warm cream. */
+.a2shell{position:absolute;inset:0;overflow:hidden;background:radial-gradient(120% 90% at 50% 8%,#ffffff,#eef1f4 72%,#e3e7ea);
+  --a2-glass:rgba(255,255,255,.86);--a2-blur:saturate(1.2) blur(20px);
+  --a2-e1:0 1px 2px rgba(15,23,42,.10),0 2px 6px rgba(15,23,42,.06);
+  --a2-e2:0 2px 6px rgba(15,23,42,.10),0 8px 22px rgba(15,23,42,.12);
+  --a2-hair:0 0 0 .5px rgba(255,255,255,.6) inset;--a2-ink:#0f172a;--a2-ink2:#64748b}
+.a2-vp{position:absolute;inset:0;z-index:1}
+.a2-top1{position:absolute;top:12px;left:12px;right:12px;z-index:40;display:flex;align-items:center;gap:8px;pointer-events:none}
+.a2-top1>*{pointer-events:auto}
+.a2-grow{flex:1;pointer-events:none}
+.a2-urpill{display:flex;background:var(--a2-glass);backdrop-filter:var(--a2-blur);-webkit-backdrop-filter:var(--a2-blur);border-radius:10px;overflow:hidden;box-shadow:var(--a2-e1),var(--a2-hair)}
+.a2-urpill button{width:34px;height:34px;border:none;background:transparent;color:var(--a2-ink2);font-size:15px;cursor:pointer}
+.a2-urpill button:disabled{opacity:.3;cursor:default}
+.a2-urpill button:active:not(:disabled){background:rgba(0,0,0,.06)}
+.a2-viewtrig{display:flex;align-items:center;gap:4px;background:var(--a2-glass);backdrop-filter:var(--a2-blur);-webkit-backdrop-filter:var(--a2-blur);border:none;border-radius:10px;padding:0 11px;height:36px;font-size:12.5px;font-weight:600;color:var(--a2-ink2);box-shadow:var(--a2-e1),var(--a2-hair);cursor:pointer}
+.a2-caret{font-size:10px}
+.a2-iconbtn{width:36px;height:36px;border-radius:10px;background:var(--a2-glass);backdrop-filter:var(--a2-blur);-webkit-backdrop-filter:var(--a2-blur);border:none;box-shadow:var(--a2-e1),var(--a2-hair);display:flex;align-items:center;justify-content:center;color:var(--a2-ink2);cursor:pointer}
+.a2-iconbtn svg{width:18px;height:18px}
+.a2-iconbtn.on{background:var(--a2-ink);color:#fff;box-shadow:0 2px 8px rgba(15,23,42,.28)}
+/* §A-migration: FLOW «Далее →» CTA in the studio top-bar (only in the main app's configure flow) */
+.a2-nextbtn{height:36px;padding:0 14px;border-radius:10px;background:var(--a2-ink);color:#fff;border:none;font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:4px;cursor:pointer;box-shadow:0 2px 8px rgba(15,23,42,.28);white-space:nowrap}
+/* §A-migration: «Готово» — close the studio back to the room (main app «Редактор»/qalam) */
+.a2-donebtn{height:36px;padding:0 18px;border-radius:999px;background:#00ac7a;color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,172,122,.3);white-space:nowrap}
+.a2-top2{position:absolute;top:56px;left:0;right:0;z-index:40;display:flex;justify-content:center;pointer-events:none}
+.a2-modetabs{display:flex;background:var(--a2-glass);backdrop-filter:var(--a2-blur);-webkit-backdrop-filter:var(--a2-blur);border-radius:14px;padding:4px;box-shadow:var(--a2-e2),var(--a2-hair);pointer-events:auto}
+.a2-modetabs b{font-size:12.5px;font-weight:600;color:var(--a2-ink2);padding:8px 14px;border-radius:10px;cursor:pointer;transition:.2s}
+.a2-modetabs b.on{background:var(--a2-ink);color:#fff;box-shadow:0 2px 8px rgba(15,23,42,.28)}
+.a2-scrim{position:absolute;inset:0;z-index:45}
+.a2-viewdrop{position:absolute;top:56px;right:12px;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:var(--a2-blur);-webkit-backdrop-filter:var(--a2-blur);border-radius:14px;padding:6px;box-shadow:0 6px 16px rgba(15,23,42,.14),0 18px 44px rgba(15,23,42,.20),var(--a2-hair);display:flex;flex-direction:column;gap:2px;min-width:172px}
+.a2-viewdrop button{display:flex;align-items:center;justify-content:space-between;gap:9px;background:none;border:none;padding:10px 11px;border-radius:10px;font-size:12.5px;font-weight:500;color:var(--a2-ink);cursor:pointer;text-align:left;transition:background .14s}
+.a2-viewdrop button.on{background:rgba(194,120,28,.15);color:#c2781c;font-weight:700}
+.a2-viewdrop button:active:not(:disabled){background:rgba(0,0,0,.05)}
+.a2-viewdrop button:disabled{color:#b7b0a2;cursor:default}
+.a2-soon{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#b7b0a2;background:rgba(0,0,0,.05);border-radius:6px;padding:2px 6px}
+.a2-rrail{position:absolute;right:12px;top:100px;z-index:40}
+.a2-rrbtn{display:flex;flex-direction:column;align-items:center;gap:3px;width:54px;padding:9px 0;border:1.5px solid transparent;border-radius:14px;background:var(--a2-glass);backdrop-filter:var(--a2-blur);-webkit-backdrop-filter:var(--a2-blur);box-shadow:var(--a2-e2),var(--a2-hair);color:var(--a2-ink2);cursor:pointer}
+.a2-rrbtn span{font-size:9px;font-weight:700}
+.a2-rrbtn svg{width:20px;height:20px}
+.a2-rrbtn:active{transform:scale(.94)}
+.a2-layers{position:absolute;right:12px;top:100px;z-index:48;width:272px;max-height:64%;background:rgba(255,255,255,.94);backdrop-filter:var(--a2-blur);-webkit-backdrop-filter:var(--a2-blur);border-radius:14px;box-shadow:var(--a2-e2),var(--a2-hair);display:flex;flex-direction:column;overflow:hidden}
+.a2-layers-head{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;border-bottom:1px solid rgba(33,29,22,.10);font-size:12.5px;font-weight:700;color:var(--a2-ink)}
+.a2-layers-head button{border:none;background:none;color:var(--a2-ink2);font-size:14px;cursor:pointer}
+.a2-layers-body{overflow-y:auto;padding:7px}
+
+/* ===== App-2 sections slide-over (v9 §sects) ===== */
+.a2-sects{position:absolute;inset:0;z-index:60;background:#f3f3f5;color:#17171a;display:flex;flex-direction:column;animation:a2slide .26s cubic-bezier(.22,.61,.36,1)}
+@keyframes a2slide{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.a2-shead{flex:0 0 auto;background:#fff;border-bottom:1px solid #e9e9ec}
+.a2-sr1{display:flex;align-items:center;gap:10px;padding:12px 14px 8px}
+.a2-sclose{border:none;background:#f2f2f4;border-radius:8px;width:32px;height:32px;font-size:15px;color:#6b6b73;cursor:pointer;flex:none}
+.a2-sr1 h2{font-size:16px;font-weight:700;letter-spacing:-.01em;margin:0}
+.a2-stabs{display:flex;gap:2px;padding:0 8px;overflow-x:auto}
+.a2-stabs b{flex:0 0 auto;padding:11px 12px;font-size:12.5px;font-weight:700;color:#6b6b73;border-bottom:2.5px solid transparent;cursor:pointer;white-space:nowrap}
+.a2-stabs b.on{color:#17171a;border-bottom-color:#17171a}
+.a2-sbody{flex:1;overflow-y:auto}
+.a2-sstub{padding:26px 18px;color:#6b6b73;font-size:13.5px;line-height:1.55}
+.a2-sstub b{color:#17171a}
+/* Правила · Узлы (POSYLKA 2026-08-13 — 14 joint settings, each with a schematic) */
+.a2uz{padding:12px 12px 24px}
+.a2uz-intro{color:#6b6b73;font-size:12.5px;line-height:1.5;margin:2px 4px 12px}
+.a2uz-list{display:flex;flex-direction:column;gap:10px}
+.a2uz-card{display:flex;gap:12px;background:#fff;border:1px solid #e4e4e8;border-radius:13px;padding:11px 12px}
+.a2uz-viz{flex:0 0 96px;display:flex;align-items:center;justify-content:center;background:#f6f6f8;border-radius:9px;color:#9a9aa2;padding:6px;align-self:flex-start}
+.a2uz-svg{width:100%;height:auto;display:block}
+.a2uz-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.a2uz-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.a2uz-label{font-size:13.5px;color:#17171a;font-weight:650}
+.a2uz-badge{flex:none;font-size:10px;font-weight:700;padding:3px 7px;border-radius:20px;letter-spacing:.2px;white-space:nowrap}
+.a2uz-b-cnc{background:#dff5ee;color:#00845e}
+.a2uz-b-founder{background:#fdeede;color:#b5741a}
+.a2uz-b-profile{background:#eeeef1;color:#6b6b73}
+.a2uz-num{display:inline-flex;align-items:center;gap:6px}
+.a2uz-num button{width:26px;height:26px;border:1px solid #d7d7dd;background:#fafafb;border-radius:7px;font-size:15px;line-height:1;color:#17171a;cursor:pointer}
+.a2uz-num button:active{background:#f0f0f2}
+.a2uz-num input{width:56px;height:26px;border:1px solid #d7d7dd;border-radius:7px;text-align:center;font-size:13px;color:#17171a;background:#fff}
+.a2uz-num i,.a2uz-val i{font-style:normal;color:#9a9aa2;font-size:11px;margin-left:2px}
+.a2uz-val{font-size:14px;color:#17171a;font-weight:600}
+.a2uz-tgl{display:inline-flex;align-items:center;gap:8px;border:none;background:none;cursor:pointer;padding:0;font-size:13px;color:#6b6b73}
+.a2uz-tgl i{width:38px;height:22px;border-radius:20px;background:#d7d7dd;position:relative;transition:background .16s}
+.a2uz-tgl i::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:transform .16s}
+.a2uz-tgl.on i{background:#00AC7A}
+.a2uz-tgl.on i::after{transform:translateX(16px)}
+.a2uz-tgl.on span{color:#00845e;font-weight:650}
+.a2uz-opts{display:flex;flex-direction:column;gap:5px}
+.a2uz-opt{border:1px solid #e4e4e8;border-radius:8px;padding:6px 8px;display:flex;flex-direction:column;gap:1px}
+.a2uz-opt.on{border-color:#00AC7A;background:#f4fbf8}
+.a2uz-opt-pick{cursor:pointer}
+.a2uz-opt-pick:active{background:#eef}
+.a2uz-opt b{font-size:12px;color:#17171a}
+.a2uz-opt span{font-size:11px;color:#6b6b73;line-height:1.4}
+.a2uz-why{font-size:11.5px;color:#54545c;line-height:1.45}
+.a2uz-src{font-size:10px;color:#9a9aa2;line-height:1.4}
+/* Библиотеки — v9 3-tab (Блоки/Компоненты/Аксессуары); Блоки = My cabinets + CABINET_GROUPS */
+.a2lib{padding:12px 12px 24px}
+.a2lib-tabs{display:flex;gap:3px;background:#f2f2f4;border-radius:11px;padding:3px;margin:2px 0 8px}
+.a2lib-tabs b{flex:1;text-align:center;font-size:12px;font-weight:600;color:#6b6b73;padding:8px 2px;border-radius:8px;cursor:pointer}
+.a2lib-tabs b.on{background:#fff;color:#17171a;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.a2lib-grp{font-size:12px;font-weight:700;color:#6b6b73;margin:14px 4px 8px;display:flex;gap:6px;align-items:center}
+.a2lib-auto{font-size:10px;font-weight:600;color:#9a9aa2;background:#eeeef1;border-radius:20px;padding:1px 7px}
+.a2lib-card{cursor:default}
+.a2lib-ins{cursor:pointer}
+.a2lib-chip{position:relative}
+.a2lib-csz{font-size:10px;color:#9a9aa2;font-family:var(--mono,monospace)}
+.a2lib-svg{width:100%;max-width:80px;height:46px;display:block;margin:0 auto 1px;color:#64748b}
+.a2lib-cgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.a2lib-comp{position:relative;background:#f5f5f5;border-radius:12px;padding:11px 8px 9px;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;color:#9a9aa2}
+.a2lib-comp svg{width:100%;max-width:100px;height:52px;display:block}
+.a2lib-cnm2{font:600 12.5px/1.15 var(--sans);color:#17171a;margin-top:2px}
+.a2lib-cnote{font-size:10.5px;color:#6b6b73}
+.a2lib-roles{display:flex;gap:3px;margin-top:4px}
+.a2lib-roles i{width:19px;height:19px;border-radius:5px;font:700 9px/19px var(--sans);color:#fff;font-style:normal;text-align:center}
+/* Кромка · bo'yash rejimi (per-role edge paint) */
+.a2krm2{padding:2px 2px 20px}
+.a2krm2-row{display:flex;align-items:center;gap:10px;padding:8px 4px;border-top:1px solid #ededf0}
+.a2krm2-role{font-size:12.5px;color:#17171a;font-weight:600;min-width:96px}
+.a2krm2-edges{display:flex;gap:7px;flex-wrap:wrap}
+.a2krm2-dot{display:flex;flex-direction:column;align-items:center;gap:2px;border:none;background:none;cursor:pointer;padding:2px}
+.a2krm2-dot i{width:17px;height:17px;border-radius:50%;border:1.5px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.22)}
+.a2krm2-dot span{font-size:9px;color:#9a9aa2}
+.a2krm2-dot:active{transform:scale(.92)}
+/* Main op-mode bottom panels (Кромка/Узлы tabs mount their editor here, over the 3D) */
+.a2-oppanel{position:absolute;left:0;right:0;bottom:0;max-height:58%;background:#fff;border-top-left-radius:16px;border-top-right-radius:16px;box-shadow:0 -4px 24px rgba(0,0,0,.14);z-index:55;display:flex;flex-direction:column;animation:a2slide .26s cubic-bezier(.22,.61,.36,1)}
+.a2-oppanel-h{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 8px;font-size:14px;font-weight:650;color:#17171a;border-bottom:1px solid #ededf0}
+.a2-oppanel-x{border:none;background:none;font-size:16px;color:#6b6b73;cursor:pointer;padding:0 4px}
+.a2-oppanel-body{flex:1;overflow-y:auto;padding:6px 12px 20px}
+/* «Кромка» op-mode: a thin floating colour KEY (K1/K2/∅) — non-clickable, never blocks a tap on the
+   3D beneath it (pointer-events:none), so the whole model stays paintable. Replaces the bottom sheet. */
+.a2-kleg{position:absolute;left:0;right:0;bottom:16px;z-index:55;display:flex;justify-content:center;align-items:center;gap:7px;pointer-events:none;animation:a2slide .26s cubic-bezier(.22,.61,.36,1)}
+.a2-kleg-i{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.93);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:11px;padding:5px 11px;font-size:12.5px;font-weight:700;color:#26262c;box-shadow:0 2px 12px rgba(0,0,0,.14)}
+.a2-kleg-i i{width:11px;height:11px;border-radius:3px;display:inline-block;box-shadow:0 1px 2px rgba(0,0,0,.15)}
+.a2-kleg-h{background:rgba(23,23,26,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:11px;padding:5px 10px;font-size:11px;font-weight:600;color:#f4f4f6}
+/* «Узлы» op-mode: a thin floating slider dock (v9's jdock) — drag «отступ» and the purple System-32
+   joint markers slide on the (translucent) model. Full 14-rule editor lives in the ≡ menu. */
+.a2-jdock{position:absolute;left:12px;right:12px;bottom:16px;max-width:520px;margin:0 auto;z-index:55;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:16px;padding:11px 14px 12px;box-shadow:0 4px 20px rgba(0,0,0,.16);animation:a2slide .26s cubic-bezier(.22,.61,.36,1)}
+.a2-jdock-r{display:flex;align-items:center;gap:8px}
+.a2-jdock-t{font-size:12.5px;font-weight:700;color:#26262c}
+.a2-jdock-v{margin-left:auto;font-size:14px;font-weight:800;color:#7b5cff}
+.a2-jdock-v i{font-size:10px;font-weight:600;color:#9a9aa2;margin-left:2px;font-style:normal}
+.a2-jdock-x{border:none;background:none;font-size:15px;color:#8a8a92;cursor:pointer;padding:0 2px}
+.a2-jdock-s{width:100%;margin:9px 0 2px;accent-color:#7b5cff}
+.a2-jdock-h{font-size:11px;color:#8a8a92;text-align:center}
+.a2-jdock-more{border:none;background:none;color:#7b5cff;font-size:11px;font-weight:700;cursor:pointer;padding:0;text-decoration:underline}
+/* Материалы (v18) */
+.a2m{display:flex;flex-direction:column;min-height:100%}
+.a2m-segs{display:flex;gap:3px;background:#f2f2f4;border-radius:11px;padding:3px;margin:11px 12px}
+.a2m-segs b{flex:1;text-align:center;font-size:11px;font-weight:600;color:#6b6b73;padding:8px 2px;border-radius:8px;cursor:pointer}
+.a2m-segs b.on{background:#fff;color:#17171a;box-shadow:0 1px 3px rgba(20,20,25,.12)}
+.a2m-gtabs{display:flex;gap:2px;background:#fff;border-bottom:1px solid #e9e9ec;padding:0 8px;overflow-x:auto}
+.a2m-gt{flex:0 0 auto;display:flex;align-items:center;gap:7px;padding:11px 12px;cursor:pointer;border-bottom:2.5px solid transparent;color:#6b6b73}
+.a2m-gt.on{color:#17171a;border-bottom-color:#17171a}
+.a2m-dots{display:flex}
+.a2m-dots i{width:9px;height:9px;border-radius:50%;box-shadow:0 0 0 1.5px #fff;margin-left:-4px}
+.a2m-dots i:first-child{margin-left:0}
+.a2m-lb{font-size:12.5px;font-weight:700}
+.a2m-ct{font-family:var(--mono);font-size:10px;color:#a3a3ab}
+.a2m-group{background:#fff;border-radius:15px;overflow:hidden;margin:10px 12px;box-shadow:0 1px 3px rgba(20,20,25,.05)}
+.a2m-row{display:flex;align-items:center;gap:12px;padding:11px 13px;border-bottom:1px solid #e9e9ec}
+.a2m-row:last-child{border-bottom:none}
+.a2m-tile{width:66px;height:58px;border-radius:12px;flex:0 0 auto;overflow:hidden;border:none;padding:0;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08),0 2px 5px rgba(0,0,0,.08);cursor:pointer}
+.a2m-info{flex:1;min-width:0}
+.a2m-l1{display:flex;align-items:center;gap:8px}
+.a2m-qname{font-family:var(--mono);font-size:12px;font-weight:700;color:#fff;padding:2px 8px;border-radius:7px;flex:0 0 auto;border:none;cursor:pointer}
+.a2m-decor{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.a2m-l2{display:flex;align-items:center;gap:6px;margin-top:4px}
+.a2m-type{font-family:var(--mono);font-size:9.5px;font-weight:700;color:#6b6b73;background:#f2f2f4;border-radius:5px;padding:2px 6px}
+.a2m-dims{font-family:var(--mono);font-size:11px;color:#a3a3ab}
+.a2m-stock{margin-left:auto;text-align:right;flex:0 0 auto}
+.a2m-stock b{font-family:var(--mono);font-size:14px;font-weight:600;color:#6b6b73}
+.a2m-stock.zero b{color:#a3a3ab;font-weight:500}
+.a2m-stock span{display:block;font-size:8.5px;color:#a3a3ab;font-family:var(--mono);text-transform:uppercase}
+.a2m-sechd{display:flex;align-items:center;gap:9px;padding:12px 18px 8px}
+.a2m-sechd.acc{cursor:pointer}
+.a2m-glyph{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;font-weight:700;color:#fff}
+.a2m-nm{font-size:13px;font-weight:700}
+.a2m-sct{font-family:var(--mono);font-size:10.5px;color:#a3a3ab;margin-left:auto}
+.a2m-chev{color:#a3a3ab;font-size:12px;margin-left:6px}
+.a2m-sechd.closed .a2m-chev{transform:rotate(-90deg)}
+.a2m-empty{padding:14px;color:#a3a3ab;font-size:12px}
+.a2m-foot{margin-top:auto;background:#17171a;color:#fff;padding:11px 16px;display:flex;align-items:center;gap:18px;font-family:var(--mono);font-size:10.5px}
+.a2m-fa{display:flex;flex-direction:column;gap:1px}
+.a2m-fl{opacity:.5;font-size:8.5px;text-transform:uppercase}
+.a2m-fv{font-weight:700;font-size:13px}
+.a2m-hint{margin-left:auto;opacity:.5;font-size:9px;max-width:130px;text-align:right;line-height:1.35}
+.a2-poz{position:absolute;left:12px;top:100px;z-index:35;background:rgba(15,23,42,.9);backdrop-filter:var(--a2-blur);-webkit-backdrop-filter:var(--a2-blur);border-radius:14px;padding:9px 11px;min-width:104px;box-shadow:var(--a2-e2)}
+.a2-poz-t{font-family:var(--mono);font-size:8.5px;color:#94a3b8;letter-spacing:.06em;margin-bottom:5px}
+.a2-poz-r{display:flex;justify-content:space-between;gap:10px;font-family:var(--mono);font-size:11.5px;color:#94a3b8;padding:1.5px 0}
+.a2-poz-r b{color:#e2e8f0;font-weight:600}
+.a2-krm{padding:14px 16px}
+.a2-krm-row{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid #e9e9ec;font-size:14px;color:#17171a}
+.a2-krm-row:last-of-type{border-bottom:none}
+.a2-krm-k{font-family:var(--mono);font-size:12px;font-weight:700;color:#fff;padding:3px 9px;border-radius:7px;flex:none}
+.a2-krm-dim{color:#6b6b73;font-size:12.5px}
+.studio-views.a2emb{top:236px;bottom:auto}
+/* Embedded 2D tool rail — right edge, vertically centred (clear of top Слои + bottom Настройки sheet) */
+.studio-rail.a2emb{top:50%;bottom:auto;transform:translateY(-50%)}
+/* Desktop only (≥768px, never the phone): the part-selected ДЕТАЛЬ card grows to ~253px tall,
+   so the left rail's top:236px used to sit UNDER it — in 2D the 3D/2D/Сетка column was hidden
+   behind the card. Drop the rail below the tallest card state. Phones keep the compact layout. */
+@media (min-width: 768px) {
+  .studio-views.a2emb { top: 268px; }
+  /* DESKTOP: the embedded 2D option/rules bar is far wider than its controls. On a phone the
+     118px left-pad + left-align fills the row; on desktop it leaves the controls stuck to the
+     left with an empty right half. Centre them instead (the top-left РАЗМЕР/ДЕТАЛЬ card is now
+     cleared by the centring, not by the pad). Mobile keeps the left-aligned behaviour. */
+  .fill-editor.embedded .fe-optbar { justify-content: center; padding-left: 18px; }
+  /* the organizer button's `margin-left:auto` (full-screen: shove it to the far right) eats all the
+     free space and cancels the centring above, stranding «Класс/Tutqich» at the left and «Органайзер»
+     at the right. In the embedded studio keep the whole drawer-option row grouped + centred. */
+  .fill-editor.embedded .fe-optbar .fe-org-btn { margin-left: 0; }
+}
+.a2-mleg{position:absolute;left:14px;bottom:58px;z-index:35;display:flex;flex-direction:column;gap:5px;cursor:pointer}
+.a2-mleg-row{display:flex;align-items:center;gap:6px}
+.a2-mleg-bar{width:7px;height:22px;border-radius:3px;opacity:.85;transition:.15s;box-shadow:0 1px 4px rgba(0,0,0,.18)}
+.a2-mleg.open .a2-mleg-bar{height:14px;opacity:1}
+.a2-mleg-lbl{display:none;background:rgba(255,255,255,.94);border-radius:7px;padding:3px 7px;font-size:10px;font-weight:600;color:var(--a2-ink)}
+.a2-mleg.open .a2-mleg-lbl{display:inline}
+/* v9 ≡ menu-sheet (bottom sheet: Единицы + section links + material legend) */
+.a2-menu{position:absolute;left:0;right:0;bottom:0;z-index:55;max-height:82%;overflow-y:auto;background:rgba(255,255,255,.92);backdrop-filter:var(--a2-blur);-webkit-backdrop-filter:var(--a2-blur);border-radius:20px 20px 0 0;box-shadow:0 -8px 34px rgba(15,23,42,.22);padding:8px 14px 18px;border-top:1px solid rgba(255,255,255,.6)}
+.a2-menu-grip{width:38px;height:5px;border-radius:3px;background:rgba(15,23,42,.18);margin:4px auto 10px}
+.a2-menu-h{font-size:17px;font-weight:800;color:var(--a2-ink);margin:0 4px 8px}
+.a2-menu-unit,.a2-menu-row{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;border:none;background:transparent;padding:13px 6px;font-size:14px;font-weight:600;color:var(--a2-ink);cursor:pointer;border-radius:10px;text-align:left}
+.a2-menu-unit:active,.a2-menu-row:active{background:rgba(15,23,42,.05)}
+.a2-menu-unit b,.a2-menu-row b{font-family:var(--mono);font-size:11.5px;font-weight:600;color:var(--a2-ink2);white-space:nowrap}
+.a2-menu-cap{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;color:#94a3b8;text-transform:uppercase;margin:12px 6px 2px}
+.a2-menu-mat{display:flex;align-items:center;gap:9px;padding:10px 6px;font-size:13.5px;font-weight:600;color:var(--a2-ink)}
+.a2-menu-dot{width:13px;height:13px;border-radius:4px;flex:none;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.a2-poz-nm{color:#f1f5f9;font-weight:700;font-size:12px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.a2-poz-sub{font-family:var(--mono);font-size:8.5px;color:#94a3b8;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.a2-poz-comp{font-size:9.5px;font-weight:700;color:#a5b4fc;background:rgba(99,102,241,.16);border-radius:6px;padding:2px 6px;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.a2-poz-del{margin-top:7px;width:100%;border:none;border-radius:8px;background:rgba(226,59,50,.16);color:#f0a39d;font-size:11px;font-weight:700;padding:6px 0;cursor:pointer;transition:.12s}
+.a2-poz-del:active{transform:scale(.96);background:rgba(226,59,50,.28)}
+.a2-poz-open{margin-top:7px;width:100%;border:none;border-radius:8px;background:rgba(0,172,122,.18);color:#5fe0b2;font-size:11px;font-weight:700;padding:6px 0;cursor:pointer;transition:.12s}
+.a2-poz-open:active{transform:scale(.96);background:rgba(0,172,122,.3)}
+/* §3 · v9 «⋮ Действия» actions menu on the poz card */
+.a2-poz{max-width:238px}
+.a2-poz-acts{margin-top:8px;width:100%;border:none;border-radius:8px;background:rgba(148,163,184,.16);color:#cbd5e1;font-size:11px;font-weight:700;padding:6px 0;cursor:pointer;transition:.12s}
+.a2-poz-acts.on,.a2-poz-acts:active{background:rgba(148,163,184,.28)}
+.a2-actmenu{margin-top:6px;display:flex;flex-direction:column;gap:3px}
+.a2-act{width:100%;text-align:left;border:none;border-radius:7px;background:rgba(255,255,255,.05);color:#e2e8f0;font-size:11px;font-weight:600;padding:6px 9px;cursor:pointer;transition:.12s;white-space:normal;line-height:1.3}
+.a2-act:active{transform:scale(.98)}
+.a2-act.on{background:rgba(0,172,122,.18);color:#5fe0b2}
+.a2-act.danger{background:rgba(226,59,50,.16);color:#f0a39d}
+.a2-act.soon{color:#94a3b8;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.a2-act.soon::after{content:"скоро";font-family:var(--mono);font-size:8px;color:#64748b;letter-spacing:.05em;text-transform:uppercase;flex:none}
+.a2-act-div{height:1px;background:rgba(148,163,184,.16);margin:3px 2px}
+.a2-toast{position:absolute;left:12px;bottom:18px;z-index:60;background:rgba(15,23,42,.94);color:#e2e8f0;font-size:11.5px;font-weight:600;padding:8px 13px;border-radius:9px;box-shadow:var(--a2-e2);backdrop-filter:var(--a2-blur);-webkit-backdrop-filter:var(--a2-blur);max-width:220px}
