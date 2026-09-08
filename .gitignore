@@ -8,3 +8,6 @@ coverage/
 .env.local
 .vscode/
 .idea/
+
+# eskidan ko'chirilgan reference (push qilinmaydi)
+reference/

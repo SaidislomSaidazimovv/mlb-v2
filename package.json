@@ -1,0 +1,11 @@
+{
+  "name": "mebelchi-v2-engine",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Mebelchi yangi versiya — Sheet-core engine (docs/september-8/48-54 asosida). Sof funksiyalar, UI yo'q (54§0).",
+  "scripts": {
+    "test": "node --experimental-strip-types --test tests/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  }
+}
