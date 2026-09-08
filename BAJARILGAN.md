@@ -45,3 +45,15 @@ Qamrov: L16 (butun-mm rad), L5b (ε-snap, dublikat yo'q), faces, L1 (to'g'ri 600
 
 ## 2026-09-08 — UI reference (parallel) ✅
 `docs/UI_REFERENCE.md` — founder bergan UI xulqi (L11/L13, `52`§2, `53`§6, `50`§6, `48`§5 — cited) + vizual did uchun O'RGANISH rejasi (o'rganiladigan applar ro'yxati, hali fakt emas deb belgilangan). To'qilmagan.
+
+---
+
+## 2026-09-08 — T4: Modules (modullar) ✅
+
+**Nima qilindi** (`src/poligon/model/module.ts`, sof funksiya):
+- `deriveModules(sheet)` — kataklarni union-find bilan komponentlarga ajratadi: **32 segment CHEGARA** (ajratadi), 0/16 esa **ULAYDI** (bir modul). Modul ixtiyoriy shaklda (to'rtburchak shart emas — L-shakl). Har modul: cells + bbox + width/height.
+- `transportCheck(module, {maxWidth,maxHeight})` — gabarit profil maksimumidan oshsa `transport` ogohlantirishi.
+
+**Asos:** `48`§0 (modul = 32-segment bilan ajratilmagan kataklarning maksimal to'plami) + L4 (modullar to'rtburchak EMAS) + `54`§3 "T4 gate".
+
+**Test:** butun suite **23/23 pass · 0 fail** (T1 7 + T2 9 + T3 4 + T4 3). **T4-gate:** chok 32→16 → 2 modul fuse → 1; transport ogohlantirishi (1200>900); L-shakl modul (3+1 katak).

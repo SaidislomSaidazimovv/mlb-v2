@@ -15,8 +15,8 @@
   bog'lanadi.
 - ~~**T3 · Board runs**~~ — ✅ BAJARILDI (board.ts, 20/20 test, T3-gate 2400). Qoldig'i: material/tola
   bilan tugatish (L6) hozircha faqat qalinlik bo'yicha — material/grain T3 kengaytmasi (T11 release'da kerak).
-- **T4 · Modules** — 32-segmentdan, ixtiyoriy shakl, transport tekshiruvi. (asos: `48` L4; `54` T4) — **keyingi.**
-- **T5 · Ops + legalDomain** — har op nomlangan tranzaksiya (L0); legalDomain (L13). (T1 dagi `commit` — shu qatlamning urug'i.)
+- ~~**T4 · Modules**~~ — ✅ BAJARILDI (module.ts, 23/23 test; 32=chegara, L-shakl, transport). Qoldig'i: og'irlik (weight) tekshiruvi — hozircha faqat gabarit; og'irlik material zichligi kelганда (T10/T11).
+- **T5 · Ops + legalDomain** — har op nomlangan tranzaksiya (L0); legalDomain (L13). (T1 dagi `commit` — shu qatlamning urug'i.) — **keyingi.**
 - **T6/T7 · Facet + cascade** — noldan (founder poligon kodi kelmasa ham). (`50`, `51`)
 - **T8/T9 · Thing loader + Lockfile** — parallel. (`52`)
 - **T10 · Validation** — egallovchi-minimumlar (L8; hozir T1 da min=0), to'qnashuvlar. (`51` D9-D11)
