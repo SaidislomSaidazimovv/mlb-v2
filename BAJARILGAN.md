@@ -83,3 +83,17 @@ Qamrov: L16 (butun-mm rad), L5b (ε-snap, dublikat yo'q), faces, L1 (to'g'ri 600
 **Asos:** `48` L0 (atomik tranzaksiya, commitda), L13 (legal domain), L16 (butun mm) + `54`§0/§2/§3 "T5 gate".
 
 **Test:** butun poligon suite **29/29 pass · 0 fail** (T1 7 + T2 9 + T3 4 + T4 3 + T5 6). Immutability (asl o'zgarmaydi), L1-rad moveLine'da, L16-rad, legalDomain mutatsiyasiz, yo'q-chiziq rad — tasdiqlandi.
+
+---
+
+## 2026-09-09 — T6: Facet tiering ✅
+
+**Nima qilindi** (`apps/app/src/poligon/model/facets.ts`, sof funksiya):
+- `FACET_TIER` — 50§1 jadvali: Tier-0 (role/layer/axis/adjacency/zone/module/span/block.tags/size.outer — topologiyadan) vs Tier-3 (edge_exposure/size.clear — yakuniy o'lchov).
+- `assertGeometricPredicate` — 51 D8: geometrik (P1) qoida Tier-3 facetga mos kelsa "D8" rad (statik).
+- `computeAdjacency` — block-grafdan (block→abutting, wall→wall-facing, none→free-end), geomsiz.
+- `computeFacet` — Tier-0 geomsiz hisoblanadi; Tier-3 (edge_exposure/size.clear) geom=null bo'lsa "facet.needsGeometry" rad.
+
+**Asos:** `50`§1 (facet jadvali/tier) + `51` D8/E2 (stratifikatsiya) + `54`§3 "T6 gate".
+
+**Test:** butun suite **35/35 pass · 0 fail** (+T6 6). **T6-gate:** adjacency GEOMSIZ hisoblandi; edge_exposure geomsiz RAD (facet.needsGeometry).

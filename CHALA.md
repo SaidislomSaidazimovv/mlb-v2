@@ -17,7 +17,8 @@
   bilan tugatish (L6) hozircha faqat qalinlik bo'yicha — material/grain T3 kengaytmasi (T11 release'da kerak).
 - ~~**T4 · Modules**~~ — ✅ BAJARILDI (module.ts, 23/23 test; 32=chegara, L-shakl, transport). Qoldig'i: og'irlik (weight) tekshiruvi — hozircha faqat gabarit; og'irlik material zichligi kelганда (T10/T11).
 - ~~**T5 · Ops + legalDomain**~~ — ✅ BAJARILDI (ops.ts, 29/29 test; apply atomik+immutable, legalDomain). Qoldig'i: op turlari hozir 3 ta (addLine/setThickness/moveLine) — split/delete→Void/Absorb/flip-junction op'lari T12 (UI) bilan birga kengaytiriladi.
-- **T6/T7 · Facet + cascade** — noldan (founder poligon kodi kelmasa ham). (`50`, `51`) — **keyingi.**
+- ~~**T6 · Facet tiering**~~ — ✅ BAJARILDI (facets.ts, 35/35 test; Tier-0/Tier-3, D8, adjacency geomsiz, edge_exposure rad). Qoldig'i: qolgan Tier-0 facetlar (layer/zone/module/span/size.outer) real hisoblash — sheet/block-graf bilan T7/T10 da to'liq ulanadi.
+- **T7 · Cascade P1/P4 + stratifikatsiya** — resolve'ni geometrik(Tier-0)/appearance bosqichga bo'lish; konflikt=rad; qatlamlar (system→...→pin). (`50`§2 + `51` D8) — **keyingi.**
 - **T8/T9 · Thing loader + Lockfile** — parallel. (`52`)
 - **T10 · Validation** — egallovchi-minimumlar (L8; hozir T1 da min=0), to'qnashuvlar. (`51` D9-D11)
 - **T11 · Release** — kesim ro'yxati chiqishi (parts). (`53`)
