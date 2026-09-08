@@ -31,9 +31,15 @@
   - **10-mebel parity** — eski engine (panelDecomposition+SWJ008) chiqishini yangi bilan solishtirish (cross-repo, katta).
 
 ## Keyingi katta bloklar (54§3 dan tashqari, kelgusi)
-- `51` D-qonunlari: ~~D3 datum~~ ✅, ~~D5 thickness-class~~ ✅, ~~D6 hardware/fit~~ ✅, ~~**D4 Migration**~~ ✅ (migration.ts).
-  Qolgan: faqat **D7** (kvantlangan param — slayd uzunligi 250/300/…/600 ruxsat etilgan to'plamga snap emas,
-  tanlov ko'rsatiladi; hech biri sig'masa rad). — **keyingi: D7 (oxirgi D-qonun).**
+- ✅ `51` **D1–D12 TO'LIQ** (D3/D4/D5/D6/D7 + D8 cascade + D9-D11 validation + D12 release). Geometriya
+  devori butunligicha qurildi.
+
+## Endi qolган KATTA bloklar (engine yadro + qonunlar TUGADI)
+- **10-mebel parity** — eski engine (mebelchi-2app/mebely `panelDecomposition` + SWJ008) vs yangi
+  (poligon) kesim/teshik solishtiruvi. Cross-repo skript — founderning asosiy sinovi.
+- **Persist** — real project fayli (sheet + params + pins + lock) fs bilan yozish/o'qish.
+- **UI (Saidislom, `54`§0)** — T12 Sheet muharrir · T13 Inspektor · T14 Generatsiyalangan sozlamalar ·
+  T15 Parts ekrani — frozen API + yangi UI papka.
 - ✅ **T16 gate BAJARILDI** — korpus 8/8 (51§6 minimal to'plam to'liq).
 - **Persist**: real project fayli (sheet+params+pins+lock) fs bilan yozish/o'qish.
 - **UI (Saidislom, `54`§0)**: T12 Sheet muharrir · T13 Inspektor · T14 Generatsiyalangan sozlamalar · T15 Parts ekrani — frozen API + yangi UI papka.

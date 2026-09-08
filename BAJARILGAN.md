@@ -242,3 +242,22 @@ T9 Lockfile · T10 Validation · T11 Release · T16 korpus-harness — **69/69 t
 **Asos:** `51` D4 (resolve chiziqni siljitmaydi; migration = oshkora/preview/atomik/tartibli/refusable) + `51` H2 (tartib, end-state preview) + `48` L0.
 
 **Test:** butun suite **84/84 pass · 0 fail** (+D4 3). Ordered ok → end-state (asl tegilmadi); 2-op'da uzilish → failedAt=1, butun rad; preview mutatsiyasiz.
+
+---
+
+## 2026-09-09 — D7: Kvantlangan parametr (51 chuqur qonun) ✅
+
+**Nima qilindi** (`apps/app/src/poligon/model/quantized.ts`, sof funksiya):
+- `legalMembers(p, max)` — chegaraga sig'adigan qonuniy a'zolar RO'YXATI (tizim tanlamaydi — ko'rsatadi).
+- `checkQuantized(p, max)` — hech bir a'zo sig'masa `D7.noMember` RAD (jimgina snap yo'q).
+
+**Asos:** `51` D7 (+ B3: slayd 250..600, 540-chuqur → 500 oladi, tizim tanlamaydi).
+
+**Test:** butun suite **87/87 pass · 0 fail** (+D7 3).
+
+---
+
+## ✅ `51` D1–D12 TO'LIQ (2026-09-09)
+D1/D2 (T1/contracts — authored/derived, Type-param) · D3 datum · D4 Migration · D5 thickness-class ·
+D6 hardware/fit · D7 kvantlangan · D8 (T7 stratifikatsiya) · D9/D10/D11 (T10 validation) · D12
+(T11 three-plane finished/model/cut). **Geometriya devori (Law D) to'liq D1–D12 sifatida qurildi.**
