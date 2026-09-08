@@ -5,6 +5,7 @@ import assert from "node:assert/strict";
 import { runCorpus, allPass, type Fixture } from "../../src/poligon/model/corpus.ts";
 import { authorRule } from "../../src/poligon/model/cascade.ts";
 import { release, partIdentity, type ShopConvention } from "../../src/poligon/model/release.ts";
+import { resolveSetback, type DimParam } from "../../src/poligon/model/datum.ts";
 
 const trim: ShopConvention = { subtractBanding: true };
 
@@ -32,6 +33,13 @@ const fixtures: Fixture[] = [
     const idAfterMove = partIdentity({ role: "side", boundingLines: ["v1", "h1"], finishedW: 560, finishedH: 900 }); // "ko'chdi", lineIDs bir xil
     return idBefore === idAfterMove ? { ok: true } : { ok: false, rule: "H1.orphan" };
   } },
+  // C1 (51§6): datum + fasad qalinligi — deklaratsiya qilingan datum bilan DETERMINISTIK (taxmin yo'q).
+  { name: "C1", run: () => {
+    const p: DimParam = { name: "setback.front", role: "shelf", datum: "front", value: 50, composition: "absolute" };
+    const carcassInvariant = resolveSetback(0, p) === resolveSetback(0, p);   // carcass-datum: fasad qalinligidan mustaqil
+    const fasadFollows = resolveSetback(-18, p) !== resolveSetback(-22, p);   // fasad-datum: qalinlik bilan siljiydi
+    return carcassInvariant && fasadFollows ? { ok: true } : { ok: false, rule: "C1.nondeterministic" };
+  } },
 ];
 
 const expected = {
@@ -39,9 +47,10 @@ const expected = {
   E2: { ok: true },
   F1: { ok: true },
   H1: { ok: true },
+  C1: { ok: true },
 };
 
-test("T16: korpus 4/8 fixtura O'TADI (E1/E2/F1/H1) — built modullar", () => {
+test("T16: korpus 5/8 fixtura O'TADI (E1/E2/F1/H1/C1) — built modullar", () => {
   const results = runCorpus(fixtures, expected);
   assert.equal(allPass(results), true, JSON.stringify(results));
 });

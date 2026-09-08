@@ -188,3 +188,16 @@ T1 Sheet · T2 Junctions · T3 Board runs · T4 Modules · T5 Ops · T6 Facets �
 T9 Lockfile · T10 Validation · T11 Release · T16 korpus-harness — **69/69 test yashil**, hammasi
 `apps/app/src/poligon/model/`da, `48–54`ga asoslangan. Qolgan: T16ning 4 fixturasi (D3/D4/D5/D6) +
 10-mebel parity + UI (T12–T15, Saidislom).
+
+---
+
+## 2026-09-09 — D3: Datum / local-frame (51 chuqur qonun) ✅
+
+**Nima qilindi** (`apps/app/src/poligon/model/datum.ts`, sof funksiya):
+- `ROLE_FRAMES` — role bo'yicha local frame yuza nomlari (C2: shelf "front"=chuqurlik, back "front"=qalinlik o'qi).
+- `validateParam` — C1 datumsiz rad (D3.datum), C2 frame'da yo'q yuza rad (D3.face), C3 world-space rad (D3.world), C4 protrusion-as-negative rad (D3.protrusion).
+- `resolveSetback` — setbackni DATUM yuzasiga nisbatan yechadi (ichkariga-musbat); natija deklaratsiya qilingan datumga bog'liq — taxmin yo'q.
+
+**Asos:** `51` D3 (C1-C5).
+
+**Test:** butun suite **75/75 pass · 0 fail** (+D3 6). **Korpus endi 5/8:** C1 (datum + fasad qalinligi — carcass-datum mustaqil, fasad-datum siljiydi, deterministik) qo'shildi.
