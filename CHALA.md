@@ -13,8 +13,9 @@
 - ~~**T2 · Junctions**~~ — ✅ BAJARILDI (junction.ts, 16/16 test). Qoldig'i: per-junction override
   saqlash + modul-konvensiya (2-bosqich) hozircha alohida funksiya emas — T5 (ops) da junctionga
   bog'lanadi.
-- **T3 · Board runs** = *bo'laklarga bo'lish* (kesim ro'yxati). (asos: `48` L6; `54` T3) — **keyingi.**
-- **T4 · Modules** — 32-segmentdan, ixtiyoriy shakl, transport tekshiruvi. (asos: `48` L4; `54` T4)
+- ~~**T3 · Board runs**~~ — ✅ BAJARILDI (board.ts, 20/20 test, T3-gate 2400). Qoldig'i: material/tola
+  bilan tugatish (L6) hozircha faqat qalinlik bo'yicha — material/grain T3 kengaytmasi (T11 release'da kerak).
+- **T4 · Modules** — 32-segmentdan, ixtiyoriy shakl, transport tekshiruvi. (asos: `48` L4; `54` T4) — **keyingi.**
 - **T5 · Ops + legalDomain** — har op nomlangan tranzaksiya (L0); legalDomain (L13). (T1 dagi `commit` — shu qatlamning urug'i.)
 - **T6/T7 · Facet + cascade** — noldan (founder poligon kodi kelmasa ham). (`50`, `51`)
 - **T8/T9 · Thing loader + Lockfile** — parallel. (`52`)

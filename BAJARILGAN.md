@@ -29,3 +29,19 @@ Qamrov: L16 (butun-mm rad), L5b (ε-snap, dublikat yo'q), faces, L1 (to'g'ri 600
 **Asos:** `48`§2 (L/T/X, ustunlik, 'both'-rad, qamrab-oluvchi-blok) + `54`§3 "T2 gate".
 
 **Test:** butun suite **16/16 pass · 0 fail** (T1 7 + T2 9; offline). T2 gate raqamlari (768 / 800 / 688) tasdiqlandi.
+
+---
+
+## 2026-09-08 — T3: Board runs = "bo'laklarga bo'lish" (kesim) ✅
+
+**Nima qilindi** (`src/poligon/model/board.ts`, sof funksiya):
+- `boardRuns(sheet, throughAt)` — bir chiziq bo'ylab segmentlarni MAKSIMAL yugurishga (Board) yig'adi. Yugurish tugaydi: qalinlik o'zgarsa (L6), qalinlik 0 bo'lsa (bo'shliq), yoki perpendikulyar-through crossing kessa. Board: {line, axis, from, to, thickness, length}.
+
+**Asos:** `48` L6 (taxta = collinear segmentlar maksimal yugurishi, through-junctionda birlashadi; qalinlik/material/tola o'zgarishi tugatadi) + `54`§3 "T3 gate".
+
+**Test:** butun suite **20/20 pass · 0 fail** (T1 7 + T2 9 + T3 4). **T3-gate tasdiqlandi:** umumiy vertikal chiziq (baza 0-720 + penal 0-2400) → BITTA 2400 taxta (baza alohida o'ng side olmaydi); qalinlik-o'zgarishi va perp-through split; 0-bo'shliq.
+
+---
+
+## 2026-09-08 — UI reference (parallel) ✅
+`docs/UI_REFERENCE.md` — founder bergan UI xulqi (L11/L13, `52`§2, `53`§6, `50`§6, `48`§5 — cited) + vizual did uchun O'RGANISH rejasi (o'rganiladigan applar ro'yxati, hali fakt emas deb belgilangan). To'qilmagan.
