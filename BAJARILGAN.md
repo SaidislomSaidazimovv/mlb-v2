@@ -136,3 +136,16 @@ Qamrov: L16 (butun-mm rad), L5b (ε-snap, dublikat yo'q), faces, L1 (to'g'ri 600
 **Asos:** `52`§5 (lock, reproducible) + `52`§9 (teskari indeks) + `54`§3 "T9 gate".
 
 **Test:** butun suite **55/55 pass · 0 fail** (+T9 6). **T9-gate:** bir qulf → mos (reproducible); version/mazmun o'zgarsa → rad; yo'qolsa → rad; teskari indeks.
+
+---
+
+## 2026-09-09 — T10: Validation (P5) ✅
+
+**Nima qilindi** (`apps/app/src/poligon/model/validate.ts`, sof funksiya):
+- `checkColumnMinimum(available, occupants)` — L8: ustun min = egallovchilar maksimumi; kichik bo'lsa RAD (bog'lovchi egallovchining qoidasini nomlaydi); 3mm filler 150mm karkas bilan rad etilmaydi.
+- `checkMaterialDomain(value, dom)` — D9: span/depth material ruxsatidan tashqarida → RAD (resize YO'Q), material qoidasini nomlaydi.
+- `checkCollisions(boxes)` — D11: bir qatlamda ustma-ust x-oraliqlar → to'qnashuv RAD, nom bilan.
+
+**Asos:** `48` L8 + `51` D9/D11 + `54`§3 "T10 gate".
+
+**Test:** butun suite **62/62 pass · 0 fail** (+T10 7). **T10-gate:** har rad qoidani nomlaydi (carcass/glass-10mm/D11.collision); filler minimumdan ozod.

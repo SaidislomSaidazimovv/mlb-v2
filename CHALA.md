@@ -21,8 +21,8 @@
 - ~~**T7 · Cascade + stratifikatsiya**~~ — ✅ BAJARILDI (cascade.ts, 42/42 test; resolve/Conflict/Incomplete, authorRule D8, blastRadius). Qoldig'i: `pin` (part-identity istisno) va Theme-install konflikt-hisoboti (`50`§4) — T8/T9 (things) bilan ulanadi.
 - ~~**T8 · Thing loader**~~ — ✅ BAJARILDI (things.ts, 49/49 test; canPublish diagram/unit/declarative/ownership, buildIndex asiklik). Qoldig'i: haqiqiy `loadThings(dir)` (fs — foldedan o'qish) — hozir Thing obyekt sifatida (validatsiya sof); fs-o'qish thin qatlam, keyin.
 - ~~**T9 · Lockfile**~~ — ✅ BAJARILDI (lock.ts, 55/55 test; lockOf/checkLock missing/version/hash, reverseIndex). Qoldig'i: fs bilan real project fayliga (sheet+params+pins+lock) yozish/o'qish — T11/persist bilan.
-- **T10 · Validation (P5)** — egallovchi-minimumlar (L8; hozir T1 da min=0), qatlam bo'yicha to'qnashuv, material domeni; har rad qoida+sozlamani nomlaydi. (`51` D9-D11, `48` L8) — **keyingi.**
-- **T11 · Release** — kesim ro'yxati chiqishi (parts). (`53`)
+- ~~**T10 · Validation (P5)**~~ — ✅ BAJARILDI (validate.ts, 62/62 test; L8 min, D9 material domeni, D11 to'qnashuv). Qoldig'i: eshik-swing devorga (real geometriya bilan) + feasibility (grain/nesting = P6, T11) — hozir box-overlap shakli.
+- **T11 · Release (P6)** — finished→cut arifmetikasi (sex konvensiyasi, kromka), handedness, grain, 0.1mm, o'zgarmas raqamlangan release, diffReleases, pre-flight. **Kesim ro'yxati chiqishi.** (`53`) — **keyingi (oxirgi engine task, keyin T16 korpus).**
 - **T16 · Korpus** — `51`§6 dagi 8 fixture.
 
 ## Founderga bog'liq (→ FOUNDERGA.md)
