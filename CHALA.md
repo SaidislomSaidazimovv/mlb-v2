@@ -23,7 +23,18 @@
 - ~~**T9 · Lockfile**~~ — ✅ BAJARILDI (lock.ts, 55/55 test; lockOf/checkLock missing/version/hash, reverseIndex). Qoldig'i: fs bilan real project fayliga (sheet+params+pins+lock) yozish/o'qish — T11/persist bilan.
 - ~~**T10 · Validation (P5)**~~ — ✅ BAJARILDI (validate.ts, 62/62 test; L8 min, D9 material domeni, D11 to'qnashuv). Qoldig'i: eshik-swing devorga (real geometriya bilan) + feasibility (grain/nesting = P6, T11) — hozir box-overlap shakli.
 - ~~**T11 · Release (P6)**~~ — ✅ BAJARILDI (release.ts, 67/67 test; finished→cut, raqamlangan/o'zgarmas, diffReleases, handed/grain/0.1mm). Qoldig'i: pre-flight ro'yxati (53§1 — o'lchanmagan devor/kromkasiz qirra ogohlantirishlari) + kerf/tolerance — persist/UI bilan.
-- **T16 · Korpus/CI** — real devorlar fixtura sifatida; `51`§6 dagi 8 minimal fixture; har qonun o'zgarishi qayta-derive + diff. **10 mebel parity shu yerda.** (`54` T16; `51`§6) — **keyingi (oxirgi engine task).**
+- 🟡 **T16 · Korpus/CI** — harness + **4/8 fixtura** BAJARILDI (E1/E2/F1/H1, 69/69 test). QOLGANI:
+  - **A1** (thickness migratsiya) + **I4** (18mm Type→16mm loyiha) → **D5 thickness-class** moduli kerak.
+  - **B1** (hinge overlay flip) → **D6 hardware/fit** (`fits/`) moduli kerak.
+  - **C1** (datum + fasad qalinligi) → **D3 datum/frame** moduli kerak.
+  - **D4 migration** moduli (line ko'chishi = Migration, previewed) — H1 to'liq migratsiya uchun.
+  - **10-mebel parity** — eski engine (panelDecomposition+SWJ008) chiqishini yangi bilan solishtirish (cross-repo, katta).
+
+## Keyingi katta bloklar (54§3 dan tashqari, kelgusi)
+- `51` D1–D12 to'liq: **D3** (datum/local-frame), **D4** (Migration — line ko'chishi), **D5** (thickness class),
+  **D6** (hardware geometrik oqibatlari), **D7** (kvantlangan param) — bular fits/hardware/params bilan.
+- **Persist**: real project fayli (sheet+params+pins+lock) fs bilan yozish/o'qish.
+- **UI (Saidislom, `54`§0)**: T12 Sheet muharrir · T13 Inspektor · T14 Generatsiyalangan sozlamalar · T15 Parts ekrani — frozen API + yangi UI papka.
 
 ## Founderga bog'liq (→ FOUNDERGA.md)
 - Teshik/сверловка (Q2), 10 mebel (Q3), natija formati (Q5), poligon kodi (Q1), 49-nom (Q4).

@@ -166,3 +166,25 @@ Qamrov: L16 (butun-mm rad), L5b (ε-snap, dublikat yo'q), faces, L1 (to'g'ri 600
 ---
 
 ### ⏱ Engine holati: **11 / 12** task tugadi (T1–T11). Qolган engine: faqat **T16 (korpus/CI)**. Keyin UI (T12–T15, Saidislom).
+
+---
+
+## 2026-09-09 — T16: Korpus / CI (harness + 4/8 fixtura) 🟡
+
+**Nima qilindi** (`apps/app/src/poligon/model/corpus.ts`, sof funksiya):
+- `runCorpus(fixtures, expected)` + `allPass` — har fixtura natijasini (qabul yoki NOMLANGAN rad) kutilgan bilan solishtiradi (harness).
+- **4/8 fixtura O'TADI** (built modullarga tayanadi): **E1** (P1 tsiklik `size.clear` → D8 rad), **E2** (P1 `adjacency` → qabul), **F1** (kromka vs cut, 2 sex konvensiyasi), **H1** (pin identity = role+lineID, migratsiyada omon).
+
+**Asos:** `51`§6 (8 minimal fixtura) + `54`§3 "T16 gate".
+
+**Test:** butun suite **69/69 pass · 0 fail** (+T16 2).
+
+**HALOL — chala qismi (CHALA.md):** qolган 4 fixtura hali qurilmagan modullarga tayanadi — **A1** (thickness migratsiya → D5), **B1** (hinge overlay/fit → D6), **C1** (datum → D3), **I4** (18mm Type 16mm loyihaga → D5). Bular + **10-mebel parity** (eski engine chiqishi bilan, cross-repo) keyingi bosqich.
+
+---
+
+## ✅ ENGINE BACKBONE TO'LIQ (2026-09-09)
+T1 Sheet · T2 Junctions · T3 Board runs · T4 Modules · T5 Ops · T6 Facets · T7 Cascade · T8 Things ·
+T9 Lockfile · T10 Validation · T11 Release · T16 korpus-harness — **69/69 test yashil**, hammasi
+`apps/app/src/poligon/model/`da, `48–54`ga asoslangan. Qolgan: T16ning 4 fixturasi (D3/D4/D5/D6) +
+10-mebel parity + UI (T12–T15, Saidislom).
