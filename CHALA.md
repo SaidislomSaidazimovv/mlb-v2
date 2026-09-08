@@ -19,8 +19,8 @@
 - ~~**T5 · Ops + legalDomain**~~ — ✅ BAJARILDI (ops.ts, 29/29 test; apply atomik+immutable, legalDomain). Qoldig'i: op turlari hozir 3 ta (addLine/setThickness/moveLine) — split/delete→Void/Absorb/flip-junction op'lari T12 (UI) bilan birga kengaytiriladi.
 - ~~**T6 · Facet tiering**~~ — ✅ BAJARILDI (facets.ts, 35/35 test; Tier-0/Tier-3, D8, adjacency geomsiz, edge_exposure rad). Qoldig'i: qolgan Tier-0 facetlar (layer/zone/module/span/size.outer) real hisoblash — sheet/block-graf bilan T7/T10 da to'liq ulanadi.
 - ~~**T7 · Cascade + stratifikatsiya**~~ — ✅ BAJARILDI (cascade.ts, 42/42 test; resolve/Conflict/Incomplete, authorRule D8, blastRadius). Qoldig'i: `pin` (part-identity istisno) va Theme-install konflikt-hisoboti (`50`§4) — T8/T9 (things) bilan ulanadi.
-- **T8 · Thing loader** — folder-per-Thing, def.json (uid/version/schema), diagram majburiy, deklarativ (52§7). (`52`) — **keyingi.**
-- **T9 · Lockfile** — (uid,version,hash), reproducible cut list. (`52`§5)
+- ~~**T8 · Thing loader**~~ — ✅ BAJARILDI (things.ts, 49/49 test; canPublish diagram/unit/declarative/ownership, buildIndex asiklik). Qoldig'i: haqiqiy `loadThings(dir)` (fs — foldedan o'qish) — hozir Thing obyekt sifatida (validatsiya sof); fs-o'qish thin qatlam, keyin.
+- **T9 · Lockfile** — (uid,version,content-hash), lock mos kelmasa cut list chiqmaydi; reproducible. (`52`§5) — **keyingi.**
 - **T10 · Validation** — egallovchi-minimumlar (L8; hozir T1 da min=0), to'qnashuvlar. (`51` D9-D11)
 - **T11 · Release** — kesim ro'yxati chiqishi (parts). (`53`)
 - **T16 · Korpus** — `51`§6 dagi 8 fixture.

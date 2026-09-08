@@ -110,3 +110,15 @@ Qamrov: L16 (butun-mm rad), L5b (ε-snap, dublikat yo'q), faces, L1 (to'g'ri 600
 **Asos:** `50`§2 (kaskad/konflikt/incomplete) + `50`§6 (blast-radius) + `51` D8 + `54`§3 "T7 gate".
 
 **Test:** butun suite **42/42 pass · 0 fail** (+T7 7). **T7-gate:** E1 (P1 qoida `size.clear` Tier-3 → D8 rad); E2 (P1 qoida `adjacency` Tier-0 → qabul); qatlam-yutish, Conflict, Incomplete tasdiqlandi.
+
+---
+
+## 2026-09-09 — T8: Thing loader / validator ✅
+
+**Nima qilindi** (`apps/app/src/poligon/model/things.ts`, sof funksiya):
+- `canPublish(thing, ownership)` — 52: diagram.svg majburiy (§2), examples/ (§2), uid/version/schema (§4), raqamli maydonga birlik (§4), FAQAT deklarativ — ifoda/kod rad (§7), o'zi egasi bo'lmagan maydon rad (§6). Har rad nomlangan.
+- `buildIndex(things)` — namespaced uid-index (fs-walk emas, §10) + havolalar ASIKLIK (DFS) → tsikl bo'lsa `refs.cycle` rad.
+
+**Asos:** `52` (§2/§4/§6/§7/§10) + `54`§3 "T8 gate".
+
+**Test:** butun suite **49/49 pass · 0 fail** (+T8 7). **T8-gate:** diagramsiz → `publish.diagram` rad; o'zi egasi bo'lmagan maydon → `publish.ownership` rad; birliksiz/ifoda/tsikl ham rad.
