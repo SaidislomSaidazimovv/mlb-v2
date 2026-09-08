@@ -15,3 +15,17 @@
 
 **Test:** `node --experimental-strip-types --test tests/*.test.ts` → **7/7 pass · 0 fail** (offline).
 Qamrov: L16 (butun-mm rad), L5b (ε-snap, dublikat yo'q), faces, L1 (to'g'ri 600-korpus rad yo'q + manfiy bo'shliq → L1 rad), L4 (blok chiziqqa bog'liq), round-trip (serialize→parse aynan).
+
+---
+
+## 2026-09-08 — T2: Junctions (kesishmalar) ✅
+
+**Nima qilindi** (`src/poligon/model/junction.ts`, sof funksiyalar):
+- `RANK` (worktop>side>top/bottom>shelf) + `resolveThrough` — qaysi taxta o'tadi: override→rutba; `both` fizik imkonsiz → `junction.both` rad; rutba tengligi → `junction.tie` rad (jimgina default yo'q).
+- `classify` — L(2)/T(3)/X(4); qalinlik X ni parchalaydi (kesishuv V-segment 32 bo'lsa → `X->2T`, ikki mustaqil T).
+- `carcassParts` — 800-korpus o'lchov oqibati: V-through → top 768, side 720; H-through (flip) → top 800, side 688 (sidelar −32).
+- `boardInsideSpanningBlock` — qamrab-oluvchi blok qoidasi: ish-stoli chizig'i penal ichida polka O'STIRMAYDI.
+
+**Asos:** `48`§2 (L/T/X, ustunlik, 'both'-rad, qamrab-oluvchi-blok) + `54`§3 "T2 gate".
+
+**Test:** butun suite **16/16 pass · 0 fail** (T1 7 + T2 9; offline). T2 gate raqamlari (768 / 800 / 688) tasdiqlandi.

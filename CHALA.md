@@ -10,9 +10,10 @@
   saqlanadi (`addBlock`), ammo barcha kataklarni sanab, qo'shnilik grafini qurish T3/T4 da. (asos: `48`§0)
 
 ## Keyingi vazifalar (54§3 tartibi — HOZIR qilinadi, founderni kutmaydi)
-- **T2 · Junctions** — L/T/X sinf; profil rutbasidan ustunlik; `both` rad; per-junction override;
-  qamrab-oluvchi-blok qoidasi. (asos: `48`§2; `54` T2) — **keyingi.**
-- **T3 · Board runs** = *bo'laklarga bo'lish* (kesim ro'yxati). (asos: `48` L6; `54` T3)
+- ~~**T2 · Junctions**~~ — ✅ BAJARILDI (junction.ts, 16/16 test). Qoldig'i: per-junction override
+  saqlash + modul-konvensiya (2-bosqich) hozircha alohida funksiya emas — T5 (ops) da junctionga
+  bog'lanadi.
+- **T3 · Board runs** = *bo'laklarga bo'lish* (kesim ro'yxati). (asos: `48` L6; `54` T3) — **keyingi.**
 - **T4 · Modules** — 32-segmentdan, ixtiyoriy shakl, transport tekshiruvi. (asos: `48` L4; `54` T4)
 - **T5 · Ops + legalDomain** — har op nomlangan tranzaksiya (L0); legalDomain (L13). (T1 dagi `commit` — shu qatlamning urug'i.)
 - **T6/T7 · Facet + cascade** — noldan (founder poligon kodi kelmasa ham). (`50`, `51`)
