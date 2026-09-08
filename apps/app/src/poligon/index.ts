@@ -1,0 +1,46 @@
+// poligon — §2 MUZLATILGAN API (54§2). UI (Saidislom) FAQAT shu yuzadan chaqiradi; model/ ichki
+// fayllariga hech qachon tegmaydi. Engine hech qachon React import qilmaydi (54§0 tikuv).
+// Bu fayl yangi mantiq YOZMAYDI — isbotlangan model/ funksiyalarini bitta seam sifatida ochadi.
+
+// ─ sheet ─────────────────────────────────────────────────────────────────────
+export { createSheet, addLine, setThickness, getThickness, lineById, faces, commit, serialize, parse, segKey } from "./model/sheet.ts";
+export { apply, legalDomain } from "./model/ops.ts";
+export type { Op, ApplyResult } from "./model/ops.ts";
+
+// ─ derivation (P0→P4) ────────────────────────────────────────────────────────
+export { derive } from "./model/derive.ts";
+export type { Derivation, DerivedPart, DerivedJunction, Profile } from "./model/derive.ts";
+
+// ─ junctions / boards / modules (derivatsiya bo'laklari) ─────────────────────
+export { resolveThrough, classify, carcassParts, RANK } from "./model/junction.ts";
+export type { Role, Through, Override, JClass, CarcassParts } from "./model/junction.ts";
+export { boardRuns } from "./model/board.ts";
+export type { Board, ThroughAt } from "./model/board.ts";
+export { deriveModules, transportCheck } from "./model/module.ts";
+export type { Module, TransportLimit, Cell } from "./model/module.ts";
+
+// ─ rules (cascade) ───────────────────────────────────────────────────────────
+export { resolve, blastRadius, authorRule, LAYERS } from "./model/cascade.ts";
+export type { Rule, Resolved, Layer, Part } from "./model/cascade.ts";
+export { FACET_TIER, tierOf, isTier0, assertGeometricPredicate, computeFacet, computeAdjacency } from "./model/facets.ts";
+export type { FacetName, Tier, Adjacency, PanelTopo } from "./model/facets.ts";
+
+// ─ validation and output (P5→P6) ─────────────────────────────────────────────
+export { checkColumnMinimum, checkMaterialDomain, checkCollisions } from "./model/validate.ts";
+export type { Occupant, MaterialDomain, Box } from "./model/validate.ts";
+export { release, diffReleases, partIdentity } from "./model/release.ts";
+export type { Release, ReleasedPart, InputPart, Banding, ShopConvention, PartDiff } from "./model/release.ts";
+
+// ─ things + lock ─────────────────────────────────────────────────────────────
+export { canPublish, buildIndex } from "./model/things.ts";
+export type { Thing, ThingDef, FieldDef, Ownership } from "./model/things.ts";
+export { contentHash, lockOf, checkLock, reverseIndex } from "./model/lock.ts";
+export type { Lock, LockEntry } from "./model/lock.ts";
+
+// ─ persist (project fayli) ───────────────────────────────────────────────────
+export { serializeProject, parseProject, saveProject, loadProject, checkProjectIntegrity } from "./model/project.ts";
+export type { Project, Pin, StoredRule } from "./model/project.ts";
+
+// ─ asosiy tiplar ─────────────────────────────────────────────────────────────
+export type { Axis, Thickness, LineId, Line, Block, Sheet, Refusal } from "./model/contracts.ts";
+export { EPS, DEFAULT_MIN } from "./model/contracts.ts";

@@ -282,3 +282,22 @@ D6 hardware/fit · D7 kvantlangan · D8 (T7 stratifikatsiya) · D9/D10/D11 (T10 
 
 **Test:** butun suite **92/92 pass · 0 fail** (+Persist 5: round-trip · fs save/load · integritet toza ·
 lock.hash o'zgargan · lock.missing yo'qolgan).
+
+---
+
+## 2026-09-09 — §2 MUZLATILGAN API + `derive()` birlashtiruvchi (UI sharti) ✅
+
+**Nima qilindi:**
+- `apps/app/src/poligon/model/derive.ts` — 54§2 markaziy `derive(sheet, profile, rules): Derivation`
+  ({parts, modules, junctions, refusals, provenance}). Yangi geometriya EMAS — T2/T3/T4/T6'ni bitta
+  kirishga jamlaydi. HAQIQIY X-kesishma (ikkala chiziq nuqtadan o'tsagina) rutba-kontestga kiradi;
+  T-birlashmada o'tuvchi davom etadi, tugovchi tabiiy yopiladi. Rol yo'q / tenglik / 'both' → RAD to'planadi.
+- `apps/app/src/poligon/index.ts` — 54§2 **muzlatilган API seam**: UI (Saidislom) FAQAT shundan chaqiradi,
+  `model/` ichki fayllarига tegmaydi. Engine React import qilmaydi (54§0 tikuv). Yangi mantiq yo'q — re-eksport.
+
+**Asos:** `54`§2 (frozen API: createSheet/apply/legalDomain/derive/resolve/blastRadius/validate/release/
+diffReleases/loadThings/lockOf/checkLock) · `54`§0 (tikuv: engine sof, UI thin) · 48§2 X vs T-birlashma.
+
+**Test:** butun suite **99/99 pass · 0 fail** (+derive 5: **T3 darvozasi** penal+baza umumiy chiziq→BITTA
+2400 · X-kontest worktop>side→yon kesiladi · tie/roleMissing/transport RAD; +index 2: §2 eksport + derive→
+release uchidan-uchiga).
