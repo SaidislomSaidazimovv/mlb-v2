@@ -261,3 +261,24 @@ T9 Lockfile · T10 Validation · T11 Release · T16 korpus-harness — **69/69 t
 D1/D2 (T1/contracts — authored/derived, Type-param) · D3 datum · D4 Migration · D5 thickness-class ·
 D6 hardware/fit · D7 kvantlangan · D8 (T7 stratifikatsiya) · D9/D10/D11 (T10 validation) · D12
 (T11 three-plane finished/model/cut). **Geometriya devori (Law D) to'liq D1–D12 sifatida qurildi.**
+
+---
+
+## 2026-09-09 — Persist: project fayli (sheet+params+pins+lock) ✅
+
+**Nima qilindi** (`apps/app/src/poligon/model/project.ts`, sof + cheklangan fs qatlami):
+- `Project = { id, sheet, params, pins, lock }` — 52§5 ta'rifi aynan (project fayli = sheet + parameters
+  + pins + lock).
+- `Pin { partId, property, value }` — 50 Law C: part-identity istisnosi (per-property override, qiymat).
+- `StoredRule { layer, property, value, where? }` — 52§7: qoida DEKLARATIV (predikat facet-triple; funksiya
+  emas → serializable). Kod-qoida faylga yozilmaydi.
+- `serializeProject` / `parseProject` — round-trip (52§5 sof ma'lumot).
+- `saveProject` / `loadProject` — fs yozish/o'qish (persist qatlami; engine yadrosi sof qoladi, 54§0).
+- `checkProjectIntegrity(p, index)` — 52§5/T9: ochilganda lock joriy Thing-indeksga mos kelmasa RAD
+  (o'zgargan/yo'qolgan Thing → **cut list chiqmaydi**, foydalanuvchi hal qilmaguncha).
+
+**Asos:** `52`§5 (project fayli = sheet+params+pins+lock; lock mos kelmasa cut list yo'q) · `52`§7
+(deklarativ qoida) · `50` Law C (pin) · T1 (sheet round-trip) · T9 (lock/checkLock).
+
+**Test:** butun suite **92/92 pass · 0 fail** (+Persist 5: round-trip · fs save/load · integritet toza ·
+lock.hash o'zgargan · lock.missing yo'qolgan).
