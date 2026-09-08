@@ -22,8 +22,8 @@
 - ~~**T8 · Thing loader**~~ — ✅ BAJARILDI (things.ts, 49/49 test; canPublish diagram/unit/declarative/ownership, buildIndex asiklik). Qoldig'i: haqiqiy `loadThings(dir)` (fs — foldedan o'qish) — hozir Thing obyekt sifatida (validatsiya sof); fs-o'qish thin qatlam, keyin.
 - ~~**T9 · Lockfile**~~ — ✅ BAJARILDI (lock.ts, 55/55 test; lockOf/checkLock missing/version/hash, reverseIndex). Qoldig'i: fs bilan real project fayliga (sheet+params+pins+lock) yozish/o'qish — T11/persist bilan.
 - ~~**T10 · Validation (P5)**~~ — ✅ BAJARILDI (validate.ts, 62/62 test; L8 min, D9 material domeni, D11 to'qnashuv). Qoldig'i: eshik-swing devorga (real geometriya bilan) + feasibility (grain/nesting = P6, T11) — hozir box-overlap shakli.
-- **T11 · Release (P6)** — finished→cut arifmetikasi (sex konvensiyasi, kromka), handedness, grain, 0.1mm, o'zgarmas raqamlangan release, diffReleases, pre-flight. **Kesim ro'yxati chiqishi.** (`53`) — **keyingi (oxirgi engine task, keyin T16 korpus).**
-- **T16 · Korpus** — `51`§6 dagi 8 fixture.
+- ~~**T11 · Release (P6)**~~ — ✅ BAJARILDI (release.ts, 67/67 test; finished→cut, raqamlangan/o'zgarmas, diffReleases, handed/grain/0.1mm). Qoldig'i: pre-flight ro'yxati (53§1 — o'lchanmagan devor/kromkasiz qirra ogohlantirishlari) + kerf/tolerance — persist/UI bilan.
+- **T16 · Korpus/CI** — real devorlar fixtura sifatida; `51`§6 dagi 8 minimal fixture; har qonun o'zgarishi qayta-derive + diff. **10 mebel parity shu yerda.** (`54` T16; `51`§6) — **keyingi (oxirgi engine task).**
 
 ## Founderga bog'liq (→ FOUNDERGA.md)
 - Teshik/сверловка (Q2), 10 mebel (Q3), natija formati (Q5), poligon kodi (Q1), 49-nom (Q4).

@@ -149,3 +149,20 @@ Qamrov: L16 (butun-mm rad), L5b (ε-snap, dublikat yo'q), faces, L1 (to'g'ri 600
 **Asos:** `48` L8 + `51` D9/D11 + `54`§3 "T10 gate".
 
 **Test:** butun suite **62/62 pass · 0 fail** (+T10 7). **T10-gate:** har rad qoidani nomlaydi (carcass/glass-10mm/D11.collision); filler minimumdan ozod.
+
+---
+
+## 2026-09-09 — T11: Release (P6) — kesim ro'yxatining chiqishi ✅
+
+**Nima qilindi** (`apps/app/src/poligon/model/release.ts`, sof funksiya):
+- `release(parts, conv, prev?)` — FINISHED→CUT (cut = finished − kromka, sex konvensiyasi bilan); handedness + grain + 0.1mm; **o'zgarmas RAQAMLANGAN Release**; qism raqami identity (role+lineIDs) bo'yicha barqaror, yangi = keyingi bo'sh, hech qachon qayta raqamlanmaydi.
+- `diffReleases(a, b)` — o'zgargan/paydo/g'oyib (changed/appeared/vanished).
+- `partIdentity(p)` — role + bounding LINE IDs (pozitsiya emas, 51 H1).
+
+**Asos:** `53`§1 (finished→cut), `53`§2 (raqamlangan/o'zgarmas/diff), `53`§5 (handed/grain/0.1mm) + `54`§3 "T11 gate".
+
+**Test:** butun suite **67/67 pass · 0 fail** (+T11 5). **T11-gate:** kromka 2mm×4 → cut 4mm kichik; raqam barqaror + yangi keyingi bo'sh; diff changed/appeared/vanished; 0.1mm.
+
+---
+
+### ⏱ Engine holati: **11 / 12** task tugadi (T1–T11). Qolган engine: faqat **T16 (korpus/CI)**. Keyin UI (T12–T15, Saidislom).
