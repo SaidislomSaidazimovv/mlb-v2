@@ -201,3 +201,18 @@ T9 Lockfile · T10 Validation · T11 Release · T16 korpus-harness — **69/69 t
 **Asos:** `51` D3 (C1-C5).
 
 **Test:** butun suite **75/75 pass · 0 fail** (+D3 6). **Korpus endi 5/8:** C1 (datum + fasad qalinligi — carcass-datum mustaqil, fasad-datum siljiydi, deterministik) qo'shildi.
+
+---
+
+## 2026-09-09 — D5: Thickness class (51 chuqur qonun) ✅
+
+**Nima qilindi** (`apps/app/src/poligon/model/thickness.ts`, sof funksiya):
+- `classifyMaterialChange(from,to)` — sinf ichida → "cascade"; sinf kesib → "migration".
+- `checkCascadeMaterialChange` — kaskad orqali sinf kesib o'tishga urinish → `D5.migration` RAD (silent resize yo'q).
+- `checkTypeInstantiation(typeClass, projectClass)` — cross-class o'rnatish → `D5.crossClass` RAD.
+
+**Asos:** `51` D5 (+ A1/I4).
+
+**Test:** butun suite **78/78 pass · 0 fail** (+D5 3). **Korpus endi 7/8:** A1 (16→18 = migration, kaskad emas) + I4 (18mm Type→16mm loyiha = migration) qo'shildi. Qolgan: **B1** (hinge overlay/fit → D6).
+
+*(D4 Migration mexanizmi — T5 `apply` ustida quriladigan, oshkora/preview/atomik/refusable batch line-move; A1/I4 DETEKSIYASI D5 bilan bo'ldi, mexanizm D4 keyin.)*

@@ -31,10 +31,10 @@
   - **10-mebel parity** — eski engine (panelDecomposition+SWJ008) chiqishini yangi bilan solishtirish (cross-repo, katta).
 
 ## Keyingi katta bloklar (54§3 dan tashqari, kelgusi)
-- `51` D-qonunlari: ~~**D3** (datum/local-frame)~~ ✅ (datum.ts, korpus C1). Qolgan: **D4** (Migration —
-  line ko'chishi, previewed, atomik), **D5** (thickness class — cross-class = Migration; A1/I4 korpus),
-  **D6** (hardware geometrik oqibatlari — overlay/gap/clearance; `fits/`; B1 korpus), **D7** (kvantlangan
-  param — ruxsat etilgan to'plam). — **keyingi: D5 (A1/I4 korpusni yopadi) yoki D6 (B1).**
+- `51` D-qonunlari: ~~**D3** (datum)~~ ✅, ~~**D5** (thickness class — A1/I4 korpus)~~ ✅. Qolgan:
+  **D6** (hardware geometrik oqibatlari — overlay/gap/clearance; `fits/`; **B1 korpusni yopadi → 8/8**),
+  **D4** (Migration mexanizmi — line-move batch, preview/atomik/refusable; T5 apply ustida),
+  **D7** (kvantlangan param — ruxsat etilgan to'plam). — **keyingi: D6 (B1 → korpus 8/8 to'liq).**
 - **Persist**: real project fayli (sheet+params+pins+lock) fs bilan yozish/o'qish.
 - **UI (Saidislom, `54`§0)**: T12 Sheet muharrir · T13 Inspektor · T14 Generatsiyalangan sozlamalar · T15 Parts ekrani — frozen API + yangi UI papka.
 

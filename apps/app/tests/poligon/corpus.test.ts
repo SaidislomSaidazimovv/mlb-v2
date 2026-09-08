@@ -6,6 +6,7 @@ import { runCorpus, allPass, type Fixture } from "../../src/poligon/model/corpus
 import { authorRule } from "../../src/poligon/model/cascade.ts";
 import { release, partIdentity, type ShopConvention } from "../../src/poligon/model/release.ts";
 import { resolveSetback, type DimParam } from "../../src/poligon/model/datum.ts";
+import { checkCascadeMaterialChange, checkTypeInstantiation, type Material } from "../../src/poligon/model/thickness.ts";
 
 const trim: ShopConvention = { subtractBanding: true };
 
@@ -40,6 +41,18 @@ const fixtures: Fixture[] = [
     const fasadFollows = resolveSetback(-18, p) !== resolveSetback(-22, p);   // fasad-datum: qalinlik bilan siljiydi
     return carcassInvariant && fasadFollows ? { ok: true } : { ok: false, rule: "C1.nondeterministic" };
   } },
+  // A1 (51§6): Theme 16→18 — MIGRATION deb aniqlansin (jimgina cascade/resize emas).
+  { name: "A1", run: () => {
+    const m16: Material = { id: "ldsp16", thicknessClass: "t16", thickness: 16 };
+    const m18: Material = { id: "mdf18", thicknessClass: "t18", thickness: 18 };
+    const r = checkCascadeMaterialChange(m16, m18);
+    return r ? { ok: false, rule: r.rule } : { ok: true };
+  } },
+  // I4 (51§6): 18mm Type 16mm loyihaga — cross-class = Migration (rad).
+  { name: "I4", run: () => {
+    const r = checkTypeInstantiation("t18", "t16");
+    return r ? { ok: false, rule: r.rule } : { ok: true };
+  } },
 ];
 
 const expected = {
@@ -48,9 +61,11 @@ const expected = {
   F1: { ok: true },
   H1: { ok: true },
   C1: { ok: true },
+  A1: { ok: false, rule: "D5.migration" },
+  I4: { ok: false, rule: "D5.crossClass" },
 };
 
-test("T16: korpus 5/8 fixtura O'TADI (E1/E2/F1/H1/C1) — built modullar", () => {
+test("T16: korpus 7/8 fixtura O'TADI (E1/E2/F1/H1/C1/A1/I4) — built modullar", () => {
   const results = runCorpus(fixtures, expected);
   assert.equal(allPass(results), true, JSON.stringify(results));
 });
