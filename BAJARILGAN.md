@@ -97,3 +97,16 @@ Qamrov: L16 (butun-mm rad), L5b (ε-snap, dublikat yo'q), faces, L1 (to'g'ri 600
 **Asos:** `50`§1 (facet jadvali/tier) + `51` D8/E2 (stratifikatsiya) + `54`§3 "T6 gate".
 
 **Test:** butun suite **35/35 pass · 0 fail** (+T6 6). **T6-gate:** adjacency GEOMSIZ hisoblandi; edge_exposure geomsiz RAD (facet.needsGeometry).
+
+---
+
+## 2026-09-09 — T7: Cascade + stratifikatsiya ✅
+
+**Nima qilindi** (`apps/app/src/poligon/model/cascade.ts`, sof funksiya):
+- `LAYERS` (system→catalog→theme→project→wall→module→block→pin) + `resolve(part, property, rules)` — past→yuqori; ENG YUQORI mos qatlam yutadi (specificity yo'q); bir qatlamda kelishmovchilik → `Conflict` rad (tiebreak yo'q); hech topilmasa → `Incomplete` rad.
+- `authorRule(rule)` — 51 D8: geometrik (P1) qoida Tier-3 facetga tayansa → `D8` rad, YOZILISH paytida.
+- `blastRadius(parts, rule)` — 50§6: qoida qaysi partlarga tegadi (mutatsiyasiz).
+
+**Asos:** `50`§2 (kaskad/konflikt/incomplete) + `50`§6 (blast-radius) + `51` D8 + `54`§3 "T7 gate".
+
+**Test:** butun suite **42/42 pass · 0 fail** (+T7 7). **T7-gate:** E1 (P1 qoida `size.clear` Tier-3 → D8 rad); E2 (P1 qoida `adjacency` Tier-0 → qabul); qatlam-yutish, Conflict, Incomplete tasdiqlandi.
