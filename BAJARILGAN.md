@@ -216,3 +216,17 @@ T9 Lockfile · T10 Validation · T11 Release · T16 korpus-harness — **69/69 t
 **Test:** butun suite **78/78 pass · 0 fail** (+D5 3). **Korpus endi 7/8:** A1 (16→18 = migration, kaskad emas) + I4 (18mm Type→16mm loyiha = migration) qo'shildi. Qolgan: **B1** (hinge overlay/fit → D6).
 
 *(D4 Migration mexanizmi — T5 `apply` ustida quriladigan, oshkora/preview/atomik/refusable batch line-move; A1/I4 DETEKSIYASI D5 bilan bo'ldi, mexanizm D4 keyin.)*
+
+---
+
+## 2026-09-09 — D6: Hardware/Fit + KORPUS 8/8 (T16 gate BAJARILDI) ✅
+
+**Nima qilindi** (`apps/app/src/poligon/model/fits.ts`, sof funksiya):
+- `checkFitHinge(fit, hinge)` — 52§8: `requires.hinge_class` mos kelmasa `D6.fitHinge` RAD (B1: inset Fit + full-overlay ilgak → 33mm-xato eshik EMAS).
+- `doorWidth(opening, fit)` — 51 D6: eshik eni DEKLARATSIYA qilingan overlay/gap'dan (ilgak nomida yashirin emas); full-overlay 597 vs inset 565 (~33mm farq).
+
+**Asos:** `51` D6 + `52`§8 (+ B1).
+
+**Test:** butun suite **81/81 pass · 0 fail** (+D6 3). Korpusga **B1** qo'shildi.
+
+### 🎯 KORPUS 8/8 — `51`§6 minimal to'plam TO'LIQ: E1·E2·F1·H1·C1·A1·I4·B1. **T16 gate "sakkiztasi o'tadi va o'tib turadi" — BAJARILDI.**

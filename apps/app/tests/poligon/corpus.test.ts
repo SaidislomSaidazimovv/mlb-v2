@@ -7,6 +7,7 @@ import { authorRule } from "../../src/poligon/model/cascade.ts";
 import { release, partIdentity, type ShopConvention } from "../../src/poligon/model/release.ts";
 import { resolveSetback, type DimParam } from "../../src/poligon/model/datum.ts";
 import { checkCascadeMaterialChange, checkTypeInstantiation, type Material } from "../../src/poligon/model/thickness.ts";
+import { checkFitHinge, type Fit, type Hinge } from "../../src/poligon/model/fits.ts";
 
 const trim: ShopConvention = { subtractBanding: true };
 
@@ -53,6 +54,13 @@ const fixtures: Fixture[] = [
     const r = checkTypeInstantiation("t18", "t16");
     return r ? { ok: false, rule: r.rule } : { ok: true };
   } },
+  // B1 (51§6): inset Fit + full-overlay ilgak — mos kelmaydi, RAD (33mm-xato eshik emas).
+  { name: "B1", run: () => {
+    const insetFit: Fit = { id: "inset-3", kind: "door", gap: 1.5, overlay: "inset", requiresHingeClass: "inset" };
+    const fullHinge: Hinge = { id: "blum-full", hingeClass: "full-overlay" };
+    const r = checkFitHinge(insetFit, fullHinge);
+    return r ? { ok: false, rule: r.rule } : { ok: true };
+  } },
 ];
 
 const expected = {
@@ -63,9 +71,10 @@ const expected = {
   C1: { ok: true },
   A1: { ok: false, rule: "D5.migration" },
   I4: { ok: false, rule: "D5.crossClass" },
+  B1: { ok: false, rule: "D6.fitHinge" },
 };
 
-test("T16: korpus 7/8 fixtura O'TADI (E1/E2/F1/H1/C1/A1/I4) — built modullar", () => {
+test("T16: korpus 8/8 fixtura TO'LIQ O'TADI (E1/E2/F1/H1/C1/A1/I4/B1) — 51§6 minimal to'plam", () => {
   const results = runCorpus(fixtures, expected);
   assert.equal(allPass(results), true, JSON.stringify(results));
 });
