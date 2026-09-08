@@ -230,3 +230,15 @@ T9 Lockfile · T10 Validation · T11 Release · T16 korpus-harness — **69/69 t
 **Test:** butun suite **81/81 pass · 0 fail** (+D6 3). Korpusga **B1** qo'shildi.
 
 ### 🎯 KORPUS 8/8 — `51`§6 minimal to'plam TO'LIQ: E1·E2·F1·H1·C1·A1·I4·B1. **T16 gate "sakkiztasi o'tadi va o'tib turadi" — BAJARILDI.**
+
+---
+
+## 2026-09-09 — D4: Migration (51 chuqur qonun) ✅
+
+**Nima qilindi** (`apps/app/src/poligon/model/migration.ts`, sof funksiya):
+- `runMigration(sheet, mig)` — chiziq siljishini talab qiladigan o'zgarishlar (line-move op'lar) TARTIB bo'yicha, ATOMIK (T5 `apply` ustida, immutable); birorta rad bo'lsa BUTUN migratsiya rad + `failedAt` (L0 butun-yoki-hech), asl Sheet o'zgarmaydi. Muvaffaqiyatda END-STATE.
+- `previewMigration` — END-STATE, MUTATSIYASIZ (oraliq holatlar emas); farqi — preview commit qilinmaydi.
+
+**Asos:** `51` D4 (resolve chiziqni siljitmaydi; migration = oshkora/preview/atomik/tartibli/refusable) + `51` H2 (tartib, end-state preview) + `48` L0.
+
+**Test:** butun suite **84/84 pass · 0 fail** (+D4 3). Ordered ok → end-state (asl tegilmadi); 2-op'da uzilish → failedAt=1, butun rad; preview mutatsiyasiz.
