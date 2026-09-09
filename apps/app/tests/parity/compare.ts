@@ -70,7 +70,7 @@ export function compareFurniture(f: Furniture): FurnitureCompare {
   const oldOnly = rows.filter((r) => r.old && !r.neu).length;
   const conclusion =
     `${f.label}: eski ${old.length} bo'lak, yangi ${neu.length}; ${matched} bo'lak o'lchami BIR XIL (karkas); ` +
-    `${oldOnly} bo'lak faqat eskiда (eshik/orqa/tsokol — yangi karkas Sheet hali bermaydi); ` +
-    `teshik: yangi yadroда drilling hali yo'q (founder Q2).`;
+    `${oldOnly} bo'lak faqat eskida (eshik/orqa/tsokol — yangi karkas Sheet hali bermaydi); ` +
+    `teshik: yangi yadroda drilling hali yo'q (founder Q2).`;
   return { furniture: f, old, neu, rows, conclusion };
 }
