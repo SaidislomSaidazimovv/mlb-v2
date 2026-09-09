@@ -53,7 +53,9 @@ Eng muhim qolган (AUDIT §B), founder sinoviдан oldin shart:
   minimum→L14.minGap RAD, butun mm), 128/128.
 - ~~**B7 48§3 derived-until-touched**~~ — ✅ BAJARILDI (2026-09-09): relations.ts (declareRelation/
   resolvePositions/pinPosition, chain+cycle rad), 133/133. Qoldig'i: UI pin ko'rsatkichi.
-- Qolgan: **B8 L3 qatlamlar**; **B9 haqiqiy edge_exposure kromka**.
+- ~~**B8 L3 qatlamlar**~~ — ✅ BAJARILDI (2026-09-09): layers.ts (Block.layer, checkFullness — carcass
+  aynan bir marta, front/above/behind ozod), 138/138.
+- Qolgan: **B9 haqiqiy edge_exposure kromka**.
 
 ## Endi qolган KATTA bloklar
 - **10-mebel parity** — eski engine (mebelchi-2app/mebely `panelDecomposition` + SWJ008) vs yangi

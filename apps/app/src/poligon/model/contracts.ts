@@ -27,8 +27,12 @@ export interface ReservedMeta {
   layer: string;      // qatlam tegi (behind/carcass/front/above)
 }
 
+/** 48 L3 / 50§1: qatlam — behind / carcass / front / above. FAQAT carcass to'la bo'lishi shart. */
+export type Layer = "behind" | "carcass" | "front" | "above";
+
 /** 48§0 / L4: bo'lak — kataklar to'rtburchagi, chegara chiziqlari id lari bilan.
- *  type: masalan "base"/"tall"/... yoki L9 maxsus: "void" (chin bo'shliq) / "reserved" (appliance slot). */
+ *  type: masalan "base"/"tall"/... yoki L9 maxsus: "void" (chin bo'shliq) / "reserved" (appliance slot).
+ *  layer: 48 L3 qatlami (berilmasa carcass — strukturaviy tekis). */
 export interface Block {
   id: string;
   type: string;
@@ -36,6 +40,7 @@ export interface Block {
   vHi: LineId;
   hLo: LineId;
   hHi: LineId;
+  layer?: Layer;           // 48 L3 (berilmasa carcass)
   reserved?: ReservedMeta; // type==="reserved" bo'lsa
 }
 

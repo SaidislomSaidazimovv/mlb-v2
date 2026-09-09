@@ -37,6 +37,11 @@ export type { Thing, ThingDef, FieldDef, Ownership } from "./model/things.ts";
 export { contentHash, lockOf, checkLock, reverseIndex } from "./model/lock.ts";
 export type { Lock, LockEntry } from "./model/lock.ts";
 
+// ─ layers + fullness (L3 · B8) ────────────────────────────────────────────────
+// Eslatma: 48 L3 fizik qatlam (behind/carcass/front/above) `Block.layer` tipida; nomi 50§2 cascade
+// `Layer` (system/catalog/...) bilan to'qnashmasligi uchun index'da alohida eksport qilinmaydi.
+export { checkFullness, blockLayer } from "./model/layers.ts";
+
 // ─ derived-until-touched (48§3 · B7) ──────────────────────────────────────────
 export { isDerived, declareRelation, resolvePositions, pinPosition } from "./model/relations.ts";
 export type { PositionRelation } from "./model/contracts.ts";
