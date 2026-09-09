@@ -47,8 +47,10 @@ Eng muhim qolган (AUDIT §B), founder sinoviдан oldin shart:
   ishlaydi. wall-facing endi B4 bilan yopildi.
 - ~~**B4 L15 wall-ends/opening**~~ — ✅ BAJARILDI (2026-09-09): createSheet(opening,ends), outer-face
   chegara (side=opening balandligi), against-wall→wall-facing, into-corner→Reserved; 117/117.
-  **B5 L9 Void/Reserved/Absorb**; **B6 L14 wall-length**; **B7 48§3 derived-until-touched**;
-  **B8 L3 qatlamlar**; **B9 haqiqiy edge_exposure kromka**.
+- ~~**B5 L9 Void/Reserved/Absorb**~~ — ✅ BAJARILDI (2026-09-09): voidspace.ts (deleteBoard=segment 0,
+  voidBlock, reserveBlock, absorb, mergeAdjacentVoids), 123/123. Qoldig'i: muharrirда blok-void/absorb gesture.
+- Qolgan: **B6 L14 wall-length**; **B7 48§3 derived-until-touched**; **B8 L3 qatlamlar**;
+  **B9 haqiqiy edge_exposure kromka**.
 
 ## Endi qolган KATTA bloklar
 - **10-mebel parity** — eski engine (mebelchi-2app/mebely `panelDecomposition` + SWJ008) vs yangi

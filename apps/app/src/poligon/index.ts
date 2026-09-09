@@ -37,6 +37,10 @@ export type { Thing, ThingDef, FieldDef, Ownership } from "./model/things.ts";
 export { contentHash, lockOf, checkLock, reverseIndex } from "./model/lock.ts";
 export type { Lock, LockEntry } from "./model/lock.ts";
 
+// ─ void / reserved / absorb (L9/L10 · B5) ────────────────────────────────────
+export { deleteBoard, voidBlock, reserveBlock, absorb, mergeAdjacentVoids, isExemptFromEqualize, reservedFootprint } from "./model/voidspace.ts";
+export type { ReservedMeta } from "./model/contracts.ts";
+
 // ─ persist (project fayli) — SOF qismgina (fs I/O poligon/index'da YO'Q; brauzerga node:fs kirmaydi).
 //   Haqiqiy save/load faqat Node'da: `model/project-fs.ts` dan to'g'ridan-to'g'ri import qilinadi.
 export { serializeProject, parseProject, checkProjectIntegrity } from "./model/project.ts";

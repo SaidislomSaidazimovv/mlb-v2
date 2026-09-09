@@ -17,7 +17,18 @@ export interface Line {
   pos: number; // butun mm (L16)
 }
 
-/** 48§0 / L4: bo'lak — kataklar to'rtburchagi, chegara chiziqlari id lari bilan. */
+/** 48 L9: Reserved (appliance slot) metadatasi — o'lchamli, nomlangan, ko'chmas, equalize'dan ozod.
+ *  clearance HAR YUZAda alohida, nominal ICHIGA SINGDIRILMAYDI (profildan keladi). */
+export interface ReservedMeta {
+  name: string;
+  nominalW: number;   // asbob nominal eni (mm) — clearance qo'shilmagan
+  nominalH: number;   // nominal balandligi
+  clearance: number;  // har yuzaga bo'shliq (profildan; nominal ichiga BAKED emas)
+  layer: string;      // qatlam tegi (behind/carcass/front/above)
+}
+
+/** 48§0 / L4: bo'lak — kataklar to'rtburchagi, chegara chiziqlari id lari bilan.
+ *  type: masalan "base"/"tall"/... yoki L9 maxsus: "void" (chin bo'shliq) / "reserved" (appliance slot). */
 export interface Block {
   id: string;
   type: string;
@@ -25,6 +36,7 @@ export interface Block {
   vHi: LineId;
   hLo: LineId;
   hHi: LineId;
+  reserved?: ReservedMeta; // type==="reserved" bo'lsa
 }
 
 /** 48 L15: devor UCHI holati. `into-corner` → Reserved ustun (qo'shni devor chuqurligi, tahrirlanmaydi). */
