@@ -24,6 +24,20 @@ haqiqiy adjacency). Quyida to'liq.
 hisoblangan. `carcassParts` W−2t — 48§2 dagi 800-misoldan. `release` 0.1mm — 53§5 dan. `corpus` — haqiqiy
 solishtiruvchi, soxta-pass emas.)*
 
+## A4 — MUHIM GEOMETRIYA XATOSI (burchaklar ochiq) — foydalanuvchi topdi (2026-09-09)
+Muharrirда burchaklar OCHIQ qolgani — bejiz emas: **board uzunligi CENTERLINE masofasi bilan hisoblanmoqda,
+junction through/butt (48§2) UZUNLIKKA ta'sir qilmayapti.** Kod bilan isbotlandi (600×720 quti):
+- Hozir: side=720, top=600 (centerline). 
+- 48§2 to'g'ri: V-through → top=**568** (W−2t), side=720; H-through → top=600, side=**688** (H−2t).
+- `carcassParts()` (junction.ts) TO'G'RI hisoblaydi (T2 gate 800→768 sinovdan o'tган), LEKIN `boardRuns`/
+  `derive` uni ISHLATMAYDI — uzunliklar naive centerline. Ya'ni **T2 gate izolyatsiyada funksiyani sinagan,
+  integratsiyalangan derive'ni emas** (test bo'shlig'i).
+- Konvensiya reconciliation (o'ylab topilmagan): founder 800→768 = W−2t → tashqi chiziqlar OUTER FACE devor
+  chegarasida (L15: outer lines t/2 ichkarida). Mening seed'im outer l'ni pos=0/600 ga qo'ygan (L15 buzilgan).
+- **Xulosa:** to'g'ri tuzatish = **L15 (wall outer faces) + junction-aware board extents (faces=pos±t/2, 48§0)**.
+  Bu burchakni yopadi VA butun kesim uzunliklarini to'g'rilaydi. Test oracle = founder'ning 768/800 raqamlari.
+- **Ustuvorlik: YUQORI** (kesim ro'yxati aynan shu sababdan hozir noto'g'ri butt-uzunlik beradi).
+
 ## B. TASHLAB KETILGAN / STUB / SOXTA (skipped) — yo'q yoki yarim
 
 | # | Nima | Holat | Hujjat |
