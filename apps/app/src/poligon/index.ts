@@ -28,8 +28,22 @@ export type { FacetName, Tier, Adjacency, PanelTopo } from "./model/facets.ts";
 // ─ validation and output (P5→P6) ─────────────────────────────────────────────
 export { checkColumnMinimum, checkMaterialDomain, checkCollisions, checkConstraint, checkDoorSwing, checkGrainFit } from "./model/validate.ts";
 export type { Occupant, MaterialDomain, Box, Constraint } from "./model/validate.ts";
-export { release, diffReleases, partIdentity, nominalToModel } from "./model/release.ts";
-export type { Release, ReleasedPart, InputPart, Banding, ShopConvention, PartDiff } from "./model/release.ts";
+export { release, diffReleases, partIdentity, nominalToModel, setReleaseStatus } from "./model/release.ts";
+export type { Release, ReleasedPart, InputPart, Banding, ShopConvention, PartDiff, ReleaseStatus } from "./model/release.ts";
+
+// ─ qolgan hujjat qismlari (48§6 · 50 Law C · 50§6 · 52 · 53§1/§3/§5) ─────────────
+export { DEFAULT_STANDARDS, fillModules } from "./model/profile.ts";
+export type { StandardsProfile } from "./model/profile.ts";
+export { checkPinAlive, offerPromotion } from "./model/pins.ts";
+export type { PromotionOffer } from "./model/pins.ts";
+export { changeLedger } from "./model/ledger.ts";
+export type { Ledger } from "./model/ledger.ts";
+export { preflight } from "./model/preflight.ts";
+export type { PreflightInput, PreflightItem } from "./model/preflight.ts";
+export { forkThing, retireThing, pickerList, makeCollection } from "./model/catalog.ts";
+export type { Collection } from "./model/catalog.ts";
+export { removeAttached, markDiverged, isHanded, checkHandedness } from "./model/attached.ts";
+export type { AttachedItem } from "./model/attached.ts";
 
 // ─ Law B (single-valued facet) + overrides kanali (53§4) ─────────────────────
 export { checkSingleValued, bandsSpanned } from "./model/lawb.ts";

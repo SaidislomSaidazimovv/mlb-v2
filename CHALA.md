@@ -61,6 +61,10 @@ Eng muhim qolган (AUDIT §B), founder sinoviдан oldin shart:
 - ✅ **51 D1–D12 QOLDIQLARI HAM YOPILDI (2026-09-09):** D2 (types.ts Type-param+present:bool), D9 (constraint/
   forbidden-zone), D10 (install.ts atomik Theme install+konflikt+facet+domain-miss), D11 (door-swing+grain
   feasibility), D12 (uch plane+kerf/tolerance+nominalToModel), H3 (journal.ts bitta undo-journal). 153/153.
+- ✅ **CHUQUR QAYTA-AUDIT qoldiqlari HAM YOPILDI (2026-09-09):** L6 material/tola · Law B · 53§4 overrides ·
+  48§6 standards+fill · 50 Law C pin orphan/promote · 50§6 ledger · 52 fork/retire/collections · 53§1 preflight ·
+  53§2 status · 53§3/§5 attached/handedness. 164/164 test.
+- Halol qolgan (perf/Node-fs, korrektlik emas): 50§6 incremental invalidation (kesh) · 52 haqiqiy fs folder walk.
 - Qolgani: **to'liq o'yin-UI passи** (UI-integratsiya) + **10-mebel parity** (founder sinovi).
 
 ## Endi qolган KATTA bloklar

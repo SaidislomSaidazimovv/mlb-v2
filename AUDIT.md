@@ -34,6 +34,18 @@ aytmagan/ko'rmagan) — halol ro'yxat:
 material/tola, Law B, 53§4 overrides — QONUN darajasida) hali YO'Q. "Hammasi tugadi" degan har qanday oldingi
 gap NOTO'G'RI edi. Bu ro'yxat endi to'liq (grep bilan tekshirilган).
 
+### ✅ QOLDIQLAR HAM BAJARILDI (2026-09-09, foydalanuvchi "1,2,3 keyin qolganlari")
+- **QONUN:** (1) L6 material/tola board termination (`board.ts` attrOf + `setSegMaterial`) · (2) Law B
+  (`lawb.ts` checkSingleValued, zone-spanning) · (3) 53§4 overrides (`overrides.ts` delta/absolute/conflict/inventory).
+- **PRODUCT/infra:** 48§6 standards+fill (`profile.ts`) · 50 Law C pin orphan/promote (`pins.ts`) ·
+  50§6 change ledger (`ledger.ts`) · 52 fork/retire/collections (`catalog.ts`) · 53§1 pre-flight (`preflight.ts`) ·
+  53§2 release status (`release.ts`) · 53§3/§5 attached+handedness (`attached.ts`).
+- **Butun suite 164/164, typecheck 0, build ok.**
+- **Halol qolgan (perf/Node-fs, korrektlik EMAS):** 50§6 facet-keyed **incremental invalidation** (kesh
+  optimizatsiyasi — hozir har derive to'liq, to'g'ri lekin optimallanmagan) · 52 haqiqiy **fs folder walk**
+  `loadThings(dir)` (disk'dan def.json/diagram o'qish — hozir logika bor, disk-walk yo'q; real Thing papkalari
+  ham yo'q). Bular korrektlikка ta'sir qilmaydi.
+
 ---
 
 

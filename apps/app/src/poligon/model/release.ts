@@ -34,7 +34,12 @@ export interface ReleasedPart {
   thickness?: number; // B1/53§1: material qalinligi (passthrough)
   grain: "L" | "W" | "none"; handed?: "left" | "right";
 }
-export interface Release { number: number; parts: ReleasedPart[]; }
+/** 53§2: release status — draft/released/in-production/delivered (bittasi dialog jonli-release tahririда). */
+export type ReleaseStatus = "draft" | "released" | "in-production" | "delivered";
+export interface Release { number: number; parts: ReleasedPart[]; status: ReleaseStatus; }
+
+/** 53§2: release statusini o'zgartirish (o'zgarmas parts — status ustki holat). */
+export function setReleaseStatus(r: Release, status: ReleaseStatus): Release { return { ...r, status }; }
 
 /** 53§2 / 51 H1: identity = role + bounding line IDs (pozitsiya emas). */
 export function partIdentity(p: InputPart): string {
@@ -69,7 +74,7 @@ export function release(parts: InputPart[], conv: ShopConvention, prev?: Release
       handed: p.handed,
     });
   }
-  return { number: (prev?.number ?? 0) + 1, parts: out };
+  return { number: (prev?.number ?? 0) + 1, parts: out, status: "draft" }; // 53§2: yangi release = draft
 }
 
 export interface PartDiff { id: string; num: number; kind: "changed" | "appeared" | "vanished"; }

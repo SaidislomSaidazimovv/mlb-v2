@@ -17,6 +17,8 @@ export interface ThingDef {
   name: Record<string, string>;
   fields: FieldDef[];
   refs?: string[]; // boshqa Thing id lari (asiklik uchun)
+  origin?: { source?: string; publisher?: string; signed?: boolean; forked_from?: string }; // 52§4
+  retired?: boolean; // 52§4: retired — picker'dan yo'qoladi, eski loyihalarга hali resolve bo'ladi
 }
 export interface Thing {
   def: ThingDef;
