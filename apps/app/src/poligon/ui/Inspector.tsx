@@ -50,6 +50,7 @@ export function Inspector({ sheet, profile }: { sheet: Sheet; profile: Profile }
             <Row label="uzunlik" value={`${part.finishedLength} mm`} rule={part.provenance.length} />
             <Row label="centerline" value={`${part.board.length} mm`} rule="48 L6 — maksimal yugurish (through-junctionda birlashadi)" />
             <Row label="qalinlik" value={`${part.board.thickness} mm`} rule={part.provenance.thickness} />
+            <Row label="chuqurlik" value={part.depth !== undefined ? `${part.depth} mm` : "— (profil bermagan)"} rule={part.provenance.depth ?? "48§4 — cascade (profil depth qoidasi yo'q)"} />
             <Row label="rol" value={part.role} rule={`profil — ${part.provenance.role}`} />
             <Row label="yo'nalish" value={part.board.axis} rule="48§0 — chiziq o'qi" />
             <Row label="qo'shnilik" value={JSON.stringify(part.facets.adjacency)} rule="50§1 — adjacency (Tier-0, blok-grafdan, geometriyasiz)" />

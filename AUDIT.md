@@ -54,7 +54,7 @@ junction through/butt (48§2) UZUNLIKKA ta'sir qilmayapti.** Kod bilan isbotland
 
 | # | Nima | Holat | Hujjat |
 |---|------|-------|--------|
-| B1 | **Depth (chuqurlik)** | UMUMAN yo'q — Sheet/Block da depth yo'q; kesim faqat qalinlik×uzunlik | 48§4 + 49: "Depth **NOT deferred**". Side 560×720, biz faqat 720 beramiz. **Kesim ro'yxati CHALA.** |
+| ~~B1~~ | ✅ **Depth — BAJARILDI (2026-09-09)** | `derive` da 50§2 cascade orqali hal qilinadi (profil `rules`): side=560 (system), shelf=520 (project override); Incomplete→RAD (Law E). Kesim: uzunlik×chuqurlik (53§1). Inspektor provenans bilan. Qoldig'i: zone/module facet-matching (hozir role/axis), flat-panel nesting chizmasi. | 48§4 + 49 + 50§2 + 53§1 |
 | B2 | `derive()` `rules` | E'TIBORGA OLINMAYDI (`_rules`) — cascade (resolve) va geometriya ALOHIDA | 50§5 P0→P6: P1 geometrik param → P2 geometriya → P4 appearance. §2 `derive(sheet,profile,rules)` — rules qismi ishlamaydi. |
 | B3 | `derive()` adjacency | `panelTopo` qo'shnini HAR DOIM "none" beradi → adjacency har doim "free-end" (SOXTA) | 50§1: adjacency block-grafdan. |
 | B4 | **L15 wall ends/opening** | `createSheet()` argumentsiz | Hujjat: `createSheet(opening, ends)` — free/into-corner/against-wall, into-corner→Reserved. Yo'q. |

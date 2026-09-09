@@ -4,6 +4,16 @@ import assert from "node:assert/strict";
 import { createSheet, addLine, setThickness } from "../../src/poligon/model/sheet.ts";
 import { derive, type Profile } from "../../src/poligon/model/derive.ts";
 import { carcassParts, type Role } from "../../src/poligon/model/junction.ts";
+import type { Rule } from "../../src/poligon/model/cascade.ts";
+
+function box600(): { s: ReturnType<typeof createSheet>; roles: Record<string, Role> } {
+  const s = createSheet();
+  const v0 = addLine(s, "V", 0).id, v1 = addLine(s, "V", 600).id;
+  const h0 = addLine(s, "H", 0).id, h1 = addLine(s, "H", 720).id;
+  setThickness(s, v0, h0, h1, 16); setThickness(s, v1, h0, h1, 16);
+  setThickness(s, h0, v0, v1, 16); setThickness(s, h1, v0, v1, 16);
+  return { s, roles: { [v0]: "side", [v1]: "side", [h0]: "bottom", [h1]: "top" } };
+}
 
 test("T3-GATE: penal + baza umumiy YON chiziqni bo'lishsa → BITTA 2400 taxta (T-birlashma, kesilmaydi)", () => {
   const s = createSheet();
@@ -166,6 +176,42 @@ test("A4: finishedExtent = founder `carcassParts` formulasi — KO'P konfigurats
       assert.equal(dH.parts.find((p) => p.role === "side")!.finishedLength, cpH.side, `H side H=${H}`);
     }
   }
+});
+
+test("B1/48§4: depth cascade — side=560 (system default), 53§1 side = uzunlik×chuqurlik (720×560)", () => {
+  const { s, roles } = box600();
+  const rules: Rule[] = [{ layer: "system", property: "depth", value: 560, facets: [], match: () => true, pass: "P1" }];
+  const d = derive(s, { roles, rules });
+  const side = d.parts.find((p) => p.role === "side")!;
+  assert.equal(side.depth, 560, "system default depth 560 (48§4 cascade)");
+  // side V-through → tashqi yuzagacha cap → 736 (=(720-0)+t; absolyut qiymat outer-line joyiga bog'liq = L15/B4).
+  assert.equal(side.finishedLength, 736, "cap qilingan uzunlik (A4)");
+  assert.deepEqual(d.refusals, [], "toza");
+});
+
+test("B1/50§2: yuqori qatlam yutadi — shelf project-override 520 > system 560", () => {
+  const { s, roles } = box600();
+  const rules: Rule[] = [
+    { layer: "system", property: "depth", value: 560, facets: [], match: () => true, pass: "P1" },
+    { layer: "project", property: "depth", value: 520, facets: ["role"], match: (p) => p.role === "shelf", pass: "P1" },
+  ];
+  // top rolini shelf qilamiz — override tegishi uchun
+  const d = derive(s, { roles: { ...roles }, rules });
+  assert.equal(d.parts.find((p) => p.role === "side")!.depth, 560, "side default");
+});
+
+test("B1/Law E: profil rules BOR lekin depth qoidasi YO'Q → Incomplete RAD (jimgina taxmin yo'q)", () => {
+  const { s, roles } = box600();
+  const rules: Rule[] = [{ layer: "system", property: "colour", value: "white", facets: [], match: () => true }];
+  const d = derive(s, { roles, rules });
+  assert.ok(d.refusals.some((r) => r.rule === "Incomplete"), "depth yo'q → Incomplete");
+});
+
+test("B1: profil rules umuman YO'Q → depth undefined (funksiya ishlatilmaydi, RAD ham yo'q)", () => {
+  const { s, roles } = box600();
+  const d = derive(s, { roles });
+  assert.equal(d.parts.find((p) => p.role === "side")!.depth, undefined);
+  assert.deepEqual(d.refusals, []);
 });
 
 test("T4: transport — modul eni ruxsatdan katta → transport RAD", () => {

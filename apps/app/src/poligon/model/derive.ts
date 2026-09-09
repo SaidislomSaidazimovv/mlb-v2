@@ -11,12 +11,15 @@ import { boardRuns, type Board, type ThroughAt } from "./board.ts";
 import { deriveModules, transportCheck, type Module, type TransportLimit } from "./module.ts";
 import { resolveThrough, classify, type Role, type Through, type Override, type JClass } from "./junction.ts";
 import { computeAdjacency, type Adjacency, type PanelTopo } from "./facets.ts";
+import { resolve, type Rule, type Part as FacetPart } from "./cascade.ts";
 
-/** Profil — devorga tuzilaviy rol beradi (48§2 rutba shundan). through = per-kesishma override. */
+/** Profil — devorga tuzilaviy rol beradi (48§2 rutba shundan). through = per-kesishma override.
+ *  rules = 50§2 cascade qoidalari (B1 depth shu orqali: 48§4 "depth = profildan default, cascadable"). */
 export interface Profile {
   roles: Record<LineId, Role>;          // chiziq → rol (worktop/side/top/...)
   through?: Record<string, Override>;   // "vLine|hLine" → V/H/neither/both override
   transport?: TransportLimit;
+  rules?: Rule[];                       // 50§2 cascade (depth va boshqa parametrlar); yo'q → depth ishlatilmaydi
 }
 
 export interface DerivedPart {
@@ -27,8 +30,11 @@ export interface DerivedPart {
   finishedFrom: number;
   finishedTo: number;
   finishedLength: number;
+  /** B1/48§4: chuqurlik — cascade (50§2) orqali hal qilingan blok atributi (sheet emas). undefined = profil
+   *  rules bermagan (depth ishlatilmaydi). 53§1: side = depth × length (masalan 560 × 720). */
+  depth?: number;
   facets: { role: Role | "unknown"; axis: Axis; adjacency: Record<string, Adjacency> };
-  provenance: { thickness: string; role: string; length: string };
+  provenance: { thickness: string; role: string; length: string; depth?: string };
 }
 export interface DerivedJunction {
   vLine: LineId; hLine: LineId; pos: { x: number; y: number };
@@ -118,14 +124,26 @@ export function derive(sheet: Sheet, profile: Profile, _rules: unknown[] = []): 
     const role = roleOf(b.line);
     const topo = panelTopo(b, role);
     const ext = finishedExtent(sheet, profile, b);
+    // B1/48§4: depth cascade (50§2). Faqat profil rules bergan bo'lsa. Topilmasa Incomplete → RAD (Law E:
+    // "system total" — profil default depth bermasa, jimgina taxmin YO'Q).
+    let depth: number | undefined;
+    let depthProv: string | undefined;
+    if (profile.rules && profile.rules.length) {
+      const facetPart: FacetPart = { role, axis: b.axis };
+      const r = resolve(facetPart, "depth", profile.rules);
+      if ("rule" in r) { refusals.push(r); }
+      else if (typeof r.value === "number") { depth = r.value; depthProv = `50§2 cascade — '${r.layer}' qatlami (48§4)`; }
+    }
     return {
       board: b, role,
       finishedFrom: ext.from, finishedTo: ext.to, finishedLength: ext.length,
+      depth,
       facets: { role, axis: b.axis, adjacency: computeAdjacency(topo) },
       provenance: {
         thickness: `48 L6 — segment qalinligidan (${b.thickness})`,
         role: profile.roles[b.line] ? "profil roli" : "rol berilmagan",
         length: ext.provenance,
+        depth: depthProv,
       },
     };
   });

@@ -12,8 +12,9 @@ export interface Banding { top: number; bottom: number; left: number; right: num
 export interface InputPart {
   role: string;
   boundingLines: LineId[]; // identity uchun (POZITSIYA emas)
-  finishedW: number;       // eni (mm)
-  finishedH: number;       // uzunligi (mm)
+  finishedW: number;       // panel o'lchovi 1 (mm) — 53§1: uzunlik
+  finishedH: number;       // panel o'lchovi 2 (mm) — 53§1: chuqurlik (depth)
+  thickness?: number;      // B1/53§1: material qalinligi (kesim o'lchovi emas — alohida ko'rsatiladi)
   banding?: Banding;
   grain?: "L" | "W" | "none";
   handed?: "left" | "right";
@@ -24,6 +25,7 @@ export interface ReleasedPart {
   id: string; num: number;
   finishedW: number; finishedH: number;
   cutW: number; cutH: number;
+  thickness?: number; // B1/53§1: material qalinligi (passthrough)
   grain: "L" | "W" | "none"; handed?: "left" | "right";
 }
 export interface Release { number: number; parts: ReleasedPart[]; }
@@ -56,6 +58,7 @@ export function release(parts: InputPart[], conv: ShopConvention, prev?: Release
       finishedW: p.finishedW, finishedH: p.finishedH,
       cutW: cut(p.finishedW, b.left, b.right, conv),
       cutH: cut(p.finishedH, b.top, b.bottom, conv),
+      thickness: p.thickness,
       grain: p.grain ?? "none",
       handed: p.handed,
     });

@@ -1,7 +1,7 @@
 // Poligon UI seed — sahifa ochilishi bilan real devor ko'rinsin. Barchasi §2 API (poligon/index.ts)
 // orqali quriladi; UI model/ ichiga tegmaydi.
 import { createSheet, addLine, setThickness } from "../index.ts";
-import type { Sheet, Profile, Role } from "../index.ts";
+import type { Sheet, Profile, Role, Rule } from "../index.ts";
 import type { Thing } from "../index.ts";
 
 /** Penal (chap, to'liq balandlik) + baza (o'ng, ish-stoligacha) — umumiy o'rta yon (T3 darvozasi). */
@@ -24,7 +24,13 @@ export function seedWall(): { sheet: Sheet; profile: Profile } {
     [v0]: "side", [v1]: "side", [v2]: "side",
     [h0]: "bottom", [h1]: "worktop", [h2]: "top",
   };
-  return { sheet: s, profile: { roles, transport: { maxWidth: 1200 } } };
+  // B1/48§4: depth cascade qoidalari — system default 560 (hamma part), shelf uchun project-override 520.
+  // (48§4 "depth = profildan default, cascadable project→zone→module→part"; geometrik param = P1, Tier-0 role.)
+  const rules: Rule[] = [
+    { layer: "system", property: "depth", value: 560, facets: [], match: () => true, pass: "P1" },
+    { layer: "project", property: "depth", value: 520, facets: ["role"], match: (p) => p.role === "shelf", pass: "P1" },
+  ];
+  return { sheet: s, profile: { roles, transport: { maxWidth: 1200 }, rules } };
 }
 
 /** T14: sozlamalar ekranлари DEF'LARDAN yaratiladi — bu yerda namuna Thing'lar. Yangi Thing qo'shsang,

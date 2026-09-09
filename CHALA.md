@@ -38,9 +38,10 @@
 Avvalgi "engine yadro + qonunlar TUGADI" — HADDAN BALAND baho edi. To'g'risi: amalga oshirilganlar
 sinovdan o'tган, LEKIN hujjatning jiddiy qismlari HALI YO'Q. Yangi `AUDIT.md` — qator-ma-qator solishtiruv.
 Eng muhim qolган (AUDIT §B), founder sinoviдан oldin shart:
-- **B1 Depth (chuqurlik)** — umuman yo'q (48§4 "NOT deferred"); kesim faqat qalinlik×uzunlik, side 560×720
-  emas. Kesim ro'yxati shu sababли CHALA.
-- **B2 derive() rules'ni ishlatmaydi** — 50§5 P0→P6 pipeline (P1/P4) birlashmagan; cascade alohida.
+- ~~**B1 Depth**~~ — ✅ BAJARILDI (2026-09-09): 50§2 cascade orqali (profil rules), side=560/shelf=520,
+  Law E rad; kesim uzunlik×chuqurlik (53§1); UI+inspektor+test (107/107). Qoldig'i: zone/module facet.
+- 🟡 **B2 derive() rules** — QISMAN: depth uchun cascade `resolve` ishlaydi (B1). To'liq P0→P6 (P4 appearance,
+  setback/overlay geometriyaga oqishi) hali emas.
 - **B3 adjacency SOXTA** (derive panelTopo har doim "free-end"); **B4 L15 wall-ends/opening**;
   **B5 L9 Void/Reserved/Absorb**; **B6 L14 wall-length**; **B7 48§3 derived-until-touched**;
   **B8 L3 qatlamlar**; **B9 haqiqiy edge_exposure kromka**.

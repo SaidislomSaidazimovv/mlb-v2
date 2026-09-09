@@ -23,11 +23,14 @@ export function PartsView({ sheet, profile }: { sheet: Sheet; profile: Profile }
   const [sel, setSel] = useState<number | null>(null);
 
   // derive → release: raqamlangan, o'zgarmas kesim ro'yxati (53§2). boundingLines = identity.
+  // 53§1: panel = uzunlik × chuqurlik (masalan side 720 × 560); qalinlik alohida. depth yo'q bo'lsa (profil
+  // rules bermagan) — chuqurlik o'rniga "—" (jimgina taxmin YO'Q).
   const inputs: InputPart[] = d.parts.map((p) => ({
     role: p.role,
     boundingLines: [p.board.line, `${p.board.from}`, `${p.board.to}`],
-    finishedW: p.board.thickness,
-    finishedH: p.finishedLength, // A4: junction-aware finished uzunlik (centerline emas)
+    finishedW: p.finishedLength,         // A4: junction-aware uzunlik
+    finishedH: p.depth ?? 0,             // B1/48§4: cascade chuqurlik (0 = berilmagan)
+    thickness: p.board.thickness,
     banding: bandingFor(p.role),
     grain: p.board.axis === "V" ? "L" : "W",
   }));
@@ -70,7 +73,7 @@ export function PartsView({ sheet, profile }: { sheet: Sheet; profile: Profile }
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
           <thead>
             <tr style={{ color: PAL.dim, textAlign: "left" }}>
-              <th style={{ padding: "4px 6px" }}>#</th><th>rol</th><th>kesim (mm)</th><th>tola</th>
+              <th style={{ padding: "4px 6px" }}>#</th><th>rol</th><th>uzunlik×chuqurlik</th><th>qal.</th><th>tola</th>
             </tr>
           </thead>
           <tbody>
@@ -79,7 +82,8 @@ export function PartsView({ sheet, profile }: { sheet: Sheet; profile: Profile }
                 style={{ background: sel === i ? PAL.line : "transparent", cursor: "pointer", color: PAL.ink }}>
                 <td style={{ padding: "5px 6px", fontFamily: "monospace", color: PAL.accent }}>{rp.num}</td>
                 <td>{d.parts[i]?.role}</td>
-                <td style={{ fontFamily: "monospace" }}>{rp.cutW}×{rp.cutH}</td>
+                <td style={{ fontFamily: "monospace" }}>{rp.cutW}×{rp.cutH > 0 ? rp.cutH : "—"}</td>
+                <td style={{ fontFamily: "monospace", color: PAL.dim }}>{rp.thickness ?? "—"}</td>
                 <td>{rp.grain}</td>
               </tr>
             ))}
