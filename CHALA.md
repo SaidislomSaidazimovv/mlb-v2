@@ -51,7 +51,9 @@ Eng muhim qolган (AUDIT §B), founder sinoviдан oldin shart:
   voidBlock, reserveBlock, absorb, mergeAdjacentVoids), 123/123. Qoldig'i: muharrirда blok-void/absorb gesture.
 - ~~**B6 L14 wall-length**~~ — ✅ BAJARILDI (2026-09-09): setWallLength (proportional/last-absorbs,
   minimum→L14.minGap RAD, butun mm), 128/128.
-- Qolgan: **B7 48§3 derived-until-touched**; **B8 L3 qatlamlar**; **B9 haqiqiy edge_exposure kromka**.
+- ~~**B7 48§3 derived-until-touched**~~ — ✅ BAJARILDI (2026-09-09): relations.ts (declareRelation/
+  resolvePositions/pinPosition, chain+cycle rad), 133/133. Qoldig'i: UI pin ko'rsatkichi.
+- Qolgan: **B8 L3 qatlamlar**; **B9 haqiqiy edge_exposure kromka**.
 
 ## Endi qolган KATTA bloklar
 - **10-mebel parity** — eski engine (mebelchi-2app/mebely `panelDecomposition` + SWJ008) vs yangi

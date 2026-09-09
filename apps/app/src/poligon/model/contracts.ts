@@ -50,6 +50,10 @@ export interface WallEnds { left: EndSpec; right: EndSpec; }
 /** 48 L15: opening — devor tashqi chegarasi (outermost lines' OUTER faces shu bilan chegaralanadi). */
 export interface Opening { width: number; height: number; }
 
+/** 48§3: pozitsiya RELATION'i — `line` DERIVED: pos = ref.pos + offset. E'lon qilingan, ko'rinadigan,
+ *  buziladigan (pin qilinsa relation olib tashlanadi → authored). Masalan fartuk: upper.pos = worktop.pos + offset. */
+export interface PositionRelation { line: LineId; ref: LineId; offset: number; }
+
 /** 48§0: Sheet — bitta devor. Chiziqlar + segment qalinliklari + bloklar. Qolgani (part, module) DERIVED. */
 export interface Sheet {
   vLines: Line[]; // pos bo'yicha tartiblangan
@@ -58,6 +62,7 @@ export interface Sheet {
   blocks: Block[];
   opening?: Opening;  // 48 L15: e'lon qilingan devor tashqi o'lchovi (bo'lsa)
   ends?: WallEnds;    // 48 L15: chap/o'ng uch holati (bo'lsa)
+  relations?: PositionRelation[]; // 48§3: derived pozitsiyalar (tegilmagunча ref'ga ergashadi)
 }
 
 /** 48 L8/L13: rad etish — QAYSI qoida rad etganini nomlaydi. */

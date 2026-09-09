@@ -37,6 +37,10 @@ export type { Thing, ThingDef, FieldDef, Ownership } from "./model/things.ts";
 export { contentHash, lockOf, checkLock, reverseIndex } from "./model/lock.ts";
 export type { Lock, LockEntry } from "./model/lock.ts";
 
+// ─ derived-until-touched (48§3 · B7) ──────────────────────────────────────────
+export { isDerived, declareRelation, resolvePositions, pinPosition } from "./model/relations.ts";
+export type { PositionRelation } from "./model/contracts.ts";
+
 // ─ wall length (L14 · B6) ─────────────────────────────────────────────────────
 export { setWallLength } from "./model/wall.ts";
 export type { RedistributePolicy } from "./model/wall.ts";
