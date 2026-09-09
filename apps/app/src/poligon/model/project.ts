@@ -1,10 +1,10 @@
-// Persist — project fayli. ASOS: 52§5 ("project fayli = sheet + parameters + pins + lock"; lock mos
-//   kelmasa cut list CHIQMAYDI) + 50 Law C (pins = part-identity istisnolari, per-property) + T1 (sheet
-//   round-trip) + T9 (lock). fs I/O — persist qatlami (T8/T9 kabi; 54§0 "engine sof" — I/O shu yerda cheklangan).
-// Qoidalar DEKLARATIV saqlanadi (52§7 — funksiya emas; resolve paytida `match`ga kompilyatsiya qilinadi).
+// Persist — project fayli (SOF qism). ASOS: 52§5 ("project fayli = sheet + parameters + pins + lock";
+//   lock mos kelmasa cut list CHIQMAYDI) + 50 Law C (pins = part-identity istisnolari, per-property) +
+//   T1 (sheet round-trip) + T9 (lock). Bu fayl SOF — node:fs YO'Q (brauzer bundle'iga xavfsiz kiradi).
+//   Haqiqiy fs yozish/o'qish alohida `project-fs.ts` da (faqat Node kontekstida ishlatiladi, index brauzerga
+//   fs eksport qilmaydi). Qoidalar DEKLARATIV saqlanadi (52§7 — funksiya emas).
 // O'ylab topilgan hech narsa yo'q.
 
-import { writeFileSync, readFileSync } from "node:fs";
 import type { Sheet, Refusal } from "./contracts.ts";
 import type { Lock } from "./lock.ts";
 import type { Thing } from "./things.ts";
@@ -33,10 +33,6 @@ export interface Project {
 /** L12 / 52§5: project sof ma'lumot — serialize→parse aynan bir xil (round-trip). */
 export function serializeProject(p: Project): string { return JSON.stringify(p); }
 export function parseProject(s: string): Project { return JSON.parse(s) as Project; }
-
-/** fs: project faylini yozish/o'qish (persist qatlami). */
-export function saveProject(path: string, p: Project): void { writeFileSync(path, serializeProject(p), "utf8"); }
-export function loadProject(path: string): Project { return parseProject(readFileSync(path, "utf8")); }
 
 /** 52§5 / T9: project ochilganda integritet — lock joriy Thing-indeksga mos kelmasa RAD
  *  (cut list chiqmaydi, foydalanuvchi hal qilmaguncha). Bo'sh = toza. */

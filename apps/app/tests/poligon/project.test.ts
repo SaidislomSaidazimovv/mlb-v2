@@ -5,9 +5,10 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { unlinkSync } from "node:fs";
 import {
-  serializeProject, parseProject, saveProject, loadProject, checkProjectIntegrity,
+  serializeProject, parseProject, checkProjectIntegrity,
   type Project, type Pin, type StoredRule,
 } from "../../src/poligon/model/project.ts";
+import { saveProject, loadProject } from "../../src/poligon/model/project-fs.ts";
 import { createSheet, addLine, setThickness, addBlock } from "../../src/poligon/model/sheet.ts";
 import { lockOf } from "../../src/poligon/model/lock.ts";
 import type { Thing } from "../../src/poligon/model/things.ts";

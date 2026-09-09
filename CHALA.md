@@ -40,8 +40,10 @@
 - ~~**Persist**~~ — ✅ BAJARILDI (project.ts, 92/92 test; sheet+params+pins+lock, round-trip, fs save/load,
   integritet=lock). Qoldig'i: haqiqiy `loadThings(dir)` fs-walk (T8 thin qatlam) + ko'p-loyiha teskari
   indeks bilan blast-radius UI — persist yadrosi tayyor, folder-o'qish keyin.
-- **UI (Saidislom, `54`§0)** — T12 Sheet muharrir · T13 Inspektor · T14 Generatsiyalangan sozlamalar ·
-  T15 Parts ekrani — frozen API + yangi UI papka.
+- ~~**UI (T12–T15)**~~ — ✅ BAJARILDI (poligon.html alohida sahifa; SheetEditor/Inspector/
+  GeneratedSettings/PartsView; typecheck 0 xato, node-test 99/99, `vite build` muvaffaqiyat). Qoldig'i:
+  T12 split/delete→Void/Absorb op'lari (hozir move + qalinlik-tsikl) · real pointer sudrashni qurilmada
+  sinash · T15 400-part navigatsiya stress-testi.
 - ✅ **T16 gate BAJARILDI** — korpus 8/8 (51§6 minimal to'plam to'liq).
 
 ## Founderga bog'liq (→ FOUNDERGA.md)

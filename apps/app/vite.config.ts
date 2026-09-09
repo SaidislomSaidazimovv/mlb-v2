@@ -17,6 +17,7 @@ export default defineConfig({
       input: {
         main: r("index.html"),
         studio: r("studio.html"),
+        poligon: r("poligon.html"),
       },
     },
   },

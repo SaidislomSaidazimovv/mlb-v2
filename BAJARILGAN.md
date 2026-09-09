@@ -301,3 +301,29 @@ diffReleases/loadThings/lockOf/checkLock) · `54`§0 (tikuv: engine sof, UI thin
 **Test:** butun suite **99/99 pass · 0 fail** (+derive 5: **T3 darvozasi** penal+baza umumiy chiziq→BITTA
 2400 · X-kontest worktop>side→yon kesiladi · tie/roleMissing/transport RAD; +index 2: §2 eksport + derive→
 release uchidan-uchiga).
+
+---
+
+## 2026-09-09 — UI: T12–T15 (yangi Sheet-yadro ustidagi ko'rinish) ✅
+
+**Nima qilindi** — alohida `poligon.html` sahifasi (grid.ts ilovasi TEGILMAYDI, 54§1). Faqat §2 API
+(`poligon/index.ts`) orqali; engine React import qilmaydi (54§0 tikuv):
+- `src/poligon/ui/SheetEditor.tsx` (**T12**) — chiziqni sudrash (moveLine); **L11** sudrash paytida
+  QONUNIY oraliq yashil band bilan (engine `legalDomain` binary-search — `ui/legal.ts`), hech qachon
+  jimgina clamp emas (rad ko'rsatiladi); **L5a** hech nimani tutmagan chiziq xira; segment bosilsa
+  qalinlik 0→16→32 (`apply` setThickness, L0 commit).
+- `src/poligon/ui/Inspector.tsx` (**T13**) — har taxta: uzunlik/qalinlik/rol/qo'shnilik/kesishma, **har
+  qiymat O'Z QOIDASINI nomlaydi** (`derive` provenans; 50 Law E). T13 gate.
+- `src/poligon/ui/GeneratedSettings.tsx` (**T14**) — sozlamalar Thing DEF'laridan AVTOMATIK (maydon/birlik/
+  diagram/publish-holati `canPublish`); yangi Thing → yangi karta, UI kod yozilmaydi. T14 gate.
+- `src/poligon/ui/PartsView.tsx` (**T15**) — chizma + jadval ikki tomonlama tanlash; haqiqiy masshtab;
+  kromka vektori kesim to'rtburchagi TASHQARISIDA (53§3); `derive`→`release` raqamlangan ro'yxat.
+- `src/poligon/ui/PoligonApp.tsx` qobiq + `poligon-main.tsx` kirish + `poligon.html` + vite.config input.
+- **Persist fs ajratildi:** `model/project-fs.ts` (Node-only save/load) — `project.ts` SOF qoldi,
+  `poligon/index.ts` brauzerga `node:fs` eksport qilmaydi (54§0).
+
+**Asos:** `54`§3 T12–T15 gate'lari · `54`§0 (UI thin, engine sof) · `54`§1 (yangi yadro yonda, alohida sahifa).
+
+**Isbot (haqiqiy):** `src/poligon` **typecheck 0 xato** · poligon **node-test 99/99** · **`vite build`
+MUVAFFAQIYAT** → `dist/poligon.html` + `poligon-*.js` (22.97 kB, 787 modul), `node:fs` brauzerga
+sizmadi. Ko'rish: `cd apps/app && npm run dev` → `/poligon.html`.

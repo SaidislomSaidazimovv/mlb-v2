@@ -37,8 +37,9 @@ export type { Thing, ThingDef, FieldDef, Ownership } from "./model/things.ts";
 export { contentHash, lockOf, checkLock, reverseIndex } from "./model/lock.ts";
 export type { Lock, LockEntry } from "./model/lock.ts";
 
-// ─ persist (project fayli) ───────────────────────────────────────────────────
-export { serializeProject, parseProject, saveProject, loadProject, checkProjectIntegrity } from "./model/project.ts";
+// ─ persist (project fayli) — SOF qismgina (fs I/O poligon/index'da YO'Q; brauzerga node:fs kirmaydi).
+//   Haqiqiy save/load faqat Node'da: `model/project-fs.ts` dan to'g'ridan-to'g'ri import qilinadi.
+export { serializeProject, parseProject, checkProjectIntegrity } from "./model/project.ts";
 export type { Project, Pin, StoredRule } from "./model/project.ts";
 
 // ─ asosiy tiplar ─────────────────────────────────────────────────────────────

@@ -8,7 +8,7 @@ test("§2: barcha asosiy funksiyalar index'dan chiqarilgan", () => {
   for (const fn of [
     "createSheet", "apply", "legalDomain", "derive", "resolve", "blastRadius",
     "release", "diffReleases", "buildIndex", "lockOf", "checkLock",
-    "saveProject", "loadProject", "checkProjectIntegrity",
+    "serializeProject", "parseProject", "checkProjectIntegrity",
   ] as const) {
     assert.equal(typeof (P as Record<string, unknown>)[fn], "function", `${fn} funksiya bo'lishi kerak`);
   }
