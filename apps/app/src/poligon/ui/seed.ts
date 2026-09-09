@@ -27,8 +27,13 @@ export function seedWall(): { sheet: Sheet; profile: Profile } {
   // B1/48§4: depth cascade qoidalari — system default 560 (hamma part), shelf uchun project-override 520.
   // (48§4 "depth = profildan default, cascadable project→zone→module→part"; geometrik param = P1, Tier-0 role.)
   const rules: Rule[] = [
+    // P1 (geometrik, Tier-0): depth
     { layer: "system", property: "depth", value: 560, facets: [], match: () => true, pass: "P1" },
     { layer: "project", property: "depth", value: 520, facets: ["role"], match: (p) => p.role === "shelf", pass: "P1" },
+    // P4 (appearance, Tier-0+Tier-3): colour — 50§2 cascade (yuqori qatlam yutadi): theme=oq (hamma),
+    // project=dub (faqat worktop) → worktop dub, qolgani oq. Turli qatlam → Conflict yo'q (50§3 two-tone).
+    { layer: "theme", property: "colour", value: "oq", facets: [], match: () => true },
+    { layer: "project", property: "colour", value: "dub", facets: ["role"], match: (p) => p.role === "worktop" },
   ];
   return { sheet: s, profile: { roles, transport: { maxWidth: 1200 }, rules } };
 }

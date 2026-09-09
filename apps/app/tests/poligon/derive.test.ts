@@ -200,11 +200,11 @@ test("B1/50§2: yuqori qatlam yutadi — shelf project-override 520 > system 560
   assert.equal(d.parts.find((p) => p.role === "side")!.depth, 560, "side default");
 });
 
-test("B1/Law E: profil rules BOR lekin depth qoidasi YO'Q → Incomplete RAD (jimgina taxmin yo'q)", () => {
-  const { s, roles } = box600();
-  const rules: Rule[] = [{ layer: "system", property: "colour", value: "white", facets: [], match: () => true }];
+test("B1/Law E: depth P1 e'lon qilingan lekin system default YO'Q (faqat shelf) → boshqa partlar Incomplete RAD", () => {
+  const { s, roles } = box600(); // side/side/bottom/top — hech biri shelf emas
+  const rules: Rule[] = [{ layer: "project", property: "depth", value: 520, facets: ["role"], match: (p) => p.role === "shelf", pass: "P1" }];
   const d = derive(s, { roles, rules });
-  assert.ok(d.refusals.some((r) => r.rule === "Incomplete"), "depth yo'q → Incomplete");
+  assert.ok(d.refusals.some((r) => r.rule === "Incomplete"), "side uchun depth topilmadi → Incomplete (system total emas, taxmin yo'q)");
 });
 
 test("B1: profil rules umuman YO'Q → depth undefined (funksiya ishlatilmaydi, RAD ham yo'q)", () => {
@@ -212,6 +212,35 @@ test("B1: profil rules umuman YO'Q → depth undefined (funksiya ishlatilmaydi, 
   const d = derive(s, { roles });
   assert.equal(d.parts.find((p) => p.role === "side")!.depth, undefined);
   assert.deepEqual(d.refusals, []);
+});
+
+test("B2/50§5 P4: appearance (colour) cascade orqali hal qilinadi — side=oq (theme default)", () => {
+  const { s, roles } = box600();
+  const rules: Rule[] = [{ layer: "theme", property: "colour", value: "oq", facets: [], match: () => true }];
+  const d = derive(s, { roles, rules });
+  assert.equal(d.parts.find((p) => p.role === "side")!.appearance.colour, "oq");
+  assert.deepEqual(d.refusals, []);
+});
+
+test("B2/50§5 P3: size.clear = yakuniy uzunlik (Tier-3, geometriyadan)", () => {
+  const { s, roles } = box600();
+  const d = derive(s, { roles });
+  const side = d.parts.find((p) => p.role === "side")!;
+  assert.equal(side.tier3["size.clear"], side.finishedLength);
+});
+
+test("B2/50§5 D8 GATE: P1 (geometrik) qoida Tier-3 facetga (edge_exposure) tayansa → YOZILISHDA D8 RAD", () => {
+  const { s, roles } = box600();
+  const bad: Rule[] = [{ layer: "system", property: "depth", value: 560, facets: ["edge_exposure"], match: () => true, pass: "P1" }];
+  const d = derive(s, { roles, rules: bad });
+  assert.ok(d.refusals.some((r) => r.rule === "D8"), "P1 + Tier-3 facet → D8");
+});
+
+test("B2/50§5 D8 GATE: P4 (appearance) qoida Tier-3 facetga tayansa → RUXSAT (D8 yo'q)", () => {
+  const { s, roles } = box600();
+  const ok: Rule[] = [{ layer: "theme", property: "colour", value: "oq", facets: ["edge_exposure"], match: () => true }]; // pass yo'q → P4
+  const d = derive(s, { roles, rules: ok });
+  assert.ok(!d.refusals.some((r) => r.rule === "D8"), "P4 + Tier-3 facet → ruxsat");
 });
 
 test("T4: transport — modul eni ruxsatdan katta → transport RAD", () => {

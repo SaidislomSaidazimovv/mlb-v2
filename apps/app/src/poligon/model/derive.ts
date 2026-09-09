@@ -11,7 +11,7 @@ import { boardRuns, type Board, type ThroughAt } from "./board.ts";
 import { deriveModules, transportCheck, type Module, type TransportLimit } from "./module.ts";
 import { resolveThrough, classify, type Role, type Through, type Override, type JClass } from "./junction.ts";
 import { computeAdjacency, type Adjacency, type PanelTopo } from "./facets.ts";
-import { resolve, type Rule, type Part as FacetPart } from "./cascade.ts";
+import { resolve, authorRule, type Rule, type Part as FacetPart } from "./cascade.ts";
 
 /** Profil — devorga tuzilaviy rol beradi (48§2 rutba shundan). through = per-kesishma override.
  *  rules = 50§2 cascade qoidalari (B1 depth shu orqali: 48§4 "depth = profildan default, cascadable"). */
@@ -30,9 +30,14 @@ export interface DerivedPart {
   finishedFrom: number;
   finishedTo: number;
   finishedLength: number;
-  /** B1/48§4: chuqurlik — cascade (50§2) orqali hal qilingan blok atributi (sheet emas). undefined = profil
-   *  rules bermagan (depth ishlatilmaydi). 53§1: side = depth × length (masalan 560 × 720). */
+  /** B1/48§4: chuqurlik — cascade (50§2). `params.depth` bilan bir xil (qulaylik uchun alias). */
   depth?: number;
+  /** B2/50§5 P1 — GEOMETRIK parametrlar (Tier-0 facetdan): depth, setback, overlay, gap, presence, count. */
+  params: Record<string, unknown>;
+  /** B2/50§5 P3 — Tier-3 facetlar (yakuniy geometriyadan): size.clear (real); edge_exposure → B3 (adjacency). */
+  tier3: Record<string, unknown>;
+  /** B2/50§5 P4 — APPEARANCE parametrlar (Tier-0+Tier-3): colour, decor, kromka, hardware finish. */
+  appearance: Record<string, unknown>;
   facets: { role: Role | "unknown"; axis: Axis; adjacency: Record<string, Adjacency> };
   provenance: { thickness: string; role: string; length: string; depth?: string };
 }
@@ -60,14 +65,21 @@ function crossesThrough(s: Sheet, line: Line, atIdx: number, perp: Line[]): bool
 }
 
 /**
- * 54§2: derive — sheet + profil + qoidalardan to'liq derivatsiya.
- * Junction'lar (T2) → through yo'nalishi → board'lar (T3, through-aware) → modul'lar (T4) →
- * Tier-0 facet'lar (T6). Rol yetishmasa yoki 'both'/tenglik bo'lsa — RAD to'planadi, taxmin yo'q.
+ * 54§2 + 50§5: derive — STAGED pipeline P0→P4 (P5 validate / P6 release keyin chaqiriladi).
+ *  P0 sheet → P1 geometrik param (Tier-0 only) → P2 geometriya (junction→board→extent) →
+ *  P3 Tier-3 facet (size.clear; edge_exposure→B3) → P4 appearance (Tier-0+Tier-3).
+ * D8 (50§5): P1 qoida Tier-3 facetga tayansa — YOZILISHDA rad (run'da emas). Rol/tenglik/both → RAD, taxmin yo'q.
  */
-export function derive(sheet: Sheet, profile: Profile, _rules: unknown[] = []): Derivation {
+export function derive(sheet: Sheet, profile: Profile, rules: Rule[] = profile.rules ?? []): Derivation {
   const refusals: Refusal[] = [];
-  const provenance = ["48§0-1 model", "48§2 junctions", "48 L6 board runs", "48§0 modules"];
+  const provenance = ["48§0-1 model", "48§2 junctions", "48 L6 board runs", "48§0 modules", "50§5 P0→P4 pipeline"];
   const roleOf = (id: LineId): Role | "unknown" => profile.roles[id] ?? "unknown";
+
+  // ── P1 AUTHORING GATE (50§5 / 51 D8 / 54 T7): P1 (geometrik) qoida Tier-3 facetga tayanolmaydi.
+  //    YOZILISH paytida tekshiriladi (run'da emas) — E1 tsiklik rad, E2 exposed-end-panel qabul.
+  for (const r of rules) { const a = authorRule(r); if (a) refusals.push(a); }
+  const p1Props = [...new Set(rules.filter((r) => r.pass === "P1").map((r) => r.property))];
+  const p4Props = [...new Set(rules.filter((r) => r.pass !== "P1").map((r) => r.property))]; // pass yo'q → appearance (P4)
 
   // ── Junctions (T2): faqat HAQIQIY X-kesishma (ikkala chiziq nuqtadan o'tadi) rutba-kontestga kiradi.
   //    T-birlashmada (bir chiziq tugaydi) — o'tuvchi chiziq davom etadi, tugovchi tabiiy yopiladi (boardRuns).
@@ -124,21 +136,37 @@ export function derive(sheet: Sheet, profile: Profile, _rules: unknown[] = []): 
     const role = roleOf(b.line);
     const topo = panelTopo(b, role);
     const ext = finishedExtent(sheet, profile, b);
-    // B1/48§4: depth cascade (50§2). Faqat profil rules bergan bo'lsa. Topilmasa Incomplete → RAD (Law E:
-    // "system total" — profil default depth bermasa, jimgina taxmin YO'Q).
-    let depth: number | undefined;
+    const adjacency = computeAdjacency(topo);
+
+    // ── P1 (50§5): GEOMETRIK parametrlar — Tier-0 facetlar (role, axis, adjacency). Topilmasa RAD (Law E). ──
+    const tier0: FacetPart = { role, axis: b.axis, adjacency };
+    const params: Record<string, unknown> = {};
     let depthProv: string | undefined;
-    if (profile.rules && profile.rules.length) {
-      const facetPart: FacetPart = { role, axis: b.axis };
-      const r = resolve(facetPart, "depth", profile.rules);
-      if ("rule" in r) { refusals.push(r); }
-      else if (typeof r.value === "number") { depth = r.value; depthProv = `50§2 cascade — '${r.layer}' qatlami (48§4)`; }
+    for (const prop of p1Props) {
+      const r = resolve(tier0, prop, rules);
+      if ("rule" in r) refusals.push(r);
+      else { params[prop] = r.value; if (prop === "depth") depthProv = `50§2 cascade — '${r.layer}' qatlami (48§4)`; }
     }
+    const depth = typeof params.depth === "number" ? params.depth : undefined;
+
+    // ── P3 (50§5): Tier-3 facetlar — YAKUNIY geometriyadan. size.clear = finished uzunlik (real).
+    //    edge_exposure haqiqiy adjacency talab qiladi (hozir stub) → B3 gача hisoblanmaydi. ──
+    const tier3: Record<string, unknown> = { "size.clear": ext.length };
+
+    // ── P4 (50§5): APPEARANCE parametrlar — Tier-0 + Tier-3 facetlar ruxsat. ──
+    const tier0and3: FacetPart = { ...tier0, ...tier3 };
+    const appearance: Record<string, unknown> = {};
+    for (const prop of p4Props) {
+      const r = resolve(tier0and3, prop, rules);
+      if ("rule" in r) refusals.push(r);
+      else appearance[prop] = r.value;
+    }
+
     return {
       board: b, role,
       finishedFrom: ext.from, finishedTo: ext.to, finishedLength: ext.length,
-      depth,
-      facets: { role, axis: b.axis, adjacency: computeAdjacency(topo) },
+      depth, params, tier3, appearance,
+      facets: { role, axis: b.axis, adjacency },
       provenance: {
         thickness: `48 L6 — segment qalinligidan (${b.thickness})`,
         role: profile.roles[b.line] ? "profil roli" : "rol berilmagan",

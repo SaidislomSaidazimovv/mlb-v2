@@ -54,6 +54,10 @@ export function Inspector({ sheet, profile }: { sheet: Sheet; profile: Profile }
             <Row label="rol" value={part.role} rule={`profil — ${part.provenance.role}`} />
             <Row label="yo'nalish" value={part.board.axis} rule="48§0 — chiziq o'qi" />
             <Row label="qo'shnilik" value={JSON.stringify(part.facets.adjacency)} rule="50§1 — adjacency (Tier-0, blok-grafdan, geometriyasiz)" />
+            {"colour" in part.appearance && (
+              <Row label="rang" value={String(part.appearance.colour)} rule="50§5 P4 appearance (Tier-0+Tier-3) — cascade" />
+            )}
+            <Row label="size.clear" value={`${part.tier3["size.clear"]} mm`} rule="50§5 P3 Tier-3 — yakuniy geometriyadan" />
             <Row label="oraliq" value={`${part.board.from} → ${part.board.to}`} rule="48§0 — chegara chiziqlari pozitsiyasi" />
           </>
         )}
