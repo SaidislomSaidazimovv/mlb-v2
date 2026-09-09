@@ -132,9 +132,10 @@ export function derive(sheet: Sheet, profile: Profile, rules: Rule[] = profile.r
   const throughAt: ThroughAt = (line, atPerpPos) => goesThrough.get(tk(line.id, atPerpPos)) ?? true;
   const boards = boardRuns(sheet, throughAt);
 
+  const enc = enclosedCellSet(sheet); // B3: blok-graf qo'shniligi uchun (bir marta)
   const parts: DerivedPart[] = boards.map((b) => {
     const role = roleOf(b.line);
-    const topo = panelTopo(b, role);
+    const topo = panelTopo(sheet, b, role, enc);
     const ext = finishedExtent(sheet, profile, b);
     const adjacency = computeAdjacency(topo);
 
@@ -242,13 +243,66 @@ function finishedExtent(sheet: Sheet, profile: Profile, b: Board): { from: numbe
   return { from, to, length: to - from, provenance: "48§2 through/butt + 48§0 face (carcassParts semantikasi)" };
 }
 
-/** Board uchun sodda topologiya (Tier-0). Blok-graf to'liq qo'shnilik T7/T10 da kengayadi. */
-function panelTopo(b: Board, role: Role | "unknown"): PanelTopo {
-  return {
-    role: role === "unknown" ? "shelf" : role,
-    axis: b.axis,
-    neighbors: [{ side: "from", kind: "none" }, { side: "to", kind: "none" }],
-  };
+/** B3/50§1: mebel ICHKI (yopiq) kataklari — flood-fill (tashqaridan taxtasiz segment orqali yetib bo'lmaydi).
+ *  Blok-graf qo'shniligi shundan (geometriyasiz, Tier-0). vi*nH+hi kalitli Set. */
+function enclosedCellSet(s: Sheet): { set: Set<number>; nV: number; nH: number } {
+  const V = s.vLines, H = s.hLines;
+  const nV = V.length - 1, nH = H.length - 1;
+  const set = new Set<number>();
+  if (nV < 1 || nH < 1) return { set, nV, nH };
+  const key = (i: number, j: number) => i * nH + j;
+  const ext = new Set<number>();
+  const q: [number, number][] = [];
+  const push = (i: number, j: number) => { const k = key(i, j); if (!ext.has(k)) { ext.add(k); q.push([i, j]); } };
+  for (let j = 0; j < nH; j++) {
+    if (getThickness(s, V[0]!.id, H[j]!.id, H[j + 1]!.id) === 0) push(0, j);
+    if (getThickness(s, V[nV]!.id, H[j]!.id, H[j + 1]!.id) === 0) push(nV - 1, j);
+  }
+  for (let i = 0; i < nV; i++) {
+    if (getThickness(s, H[0]!.id, V[i]!.id, V[i + 1]!.id) === 0) push(i, 0);
+    if (getThickness(s, H[nH]!.id, V[i]!.id, V[i + 1]!.id) === 0) push(i, nH - 1);
+  }
+  while (q.length) {
+    const [i, j] = q.pop()!;
+    if (i + 1 < nV && getThickness(s, V[i + 1]!.id, H[j]!.id, H[j + 1]!.id) === 0) push(i + 1, j);
+    if (i - 1 >= 0 && getThickness(s, V[i]!.id, H[j]!.id, H[j + 1]!.id) === 0) push(i - 1, j);
+    if (j + 1 < nH && getThickness(s, H[j + 1]!.id, V[i]!.id, V[i + 1]!.id) === 0) push(i, j + 1);
+    if (j - 1 >= 0 && getThickness(s, H[j]!.id, V[i]!.id, V[i + 1]!.id) === 0) push(i, j - 1);
+  }
+  for (let i = 0; i < nV; i++) for (let j = 0; j < nH; j++) if (!ext.has(key(i, j))) set.add(key(i, j));
+  return { set, nV, nH };
+}
+
+/** B3/50§1+§5: board qo'shniligi (Tier-0, geometriyasiz). Har panel YUZASI (V→left/right, H→below/above)
+ *  narigi tomonida yopiq katak (blok) bormi: bor → "block" (abutting=yashirin); yo'q → "none" (free-end=ochiq).
+ *  ("wall-facing" devor ma'lumotini talab qiladi — L15/B4 gача "none".) */
+function panelTopo(sheet: Sheet, b: Board, role: Role | "unknown", enc: { set: Set<number>; nV: number; nH: number }): PanelTopo {
+  const L = lineById(sheet, b.line);
+  const neighbors: { side: string; kind: "block" | "wall" | "none" }[] = [];
+  if (L && enc.nV >= 1 && enc.nH >= 1) {
+    const key = (i: number, j: number) => i * enc.nH + j;
+    if (L.axis === "V") {
+      const vi = sheet.vLines.findIndex((l) => l.id === L.id);
+      const rows = spannedRows(sheet.hLines, b.from, b.to);
+      const leftHas = vi - 1 >= 0 && rows.some((r) => enc.set.has(key(vi - 1, r)));
+      const rightHas = vi < enc.nV && rows.some((r) => enc.set.has(key(vi, r)));
+      neighbors.push({ side: "left", kind: leftHas ? "block" : "none" }, { side: "right", kind: rightHas ? "block" : "none" });
+    } else {
+      const hi = sheet.hLines.findIndex((l) => l.id === L.id);
+      const cols = spannedRows(sheet.vLines, b.from, b.to);
+      const belowHas = hi - 1 >= 0 && cols.some((c) => enc.set.has(key(c, hi - 1)));
+      const aboveHas = hi < enc.nH && cols.some((c) => enc.set.has(key(c, hi)));
+      neighbors.push({ side: "below", kind: belowHas ? "block" : "none" }, { side: "above", kind: aboveHas ? "block" : "none" });
+    }
+  }
+  return { role: role === "unknown" ? "shelf" : role, axis: b.axis, neighbors };
+}
+
+/** Perp chiziq pozitsiyalari [from,to] oralig'idagi interval indekslari. */
+function spannedRows(perp: Line[], from: number, to: number): number[] {
+  const out: number[] = [];
+  for (let i = 0; i + 1 < perp.length; i++) if (perp[i]!.pos >= from && perp[i + 1]!.pos <= to) out.push(i);
+  return out;
 }
 
 export { classify };

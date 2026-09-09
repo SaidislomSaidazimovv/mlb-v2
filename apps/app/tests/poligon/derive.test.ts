@@ -243,6 +243,28 @@ test("B2/50§5 D8 GATE: P4 (appearance) qoida Tier-3 facetga tayansa → RUXSAT 
   assert.ok(!d.refusals.some((r) => r.rule === "D8"), "P4 + Tier-3 facet → ruxsat");
 });
 
+test("B3/50§1: tashqi side panel — TASHQI yuza free-end (ochiq), ICHKI yuza abutting (blok narigi tomonda)", () => {
+  const { s, roles } = box600();
+  const d = derive(s, { roles });
+  const leftSide = d.parts.filter((p) => p.role === "side")[0]!; // v0 (chap tashqi)
+  // v0: chap yuza tashqarida (free-end/ochiq), o'ng yuza ichkarida (abutting)
+  assert.equal(leftSide.facets.adjacency.left, "free-end", "tashqi yuza ochiq");
+  assert.equal(leftSide.facets.adjacency.right, "abutting", "ichki yuza blokka tegadi");
+});
+
+test("B3/54 T7 E2: 'exposed end panel' = P1 qoida adjacency(free-end)ga tayanadi → QABUL (D8 yo'q, Tier-0)", () => {
+  const { s, roles } = box600();
+  // 50§5 motivatsion misol: ochiq uchli panel 18mm. adjacency = Tier-0 → P1 ruxsat.
+  const rules: Rule[] = [{
+    layer: "project", property: "panelThickness", value: 18, facets: ["adjacency"],
+    match: (p) => (p.adjacency as Record<string, string> | undefined)?.left === "free-end", pass: "P1",
+  }];
+  const d = derive(s, { roles, rules });
+  assert.ok(!d.refusals.some((r) => r.rule === "D8"), "adjacency Tier-0 → D8 yo'q (E2 qabul)");
+  const leftSide = d.parts.filter((p) => p.role === "side")[0]!;
+  assert.equal(leftSide.params.panelThickness, 18, "ochiq uchli panel → 18");
+});
+
 test("T4: transport — modul eni ruxsatdan katta → transport RAD", () => {
   const s = createSheet();
   const v0 = addLine(s, "V", 0).id;

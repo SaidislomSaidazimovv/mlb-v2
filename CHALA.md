@@ -43,7 +43,8 @@ Eng muhim qolган (AUDIT §B), founder sinoviдан oldin shart:
 - ~~**B2 derive() rules pipeline**~~ — ✅ BAJARILDI (2026-09-09): STAGED P1→P2→P3→P4 (D8 authoring gate,
   P3 size.clear, P4 colour appearance), 111/111 test. Qoldig'i: P5/P6 zanjirga to'liq ulash + setback/overlay
   geometriyaga oqishi (D3 bilan).
-- **B3 adjacency SOXTA** (derive panelTopo har doim "free-end"); **B4 L15 wall-ends/opening**;
+- ~~**B3 adjacency**~~ — ✅ BAJARILDI (2026-09-09): blok-graf flood-fill; free-end/abutting; E2 exposed-end-panel
+  ishlaydi (113/113). Qoldig'i: wall-facing (L15/B4). **B4 L15 wall-ends/opening**;
   **B5 L9 Void/Reserved/Absorb**; **B6 L14 wall-length**; **B7 48§3 derived-until-touched**;
   **B8 L3 qatlamlar**; **B9 haqiqiy edge_exposure kromka**.
 

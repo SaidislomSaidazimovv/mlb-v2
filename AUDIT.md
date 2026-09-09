@@ -56,7 +56,7 @@ junction through/butt (48§2) UZUNLIKKA ta'sir qilmayapti.** Kod bilan isbotland
 |---|------|-------|--------|
 | ~~B1~~ | ✅ **Depth — BAJARILDI (2026-09-09)** | `derive` da 50§2 cascade orqali hal qilinadi (profil `rules`): side=560 (system), shelf=520 (project override); Incomplete→RAD (Law E). Kesim: uzunlik×chuqurlik (53§1). Inspektor provenans bilan. Qoldig'i: zone/module facet-matching (hozir role/axis), flat-panel nesting chizmasi. | 48§4 + 49 + 50§2 + 53§1 |
 | ~~B2~~ | ✅ **rules pipeline — BAJARILDI (2026-09-09)** | `derive` endi STAGED P1→P2→P3→P4: P1 geometrik param (Tier-0, D8 authoring gate — Tier-3 facetli P1 qoida yozilishda rad), P3 Tier-3 (size.clear), P4 appearance (colour, Tier-0+Tier-3). Inspektor har bosqichni ko'rsatadi. Qoldig'i: P5/P6 to'liq zanjirga ulash, setback/overlay geometriyaga (D3) oqishi. | 50§5 + 51 D8 + 54 T7 |
-| B3 | `derive()` adjacency | `panelTopo` qo'shnini HAR DOIM "none" beradi → adjacency har doim "free-end" (SOXTA) | 50§1: adjacency block-grafdan. |
+| ~~B3~~ | ✅ **adjacency — BAJARILDI (2026-09-09)** | `enclosedCellSet` flood-fill (blok-graf) → panel yuzasi narigi tomonida yopiq katak bormi: bor=abutting, yo'q=free-end (Tier-0, geometriyasiz). E2 "exposed end panel 18mm" (P1+adjacency free-end) uchidan-uchiga ishlaydi (54 T7). Qoldig'i: wall-facing (L15/B4 kerak). | 50§1 + 50§5 + 54 T7 |
 | B4 | **L15 wall ends/opening** | `createSheet()` argumentsiz | Hujjat: `createSheet(opening, ends)` — free/into-corner/against-wall, into-corner→Reserved. Yo'q. |
 | B5 | **L9 Void/Reserved + Absorb** | delete→Void, Reserved slot, Absorb komandasi yo'q | 48 L9 + T12 gate. Op'lar faqat addLine/setThickness/moveLine. |
 | B6 | **L14 wall length** | qayta taqsimlash op'i yo'q | 48 L14. |
