@@ -57,7 +57,11 @@ Eng muhim qolган (AUDIT §B), founder sinoviдан oldin shart:
   aynan bir marta, front/above/behind ozod), 138/138.
 - ~~**B9 haqiqiy edge_exposure kromka**~~ — ✅ BAJARILDI (2026-09-09): P3 edge_exposure (per-qirra,
   cap/butt+adjacency), bandingFromExposure (exposed 2/hidden 0), PartsView shundan; 140/140.
-- ✅ **BARCHA B (B1–B9) YOPILDI.** Qolgani: to'liq o'yin-UI passи (UI-integratsiya) + 10-mebel parity (founder sinovi).
+- ✅ **BARCHA B (B1–B9) YOPILDI.**
+- ✅ **51 D1–D12 QOLDIQLARI HAM YOPILDI (2026-09-09):** D2 (types.ts Type-param+present:bool), D9 (constraint/
+  forbidden-zone), D10 (install.ts atomik Theme install+konflikt+facet+domain-miss), D11 (door-swing+grain
+  feasibility), D12 (uch plane+kerf/tolerance+nominalToModel), H3 (journal.ts bitta undo-journal). 153/153.
+- Qolgani: **to'liq o'yin-UI passи** (UI-integratsiya) + **10-mebel parity** (founder sinovi).
 
 ## Endi qolган KATTA bloklar
 - **10-mebel parity** — eski engine (mebelchi-2app/mebely `panelDecomposition` + SWJ008) vs yangi

@@ -26,16 +26,28 @@ export { FACET_TIER, tierOf, isTier0, assertGeometricPredicate, computeFacet, co
 export type { FacetName, Tier, Adjacency, PanelTopo } from "./model/facets.ts";
 
 // ─ validation and output (P5→P6) ─────────────────────────────────────────────
-export { checkColumnMinimum, checkMaterialDomain, checkCollisions } from "./model/validate.ts";
-export type { Occupant, MaterialDomain, Box } from "./model/validate.ts";
-export { release, diffReleases, partIdentity } from "./model/release.ts";
+export { checkColumnMinimum, checkMaterialDomain, checkCollisions, checkConstraint, checkDoorSwing, checkGrainFit } from "./model/validate.ts";
+export type { Occupant, MaterialDomain, Box, Constraint } from "./model/validate.ts";
+export { release, diffReleases, partIdentity, nominalToModel } from "./model/release.ts";
 export type { Release, ReleasedPart, InputPart, Banding, ShopConvention, PartDiff } from "./model/release.ts";
+
+// ─ atomik Theme install (D10) ─────────────────────────────────────────────────
+export { installTheme } from "./model/install.ts";
+export type { Theme, DomainReport, InstallResult } from "./model/install.ts";
+
+// ─ bitta undo-journal (H3) ────────────────────────────────────────────────────
+export { initJournal, record, current, undo, redo, canUndo, canRedo } from "./model/journal.ts";
+export type { Journal, JournalStep, JournalState, JournalKind } from "./model/journal.ts";
 
 // ─ things + lock ─────────────────────────────────────────────────────────────
 export { canPublish, buildIndex } from "./model/things.ts";
 export type { Thing, ThingDef, FieldDef, Ownership } from "./model/things.ts";
 export { contentHash, lockOf, checkLock, reverseIndex } from "./model/lock.ts";
 export type { Lock, LockEntry } from "./model/lock.ts";
+
+// ─ Type-declared params + optional parts (D2) ─────────────────────────────────
+export { checkRuleParam, checkEnumValue, resolvePresentParts } from "./model/types.ts";
+export type { TypeDef, ParamDecl, ParamKind } from "./model/types.ts";
 
 // ─ layers + fullness (L3 · B8) ────────────────────────────────────────────────
 // Eslatma: 48 L3 fizik qatlam (behind/carcass/front/above) `Block.layer` tipida; nomi 50§2 cascade

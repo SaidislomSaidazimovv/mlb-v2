@@ -12,6 +12,7 @@ import { deriveModules, transportCheck, type Module, type TransportLimit } from 
 import { resolveThrough, classify, type Role, type Through, type Override, type JClass } from "./junction.ts";
 import { computeAdjacency, type Adjacency, type PanelTopo } from "./facets.ts";
 import { resolve, authorRule, type Rule, type Part as FacetPart } from "./cascade.ts";
+import { checkRuleParam, type TypeDef } from "./types.ts";
 
 /** Profil — devorga tuzilaviy rol beradi (48§2 rutba shundan). through = per-kesishma override.
  *  rules = 50§2 cascade qoidalari (B1 depth shu orqali: 48§4 "depth = profildan default, cascadable"). */
@@ -20,6 +21,7 @@ export interface Profile {
   through?: Record<string, Override>;   // "vLine|hLine" → V/H/neither/both override
   transport?: TransportLimit;
   rules?: Rule[];                       // 50§2 cascade (depth va boshqa parametrlar); yo'q → depth ishlatilmaydi
+  types?: TypeDef[];                    // D2: Type-e'lon qilган paramlar; berilsa qoida faqat shularni yozishi tekshiriladi
 }
 
 export interface DerivedPart {
@@ -78,6 +80,10 @@ export function derive(sheet: Sheet, profile: Profile, rules: Rule[] = profile.r
   // ── P1 AUTHORING GATE (50§5 / 51 D8 / 54 T7): P1 (geometrik) qoida Tier-3 facetga tayanolmaydi.
   //    YOZILISH paytida tekshiriladi (run'da emas) — E1 tsiklik rad, E2 exposed-end-panel qabul.
   for (const r of rules) { const a = authorRule(r); if (a) refusals.push(a); }
+  // D2: Type'lar berilgan bo'lsa — qoida faqat Type-e'lon qilган parametrni yozishi mumkin (ad-hoc rad).
+  if (profile.types && profile.types.length) {
+    for (const r of rules) { const d2 = checkRuleParam(r.property, profile.types); if (d2) refusals.push(d2); }
+  }
   const p1Props = [...new Set(rules.filter((r) => r.pass === "P1").map((r) => r.property))];
   const p4Props = [...new Set(rules.filter((r) => r.pass !== "P1").map((r) => r.property))]; // pass yo'q → appearance (P4)
 

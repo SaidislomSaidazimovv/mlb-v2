@@ -35,8 +35,38 @@ export function checkMaterialDomain(value: { span?: number; depth?: number }, do
   return null;
 }
 
+/** 51 D9 (B4 lift-up): parametr KONSTREYNT beradi — min / max / FORBIDDEN-RANGE — TEKSHIRILADI, YECHILMAYDI
+ *  (constraint solver YO'Q). Qiymat konstreyntni buzsa → RAD (nom bilan), jimgina siljitmaydi. */
+export interface Constraint { rule: string; min?: number; max?: number; forbidden?: [number, number][]; }
+export function checkConstraint(value: number, c: Constraint): Refusal | null {
+  if (c.min !== undefined && value < c.min) return { rule: c.rule, message: `D9: ${value} < min ${c.min} (${c.rule}) — tekshiriladi, yechilmaydi` };
+  if (c.max !== undefined && value > c.max) return { rule: c.rule, message: `D9: ${value} > max ${c.max} (${c.rule})` };
+  for (const [lo, hi] of c.forbidden ?? []) {
+    if (value >= lo && value <= hi) return { rule: c.rule, message: `D9: ${value} taqiqlangan zonada [${lo},${hi}] (${c.rule}) — B4 lift-up forbidden zone` };
+  }
+  return null;
+}
+
+/** 51 D11/G4: eshik-swing devor/to'siqqa tegishi (standart holat, "birinchi versiyada shart"). Eshik 90°
+ *  ochilishi uchun eni-cha bo'sh yoy kerak; ochilish tomonida to'siq shundan yaqin → RAD (yechilmaydi). */
+export function checkDoorSwing(width: number, clearance: number, rule = "D11.swing"): Refusal | null {
+  if (clearance < width) return { rule, message: `D11: eshik (eni ${width}) 90° ochilishiga ${clearance} bo'sh joy — devor/to'siqqa tegadi (kerak ≥ ${width})` };
+  return null;
+}
+
+/** 51 D11/A3: grain feasibility (P6) — MAJBURIY tola bilan part faqat BITTA orientatsiyada; sheet'ga sig'masa
+ *  → un-nestable RAD (jimgina qayta burmaydi). grain "L"=uzunlik sheet-uzunligi bo'ylab, "W"=en bo'ylab, "none"=erkin. */
+export function checkGrainFit(partLen: number, partWid: number, grain: "L" | "W" | "none", sheetLen: number, sheetWid: number, rule = "D11.grain"): Refusal | null {
+  if (grain === "none") {
+    const fits = (partLen <= sheetLen && partWid <= sheetWid) || (partLen <= sheetWid && partWid <= sheetLen);
+    return fits ? null : { rule, message: `D11: part ${partLen}×${partWid} sheet ${sheetLen}×${sheetWid} ga sig'maydi` };
+  }
+  const fits = grain === "L" ? (partLen <= sheetLen && partWid <= sheetWid) : (partLen <= sheetWid && partWid <= sheetLen);
+  return fits ? null : { rule, message: `D11: part ${partLen}×${partWid} majburiy tola (${grain}) bilan sheet ${sheetLen}×${sheetWid} ga sig'maydi — un-nestable (jimgina burilmaydi)` };
+}
+
 /** 51 D11: qatlam bo'yicha to'qnashuv (front layer to'lа bo'lishi shart emas → sheet o'zi ushlamaydi).
- *  Bir qatlamdagi ustma-ust x-oraliqlar → RAD, nom bilan. (eshik-swing devorga tegishi ham shu shakl.) */
+ *  Bir qatlamdagi ustma-ust x-oraliqlar → RAD, nom bilan. */
 export interface Box { layer: string; x0: number; x1: number; rule: string; }
 export function checkCollisions(boxes: Box[]): Refusal[] {
   const out: Refusal[] = [];

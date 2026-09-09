@@ -19,7 +19,13 @@ export interface InputPart {
   grain?: "L" | "W" | "none";
   handed?: "left" | "right";
 }
-export interface ShopConvention { subtractBanding: boolean; } // true = "band-then-trim" (cut = finished−banding)
+// 51 D12: UCH PLANE — Nominal (dizayn niyati, ramziy 16) / Model (derived haqiqiy geometriya, sheet haqiqati —
+//   Law D SHU planeni boshqaradi) / Cut (ishlab chiqarish: cut = model − banding×konvensiya, + kerf/tolerance).
+//   Banding/kerf/tolerance FAQAT Cut plane'da (terminal, hech narsaga qaytmaydi). kerf nesting'da (P6, F2).
+export interface ShopConvention { subtractBanding: boolean; kerf?: number; tolerance?: number; }
+
+/** 53§1 D12: Nominal → Model — ramziy nominal (16) haqiqiy materialga (mas. 15.8). Model = haqiqiy. */
+export function nominalToModel(nominal: number, actual: number): number { return actual; }
 
 export interface ReleasedPart {
   id: string; num: number;

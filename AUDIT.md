@@ -13,21 +13,17 @@ D5 (thickness-class) · D6 (hardware overlay/gap) · D7 (quantised) · D8 (strat
 Tier-0 vs `size.clear` Tier-3 to'g'ri ajratilgan**, eng o'tkir qirra) · D12 (Model→Cut banding). **8-fixture
 korpus (A1/B1/C1/E1/E2/F1/H1/I4) o'tadi; F1 IKKALA shop-konvensiyani sinaydi.**
 
-**⚠️ QISMAN / YO'Q (bu qayta auditda topildi):**
-- **D2 — GAP:** "rules faqat Type-e'lon qilган paramни yozadi" + "rules part IXTIRO qilolmaydi; optional part = `present:bool`
-  parametr" (G1/G2) — **YO'Q**. Type-parametr registri va optional-part mexanizmi qurilmagan. Hozir qoida
-  ixtiyoriy propertyни yozadi, hech nima to'smaydi.
-- **D10 — GAP:** atomik **Theme install** (butun-yoki-hech + diff, partial taqiqlangan — D2s/50§4) — **YO'Q**.
-  (migration atomik, lekin Theme-install alohida operatsiya sifatida yo'q.)
-- **D9 — QISMAN:** domain-miss FALL-THROUGH mexanizmi bor (match false → keyingi qatlam), lekin **hisobot**
-  ("51 dan 42 shelf...") va forbidden-zone (B4) yo'q.
-- **D11 — QISMAN:** collision generic box-overlap; **eshik-swing devorga** (G4, "birinchi versiyada bo'lishi
-  shart") aniq emas (faqat izoh); P6 feasibility (grain/nesting/yield, A3/F2) yo'q.
-- **D12 — QISMAN:** Model+Cut bor; **Nominal** alohida plane sifatida emas; kerf/tolerance yo'q.
-- **H3 — YO'Q:** ikki app bitta undo-journal (app-daraja).
+**✅ QOLDIQLAR HAM YOPILDI (2026-09-09, foydalanuvchi "D larga tegishli hammasini qil"):**
+- **D2 — ✅** `types.ts`: `checkRuleParam` (ad-hoc property → D2.undeclared), `checkEnumValue` (G2),
+  `resolvePresentParts` (G1 — qoida part IXTIRO qilolmaydi; optional = present:bool). derive'da opt-in gate.
+- **D10 — ✅** `install.ts` `installTheme`: ATOMIK (butun-yoki-hech), konflikt (50§4/I3 resolve Conflict → refuse),
+  facet contract (50§4), domain-miss HISOBOT (D3s "3 dan 2..."; xato emas).
+- **D9 — ✅** `checkConstraint` (min/max/**forbidden-zone** B4 lift-up) — tekshiriladi, yechilmaydi.
+- **D11 — ✅** `checkDoorSwing` (G4 eshik-swing devorga) + `checkGrainFit` (A3 P6 grain feasibility, un-nestable).
+- **D12 — ✅** uch plane hujjatlandi; `nominalToModel` (Nominal→Model 16→15.8); ShopConvention'ga kerf/tolerance.
+- **H3 — ✅** `journal.ts`: sheet-op + rule-edit BIR undo-journal (operatsiya-donaligida, interleaving to'g'ri).
 
-Xulosa: **D-qonunlarning YADROSI + 8-fixture to'liq va tested**, lekin D2/D10 (marketplace xavfsizligi) +
-D9-hisobot + D11-swing/P6 + D12-nominal/kerf **ochiq**. Bu — "TUGADI" emas; halol holat.
+**Butun suite 153/153, typecheck 0, build ok.** Ya'ni `51` D1–D12 endi qoldiqlari bilan HAM bajarildi.
 
 ## MUHIM tan olish (avval)
 Men avval "engine yadro + qonunlar TO'LIQ TUGADI" dedim — bu **haddan tashqari baland baho** edi. To'g'risi:
