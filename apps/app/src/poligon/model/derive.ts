@@ -152,7 +152,16 @@ export function derive(sheet: Sheet, profile: Profile, rules: Rule[] = profile.r
 
     // ── P3 (50§5): Tier-3 facetlar — YAKUNIY geometriyadan. size.clear = finished uzunlik (real).
     //    edge_exposure haqiqiy adjacency talab qiladi (hozir stub) → B3 gача hisoblanmaydi. ──
-    const tier3: Record<string, unknown> = { "size.clear": ext.length };
+    // B9/50§1: edge_exposure (Tier-3, per-qirra) — uch qirralar junction cap/butt dan; front (xonaga qaragan)
+    //   yuza-exposed (adjacency free-end)dan; back (devor tomoni) hidden. Kromka SHUNDAN keladi (P4).
+    const faceExposed = Object.values(adjacency).includes("free-end");
+    const edgeExposure = {
+      start: ext.startExposed ? "exposed" : "hidden", // from-uchi (butt=qo'shilma ichida→hidden)
+      end: ext.endExposed ? "exposed" : "hidden",     // to-uchi
+      front: faceExposed ? "exposed" : "hidden",       // xonaga qaragan qirra
+      back: "hidden",                                  // devor/orqa tomon
+    };
+    const tier3: Record<string, unknown> = { "size.clear": ext.length, edge_exposure: edgeExposure };
 
     // ── P4 (50§5): APPEARANCE parametrlar — Tier-0 + Tier-3 facetlar ruxsat. ──
     const tier0and3: FacetPart = { ...tier0, ...tier3 };
@@ -204,9 +213,9 @@ export function derive(sheet: Sheet, profile: Profile, rules: Rule[] = profile.r
  * (Yagona implementatsiya tanlovи: perpT = P ning L ga yondosh segmentlaridan MAX — 0/16/32 mebelда bir ma'noli;
  *  asimmetrik nodir holat kelsa qayta ko'riladi.)
  */
-function finishedExtent(sheet: Sheet, profile: Profile, b: Board): { from: number; to: number; length: number; provenance: string } {
+function finishedExtent(sheet: Sheet, profile: Profile, b: Board): { from: number; to: number; length: number; provenance: string; startExposed: boolean; endExposed: boolean } {
   const L = lineById(sheet, b.line);
-  if (!L) return { from: b.from, to: b.to, length: b.to - b.from, provenance: "chiziq topilmadi — centerline" };
+  if (!L) return { from: b.from, to: b.to, length: b.to - b.from, provenance: "chiziq topilmadi — centerline", startExposed: true, endExposed: true };
   const perpLines = L.axis === "V" ? sheet.hLines : sheet.vLines;
 
   // P (perp chiziq) ning L ga yondosh segmentlari (L o'qi bo'yicha ikki tomon)
@@ -240,7 +249,11 @@ function finishedExtent(sheet: Sheet, profile: Profile, b: Board): { from: numbe
   const hi = decide(b.to);
   const from = lo.caps === null ? b.from : lo.caps ? b.from - lo.perpT / 2 : b.from + lo.perpT / 2;
   const to = hi.caps === null ? b.to : hi.caps ? b.to + hi.perpT / 2 : b.to - hi.perpT / 2;
-  return { from, to, length: to - from, provenance: "48§2 through/butt + 48§0 face (carcassParts semantikasi)" };
+  // B9: uch qirrasi EXPOSED (cap/erkin) yoki HIDDEN (butt = qo'shilma ichida). caps===false → butt → hidden.
+  return {
+    from, to, length: to - from, provenance: "48§2 through/butt + 48§0 face (carcassParts semantikasi)",
+    startExposed: lo.caps !== false, endExposed: hi.caps !== false,
+  };
 }
 
 /** B3/50§1: mebel ICHKI (yopiq) kataklari — flood-fill (tashqaridan taxtasiz segment orqali yetib bo'lmaydi).
@@ -309,6 +322,17 @@ function spannedRows(perp: Line[], from: number, to: number): number[] {
   const out: number[] = [];
   for (let i = 0; i + 1 < perp.length; i++) if (perp[i]!.pos >= from && perp[i + 1]!.pos <= to) out.push(i);
   return out;
+}
+
+/** B9/50§1: kromka SPEC — exposed qirra ABS (mas. 2mm), hidden 0.4/hech (mas. 0). Profildan (P4) keladi. */
+export interface KromkaSpec { exposed: number; hidden: number; }
+export interface EdgeExposure { start: string; end: string; front: string; back: string; }
+
+/** B9: kromka (banding) edge_exposure'dan — "exposed qirra 2mm, hidden 0" (50§1). Rol bo'yicha SOXTA emas.
+ *  Xarita: PartsView finishedW=uzunlik→left/right (uch qirralar start/end); finishedH=chuqurlik→top/bottom (front/back). */
+export function bandingFromExposure(ee: EdgeExposure, spec: KromkaSpec = { exposed: 2, hidden: 0 }): { top: number; bottom: number; left: number; right: number } {
+  const v = (e: string): number => (e === "exposed" ? spec.exposed : spec.hidden);
+  return { left: v(ee.start), right: v(ee.end), top: v(ee.front), bottom: v(ee.back) };
 }
 
 export { classify };

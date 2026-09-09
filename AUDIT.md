@@ -62,7 +62,12 @@ junction through/butt (48§2) UZUNLIKKA ta'sir qilmayapti.** Kod bilan isbotland
 | ~~B6~~ | ✅ **L14 wall length — BAJARILDI (2026-09-09)** | `setWallLength(sheet, newWidth, policy, minGap)`: proportional / last-absorbs; chap uch anchor, o'ng outer face = newWidth; butun mm (L16, residual last-absorbs); minimum buzilsa `L14.minGap` RAD (baland ovoz). 128/128. | 48 L14 + L16 |
 | ~~B7~~ | ✅ **48§3 derived-until-touched — BAJARILDI (2026-09-09)** | `relations.ts`: PositionRelation (line=ref+offset), resolvePositions (chain+cycle→rel.cycle RAD), declareRelation, pinPosition ("touching pins it" → authored, ergashmaydi). Fartuk misoli: worktop siljisa upper ergashadi, pin qilinsa yo'q. 133/133. Qoldig'i: UI'da pin ko'rsatkichi. | 48§3 + L16 |
 | ~~B8~~ | ✅ **L3 qatlamlar — BAJARILDI (2026-09-09)** | `layers.ts`: Block.layer (behind/carcass/front/above); `checkFullness` — strukturaviy tekis (carcass+void/reserved) har katakni AYNAN BIR MARTA: 0→L3.hole, >1→L3.overlap; front/above/behind TEKSHIRILMAYDI (plinth uch carcass ustidan → qonuniy). 138/138. | 48 L3 + L9 |
-| B9 | **edge_exposure haqiqiy kromka** | Parts kromkasi rol bo'yicha soxta namuna | 50§1: kromka `edge_exposure` (Tier-3) + Theme'dan. |
+| ~~B9~~ | ✅ **edge_exposure haqiqiy kromka — BAJARILDI (2026-09-09)** | P3 `edge_exposure` (per-qirra Tier-3): uch qirralar junction cap/butt dan (butt=hidden), front adjacency free-end dan, back hidden. `bandingFromExposure` — exposed 2mm/hidden 0 (rol bo'yicha SOXTA emas). PartsView shundan. Founder property: butt (spanning penal) uch → hidden → kromka 0; cap → exposed → 2. 140/140. | 50§1 + 50§5 P3/P4 |
+
+## ✅ BARCHA B (tashlab ketilganlar) YOPILDI (2026-09-09)
+B1 depth · B2 rules pipeline · B3 adjacency · B4 L15 wall-extents · B5 L9 void/absorb · B6 L14 wall-length ·
+B7 48§3 derived-until-touched · B8 L3 qatlamlar · B9 edge_exposure — hammasi bajarildi + test. A/C bo'limlari
+ham (A1-A4 tuzatildi, C1 min-stroke). Qolgani faqat UI-integratsiya (to'liq o'yin-UI passи) + 10-mebel parity.
 
 ## C. HUJJATDAN CHETLASHGAN (wrong) — moslashtirilsin
 

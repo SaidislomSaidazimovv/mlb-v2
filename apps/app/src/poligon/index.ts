@@ -8,8 +8,8 @@ export { apply, legalDomain } from "./model/ops.ts";
 export type { Op, ApplyResult } from "./model/ops.ts";
 
 // ─ derivation (P0→P4) ────────────────────────────────────────────────────────
-export { derive } from "./model/derive.ts";
-export type { Derivation, DerivedPart, DerivedJunction, Profile } from "./model/derive.ts";
+export { derive, bandingFromExposure } from "./model/derive.ts";
+export type { Derivation, DerivedPart, DerivedJunction, Profile, EdgeExposure, KromkaSpec } from "./model/derive.ts";
 
 // ─ junctions / boards / modules (derivatsiya bo'laklari) ─────────────────────
 export { resolveThrough, classify, carcassParts, RANK } from "./model/junction.ts";

@@ -55,7 +55,9 @@ Eng muhim qolган (AUDIT §B), founder sinoviдан oldin shart:
   resolvePositions/pinPosition, chain+cycle rad), 133/133. Qoldig'i: UI pin ko'rsatkichi.
 - ~~**B8 L3 qatlamlar**~~ — ✅ BAJARILDI (2026-09-09): layers.ts (Block.layer, checkFullness — carcass
   aynan bir marta, front/above/behind ozod), 138/138.
-- Qolgan: **B9 haqiqiy edge_exposure kromka**.
+- ~~**B9 haqiqiy edge_exposure kromka**~~ — ✅ BAJARILDI (2026-09-09): P3 edge_exposure (per-qirra,
+  cap/butt+adjacency), bandingFromExposure (exposed 2/hidden 0), PartsView shundan; 140/140.
+- ✅ **BARCHA B (B1–B9) YOPILDI.** Qolgani: to'liq o'yin-UI passи (UI-integratsiya) + 10-mebel parity (founder sinovi).
 
 ## Endi qolган KATTA bloklar
 - **10-mebel parity** — eski engine (mebelchi-2app/mebely `panelDecomposition` + SWJ008) vs yangi

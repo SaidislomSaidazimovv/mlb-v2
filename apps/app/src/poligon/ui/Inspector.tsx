@@ -58,6 +58,9 @@ export function Inspector({ sheet, profile }: { sheet: Sheet; profile: Profile }
               <Row label="rang" value={String(part.appearance.colour)} rule="50§5 P4 appearance (Tier-0+Tier-3) — cascade" />
             )}
             <Row label="size.clear" value={`${part.tier3["size.clear"]} mm`} rule="50§5 P3 Tier-3 — yakuniy geometriyadan" />
+            {part.tier3.edge_exposure ? (
+              <Row label="edge_exposure" value={JSON.stringify(part.tier3.edge_exposure)} rule="50§1 P3 Tier-3 — junction cap/butt + adjacency; kromka SHUNDAN (exposed 2mm, hidden 0)" />
+            ) : null}
             <Row label="oraliq" value={`${part.board.from} → ${part.board.to}`} rule="48§0 — chegara chiziqlari pozitsiyasi" />
           </>
         )}

@@ -2,18 +2,16 @@
 // minimal chiziq qalinligi YO'Q; kromka vektori kesim to'rtburchagi TASHQARISIDA; o'chirish = segment
 // tahriri, hech qachon delete emas — 53§3). §2 API: derive → release. Elevatsiya ko'rinishi (2D model).
 import { useState } from "react";
-import { derive, release } from "../index.ts";
-import type { Sheet, Profile, InputPart, Banding } from "../index.ts";
+import { derive, release, bandingFromExposure } from "../index.ts";
+import type { Sheet, Profile, InputPart, Banding, EdgeExposure } from "../index.ts";
 import { sheetExtent, makeView, PAL, ROLE_COLOR } from "./view.ts";
 
 const W = 560, H = 520;
 
-/** 53§1 namuna konvensiya (DEKLARATIV, yashirin emas): kromka faqat UZUNLIK qirralarida (top/bottom),
- *  QALINLIK yuzasida EMAS — shuning uchun cutW = qalinlik (16) o'zgarmaydi, cutH = uzunlik − kromka.
- *  Depth (chuqurlik) modeli 2D Sheet'da hali yo'q → bu namuna; haqiqiy kromka Thing'dan keladi (CHALA). */
-function bandingFor(role: string): Banding {
-  const v = role === "worktop" || role === "top" || role === "side" ? 2 : 0;
-  return { top: v, bottom: v, left: 0, right: 0 };
+/** B9/50§1: kromka edge_exposure'dan (exposed 2mm, hidden 0) — rol bo'yicha SOXTA emas. */
+function bandingFor(ee: EdgeExposure | undefined): Banding {
+  if (!ee) return { top: 0, bottom: 0, left: 0, right: 0 };
+  return bandingFromExposure(ee);
 }
 
 export function PartsView({ sheet, profile }: { sheet: Sheet; profile: Profile }) {
@@ -31,7 +29,7 @@ export function PartsView({ sheet, profile }: { sheet: Sheet; profile: Profile }
     finishedW: p.finishedLength,         // A4: junction-aware uzunlik
     finishedH: p.depth ?? 0,             // B1/48§4: cascade chuqurlik (0 = berilmagan)
     thickness: p.board.thickness,
-    banding: bandingFor(p.role),
+    banding: bandingFor(p.tier3.edge_exposure as EdgeExposure | undefined),
     grain: p.board.axis === "V" ? "L" : "W",
   }));
   const rel = release(inputs, { subtractBanding: true }); // band-then-trim (53§1)
@@ -49,7 +47,7 @@ export function PartsView({ sheet, profile }: { sheet: Sheet; profile: Profile }
             const X1 = b.axis === "V" ? view.sx(lineX(sheet, b.line) + t / 2) : view.sx(p.finishedTo);
             const Y0 = b.axis === "V" ? view.sy(p.finishedTo) : view.sy(lineY(sheet, b.line) + t / 2);
             const Y1 = b.axis === "V" ? view.sy(p.finishedFrom) : view.sy(lineY(sheet, b.line) - t / 2);
-            const band = bandingFor(p.role);
+            const band = bandingFor(p.tier3.edge_exposure as EdgeExposure | undefined);
             const selHere = sel === i;
             return (
               <g key={i} onClick={() => setSel(i)} style={{ cursor: "pointer" }}>

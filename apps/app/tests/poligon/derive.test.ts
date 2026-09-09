@@ -2,7 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createSheet, addLine, setThickness } from "../../src/poligon/model/sheet.ts";
-import { derive, type Profile } from "../../src/poligon/model/derive.ts";
+import { derive, bandingFromExposure, type Profile } from "../../src/poligon/model/derive.ts";
 import { carcassParts, type Role } from "../../src/poligon/model/junction.ts";
 import type { Rule } from "../../src/poligon/model/cascade.ts";
 
@@ -297,6 +297,35 @@ test("B4/L15+L9: into-corner uch → Reserved ustun (qo'shni devor chuqurligi)",
 test("B4: argumentsiz createSheet → bo'sh sheet (backward-compat, opening/ends yo'q)", () => {
   const s = createSheet();
   assert.deepEqual(s.vLines, []); assert.equal(s.opening, undefined); assert.equal(s.ends, undefined);
+});
+
+test("B9/50§1: kromka edge_exposure'dan — exposed→2mm, hidden→0 (rol bo'yicha soxta emas)", () => {
+  assert.deepEqual(
+    bandingFromExposure({ start: "exposed", end: "hidden", front: "exposed", back: "hidden" }),
+    { left: 2, right: 0, top: 2, bottom: 0 },
+  );
+});
+
+test("B9/50§1: edge_exposure geometriyadan — worktop BUTT (spanning penal) uch = hidden, CAP uch = exposed", () => {
+  // penal+base (spanning v1): worktop v1..v2, v1 spanning → butt (hidden), v2 cap → exposed
+  const s = createSheet();
+  const v0 = addLine(s, "V", 0).id, v1 = addLine(s, "V", 600).id, v2 = addLine(s, "V", 1200).id;
+  const h0 = addLine(s, "H", 0).id, h1 = addLine(s, "H", 720).id, h2 = addLine(s, "H", 2400).id;
+  setThickness(s, v0, h0, h1, 16); setThickness(s, v0, h1, h2, 16);
+  setThickness(s, v1, h0, h1, 16); setThickness(s, v1, h1, h2, 16);
+  setThickness(s, v2, h0, h1, 16);
+  setThickness(s, h0, v0, v1, 16); setThickness(s, h0, v1, v2, 16);
+  setThickness(s, h1, v1, v2, 16);
+  setThickness(s, h2, v0, v1, 16);
+  const roles: Record<string, Role> = { [v0]: "side", [v1]: "side", [v2]: "side", [h0]: "bottom", [h1]: "worktop", [h2]: "top" };
+  const d = derive(s, { roles });
+  const wtop = d.parts.find((p) => p.role === "worktop")!;
+  const ee = wtop.tier3.edge_exposure as { start: string; end: string };
+  assert.equal(ee.start, "hidden", "spanning penal ichiga butt → hidden (kromka yo'q)");
+  assert.equal(ee.end, "exposed", "cap uch → exposed (kromka bor)");
+  // banding: left(start)=0, right(end)=2 — kromka faqat ochiq qirrada
+  assert.equal(bandingFromExposure(wtop.tier3.edge_exposure as never).left, 0);
+  assert.equal(bandingFromExposure(wtop.tier3.edge_exposure as never).right, 2);
 });
 
 test("T4: transport — modul eni ruxsatdan katta → transport RAD", () => {
