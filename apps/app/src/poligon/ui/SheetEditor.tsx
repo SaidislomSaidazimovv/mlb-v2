@@ -4,7 +4,7 @@
 import { useRef, useState } from "react";
 import { apply, getThickness } from "../index.ts";
 import type { Sheet, Profile, LineId, Thickness, Refusal } from "../index.ts";
-import { enumerateSegments, sheetExtent, makeView, PAL, ROLE_COLOR } from "./view.ts";
+import { enumerateSegments, enclosedCells, sheetExtent, makeView, PAL, ROLE_COLOR } from "./view.ts";
 import { legalMoveRange } from "./legal.ts";
 
 interface Props {
@@ -26,6 +26,7 @@ export function SheetEditor({ sheet, profile, selLine, onSelectLine, onSheet, on
   const ext = sheetExtent(sheet);
   const view = makeView(ext, W, H);
   const segs = enumerateSegments(sheet);
+  const cells = enclosedCells(sheet); // ichki bo'shliqlar (shading uchun; o'lchamга tegmaydi)
 
   // L5a: chiziq biror segmentда taxtaga egami (tugatadimi)?
   const hasBoard = (id: LineId, axis: "V" | "H"): boolean => {
@@ -41,7 +42,7 @@ export function SheetEditor({ sheet, profile, selLine, onSelectLine, onSheet, on
 
   // MUHARRIR affordance: taxta ekranда kamida MINPX px ko'rinsin — 16mm ~3px "chiziqli" ko'rinmasin,
   // to'liq 2D panel bo'lsin. Bu FAQAT muharrir; Parts (T15) true-scale saqlaydi.
-  const MINPX = 7;
+  const MINPX = 4;
   const posById = (id: LineId): number => {
     const ln = sheet.vLines.find((l) => l.id === id) ?? sheet.hLines.find((l) => l.id === id);
     return ln ? linePos(id, ln.pos) : 0;
@@ -90,6 +91,13 @@ export function SheetEditor({ sheet, profile, selLine, onSelectLine, onSheet, on
         onPointerMove={moveDrag} onPointerUp={endDrag} onPointerLeave={endDrag}
         onClick={() => onSelectLine(null)}
       >
+        {/* mebel ICHKI bo'shliqlari — shading (to'liq 2D ko'rinish; o'lchamга tegmaydi, 48§5) */}
+        {cells.map((c, i) => (
+          <rect key={"cell" + i} x={view.sx(c.x0)} y={view.sy(c.y1)}
+            width={view.sx(c.x1) - view.sx(c.x0)} height={view.sy(c.y0) - view.sy(c.y1)}
+            fill="#2a2318" opacity={0.85} />
+        ))}
+
         {/* L11: sudrash paytida qonuniy oraliq BAND sifatida ko'rinadi */}
         {drag && (drag.axis === "V"
           ? <rect x={view.sx(drag.min)} y={view.pad} width={view.sx(drag.max) - view.sx(drag.min)} height={H - 2 * view.pad} fill={PAL.ok} opacity={0.12} />
@@ -136,6 +144,14 @@ export function SheetEditor({ sheet, profile, selLine, onSelectLine, onSheet, on
             </g>
           );
         })}
+
+        {/* umumiy o'lcham yozuvlari (en × balandlik) — 48§5 haqiqiy o'lcham */}
+        {!drag && (
+          <g fontFamily="monospace" fontSize={11} fill={PAL.dim}>
+            <text x={(view.sx(ext.minX) + view.sx(ext.maxX)) / 2} y={H - view.pad + 20} textAnchor="middle">{ext.maxX - ext.minX} mm</text>
+            <text x={view.pad - 12} y={(view.sy(ext.minY) + view.sy(ext.maxY)) / 2} textAnchor="middle" transform={`rotate(-90 ${view.pad - 12} ${(view.sy(ext.minY) + view.sy(ext.maxY)) / 2})`}>{ext.maxY - ext.minY} mm</text>
+          </g>
+        )}
 
         {/* sudrash paytida joriy pozitsiya (mm) — clamp ko'rinadi, jimgina emas */}
         {drag && (

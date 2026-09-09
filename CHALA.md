@@ -34,9 +34,21 @@
 - ✅ `51` **D1–D12 TO'LIQ** (D3/D4/D5/D6/D7 + D8 cascade + D9-D11 validation + D12 release). Geometriya
   devori butunligicha qurildi.
 
-## Endi qolган KATTA bloklar (engine yadro + qonunlar TUGADI)
+## ⚠️ HALOL HOLAT (2026-09-09 audit — to'liq `AUDIT.md` da)
+Avvalgi "engine yadro + qonunlar TUGADI" — HADDAN BALAND baho edi. To'g'risi: amalga oshirilganlar
+sinovdan o'tган, LEKIN hujjatning jiddiy qismlari HALI YO'Q. Yangi `AUDIT.md` — qator-ma-qator solishtiruv.
+Eng muhim qolган (AUDIT §B), founder sinoviдан oldin shart:
+- **B1 Depth (chuqurlik)** — umuman yo'q (48§4 "NOT deferred"); kesim faqat qalinlik×uzunlik, side 560×720
+  emas. Kesim ro'yxati shu sababли CHALA.
+- **B2 derive() rules'ni ishlatmaydi** — 50§5 P0→P6 pipeline (P1/P4) birlashmagan; cascade alohida.
+- **B3 adjacency SOXTA** (derive panelTopo har doim "free-end"); **B4 L15 wall-ends/opening**;
+  **B5 L9 Void/Reserved/Absorb**; **B6 L14 wall-length**; **B7 48§3 derived-until-touched**;
+  **B8 L3 qatlamlar**; **B9 haqiqiy edge_exposure kromka**.
+
+## Endi qolган KATTA bloklar
 - **10-mebel parity** — eski engine (mebelchi-2app/mebely `panelDecomposition` + SWJ008) vs yangi
-  (poligon) kesim/teshik solishtiruvi. Cross-repo skript — founderning asosiy sinovi.
+  (poligon) kesim/**teshik** solishtiruvi. Founderning asosiy sinovi — LEKIN avval B1/B2 + teshik(drilling,
+  yangi yadroда yo'q) kerak.
 - ~~**Persist**~~ — ✅ BAJARILDI (project.ts, 92/92 test; sheet+params+pins+lock, round-trip, fs save/load,
   integritet=lock). Qoldig'i: haqiqiy `loadThings(dir)` fs-walk (T8 thin qatlam) + ko'p-loyiha teskari
   indeks bilan blast-radius UI — persist yadrosi tayyor, folder-o'qish keyin.

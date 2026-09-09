@@ -10,7 +10,7 @@ export const PAL = {
 
 export const ROLE_COLOR: Record<Role, string> = {
   worktop: "#7c756b", side: "#e7ddc9", top: "#d8ccb2", bottom: "#d8ccb2",
-  shelf: "#cbbd9f", divider: "#c3b494", back: "#b9ad98",
+  shelf: "#cbbd9f", fasad: "#dcc9a0", back: "#b9ad98", plinth: "#8f8674",
 };
 
 export interface Extent { minX: number; maxX: number; minY: number; maxY: number; }
@@ -44,6 +44,42 @@ export function enumerateSegments(s: Sheet): SegRect[] {
       const t = getThickness(s, h.id, lo.id, hi.id);
       if (t !== 0) out.push({ line: h.id, lo: lo.id, hi: hi.id, axis: "H", t, x0: lo.pos, x1: hi.pos, y0: h.pos - t / 2, y1: h.pos + t / 2 });
     }
+  }
+  return out;
+}
+
+/** Mebel ICHKI (yopiq) kataklari — flood-fill: tashqaridan taxtasiz (thickness 0) segment orqali yetib
+ *  bo'lmaydigan kataklar = mebel tanasi. FAQAT RENDERING yordamchisi (o'lchamга tegmaydi, 48§5 buzilmaydi) —
+ *  ichki bo'shliqni shading qilib "to'liq 2D" ko'rinish beradi, yangi geometriya/qonun EMAS. */
+export function enclosedCells(s: Sheet): { x0: number; x1: number; y0: number; y1: number }[] {
+  const V = s.vLines, H = s.hLines;
+  const nV = V.length - 1, nH = H.length - 1;
+  if (nV < 1 || nH < 1) return [];
+  const key = (i: number, j: number) => i * nH + j;
+  const exterior = new Set<number>();
+  const q: [number, number][] = [];
+  const push = (i: number, j: number) => { const k = key(i, j); if (!exterior.has(k)) { exterior.add(k); q.push([i, j]); } };
+
+  // tashqariga ulanadigan chegara kataklari (tashqi chiziqda taxta yo'q bo'lsa)
+  for (let j = 0; j < nH; j++) {
+    if (getThickness(s, V[0]!.id, H[j]!.id, H[j + 1]!.id) === 0) push(0, j);
+    if (getThickness(s, V[nV]!.id, H[j]!.id, H[j + 1]!.id) === 0) push(nV - 1, j);
+  }
+  for (let i = 0; i < nV; i++) {
+    if (getThickness(s, H[0]!.id, V[i]!.id, V[i + 1]!.id) === 0) push(i, 0);
+    if (getThickness(s, H[nH]!.id, V[i]!.id, V[i + 1]!.id) === 0) push(i, nH - 1);
+  }
+  // 0-qalinlik segment orqali oqim
+  while (q.length) {
+    const [i, j] = q.pop()!;
+    if (i + 1 < nV && getThickness(s, V[i + 1]!.id, H[j]!.id, H[j + 1]!.id) === 0) push(i + 1, j);
+    if (i - 1 >= 0 && getThickness(s, V[i]!.id, H[j]!.id, H[j + 1]!.id) === 0) push(i - 1, j);
+    if (j + 1 < nH && getThickness(s, H[j + 1]!.id, V[i]!.id, V[i + 1]!.id) === 0) push(i, j + 1);
+    if (j - 1 >= 0 && getThickness(s, H[j]!.id, V[i]!.id, V[i + 1]!.id) === 0) push(i, j - 1);
+  }
+  const out: { x0: number; x1: number; y0: number; y1: number }[] = [];
+  for (let i = 0; i < nV; i++) for (let j = 0; j < nH; j++) {
+    if (!exterior.has(key(i, j))) out.push({ x0: V[i]!.pos, x1: V[i + 1]!.pos, y0: H[j]!.pos, y1: H[j + 1]!.pos });
   }
   return out;
 }

@@ -4,17 +4,25 @@
 
 import type { Refusal } from "./contracts.ts";
 
-/** 48§2: rutba profildan — worktop > side > top/bottom > shelf. Tenglik → rad (default yo'q). */
-export type Role = "worktop" | "side" | "top" | "bottom" | "shelf" | "divider" | "back";
-export const RANK: Record<Role, number> = {
+/** 50§1 rol lug'ati (yagona): side/top/bottom/shelf/fasad/back/plinth/worktop. */
+export type Role = "worktop" | "side" | "top" | "bottom" | "shelf" | "fasad" | "back" | "plinth";
+
+/** 48§2: rutba PROFILDAN keladi (DATA) — bu profil DEFAULT jadvali. Strukturaviy chain 48§2 dan sarih:
+ *  `worktop > side > top/bottom > shelf`. Qolganlari (fasad/back/plinth — front/behind/above qatlam,
+ *  odatda strukturaviy through-junction hosil qilmaydi) profil default; 48§2 chain'ida SARIH EMAS, profil
+ *  bekor qila oladi. Tenglik → rad (jimgina default yo'q). O' zimdan qat'iy qonun sifatida qo'ymadim. */
+export const DEFAULT_RANK: Record<Role, number> = {
   worktop: 5,
   side: 4,
   top: 3,
   bottom: 3,
   shelf: 2,
-  divider: 2,
+  plinth: 2,
+  fasad: 1,
   back: 1,
 };
+/** Eski nom (moslik uchun) — DEFAULT_RANK. */
+export const RANK = DEFAULT_RANK;
 
 export type Through = "V" | "H" | "neither";
 export type Override = "V" | "H" | "neither" | "both";

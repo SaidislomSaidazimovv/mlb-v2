@@ -63,8 +63,8 @@ test("48§2: X-kesishmada rutba TENGLIGI → junction.tie RAD (jimgina default y
   const [h0, h1, h2] = [addLine(s, "H", 0).id, addLine(s, "H", 800).id, addLine(s, "H", 1600).id];
   for (const v of [v0, v1, v2]) { setThickness(s, v, h0, h1, 16); setThickness(s, v, h1, h2, 16); }
   for (const h of [h0, h1, h2]) { setThickness(s, h, v0, v1, 16); setThickness(s, h, v1, v2, 16); }
-  // v1=shelf(2), h1=divider(2) → teng rutba
-  const roles: Record<string, Role> = { [v0]: "side", [v1]: "shelf", [v2]: "side", [h0]: "bottom", [h1]: "divider", [h2]: "top" };
+  // v1=shelf(2), h1=shelf(2) → teng rutba (50§1 lug'atidan; 'divider' o'chirildi)
+  const roles: Record<string, Role> = { [v0]: "side", [v1]: "shelf", [v2]: "side", [h0]: "bottom", [h1]: "shelf", [h2]: "top" };
   const d = derive(s, { roles });
   assert.ok(d.refusals.some((r) => r.rule === "junction.tie"));
 });
