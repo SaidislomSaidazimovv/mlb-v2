@@ -2,14 +2,47 @@
 // ASOS: 48§0-1 (model), L0/L1/L4/L5b/L12/L16; 54§3 "T1 gate" (round-trip, L1 commitda buzilmaydi).
 // Sof funksiyalar (54§0): UI yo'q, I/O yo'q.
 
-import type { Axis, Thickness, LineId, Line, Sheet, Refusal } from "./contracts.ts";
+import type { Axis, Thickness, LineId, Line, Sheet, Refusal, Opening, WallEnds } from "./contracts.ts";
 import { EPS, DEFAULT_MIN } from "./contracts.ts";
 
 let _seq = 0;
 const newId = (p: string): string => `${p}${++_seq}`;
 
-export function createSheet(): Sheet {
-  return { vLines: [], hLines: [], seg: {}, blocks: [] };
+const FRAME_DEFAULT_ENDS: WallEnds = { left: { kind: "free", endPanel: 16 }, right: { kind: "free", endPanel: 16 } };
+
+/**
+ * 48 L15: opening berilsa — devor chegarasini quradi: outermost lines' OUTER FACES opening'ni chegaralaydi.
+ * Chap/o'ng uch-panel qalinligi ends'dan (0=wall-hung, 16=panel). into-corner uch → Reserved ustun
+ * (qo'shni devor chuqurligi = cornerDepth). Pol/shift chegara chiziqlari (0/height, marker). Argumentsiz →
+ * bo'sh sheet (backward-compat). O'ylab topilган joylashuv yo'q — L15 "outer faces bound it" ni to'g'ridan bajaradi.
+ */
+export function createSheet(opening?: Opening, ends?: WallEnds): Sheet {
+  const s: Sheet = { vLines: [], hLines: [], seg: {}, blocks: [] };
+  if (!opening) return s;
+  const e = ends ?? FRAME_DEFAULT_ENDS;
+  s.opening = opening;
+  s.ends = e;
+  const { width, height } = opening;
+  const dL = e.left.kind === "into-corner" ? (e.left.cornerDepth ?? 0) : 0;
+  const dR = e.right.kind === "into-corner" ? (e.right.cornerDepth ?? 0) : 0;
+  const tL = e.left.endPanel;
+  const tR = e.right.endPanel;
+
+  // pol/shift chegara chiziqlari: tashqi yuza 0 va height da (marker; qalinlik 0 — foydalanuvchi haqiqiysини qo'shadi)
+  const hF = addLine(s, "H", 0).id;
+  const hC = addLine(s, "H", height).id;
+
+  // chap/o'ng uch-panel: TASHQI YUZA opening chegarasida (reserved hisobga olinadi) — L15
+  const vL = addLine(s, "V", dL + tL / 2).id;   // chap panel markazi; tashqi yuza = dL
+  const vR = addLine(s, "V", width - dR - tR / 2).id; // o'ng panel markazi; tashqi yuza = width - dR
+  if (tL) setThickness(s, vL, hF, hC, tL);
+  if (tR) setThickness(s, vR, hF, hC, tR);
+
+  // into-corner → Reserved ustun (L9 Reserved + L15): edge chiziq + reserved blok (parts yo'q, tahrirlanmaydi)
+  if (dL > 0) { const e0 = addLine(s, "V", 0).id; const dLine = addLine(s, "V", dL).id; s.blocks.push({ id: newId("b"), type: "reserved", vLo: e0, vHi: dLine, hLo: hF, hHi: hC }); }
+  if (dR > 0) { const eW = addLine(s, "V", width).id; const dLine = addLine(s, "V", width - dR).id; s.blocks.push({ id: newId("b"), type: "reserved", vLo: dLine, vHi: eW, hLo: hF, hHi: hC }); }
+
+  return s;
 }
 
 const lanes = (s: Sheet, axis: Axis): Line[] => (axis === "V" ? s.vLines : s.hLines);

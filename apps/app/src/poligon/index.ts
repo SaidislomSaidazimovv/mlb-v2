@@ -43,5 +43,5 @@ export { serializeProject, parseProject, checkProjectIntegrity } from "./model/p
 export type { Project, Pin, StoredRule } from "./model/project.ts";
 
 // ─ asosiy tiplar ─────────────────────────────────────────────────────────────
-export type { Axis, Thickness, LineId, Line, Block, Sheet, Refusal } from "./model/contracts.ts";
+export type { Axis, Thickness, LineId, Line, Block, Sheet, Refusal, EndKind, EndSpec, WallEnds, Opening } from "./model/contracts.ts";
 export { EPS, DEFAULT_MIN } from "./model/contracts.ts";

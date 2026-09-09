@@ -286,7 +286,13 @@ function panelTopo(sheet: Sheet, b: Board, role: Role | "unknown", enc: { set: S
       const rows = spannedRows(sheet.hLines, b.from, b.to);
       const leftHas = vi - 1 >= 0 && rows.some((r) => enc.set.has(key(vi - 1, r)));
       const rightHas = vi < enc.nV && rows.some((r) => enc.set.has(key(vi, r)));
-      neighbors.push({ side: "left", kind: leftHas ? "block" : "none" }, { side: "right", kind: rightHas ? "block" : "none" });
+      // L15/B4: eng tashqi chiziq + uch 'against-wall' → o'sha yuza WALL-FACING (block yo'q, lekin ochiq ham emas)
+      const leftWall = vi === 0 && sheet.ends?.left.kind === "against-wall";
+      const rightWall = vi === sheet.vLines.length - 1 && sheet.ends?.right.kind === "against-wall";
+      neighbors.push(
+        { side: "left", kind: leftWall ? "wall" : leftHas ? "block" : "none" },
+        { side: "right", kind: rightWall ? "wall" : rightHas ? "block" : "none" },
+      );
     } else {
       const hi = sheet.hLines.findIndex((l) => l.id === L.id);
       const cols = spannedRows(sheet.vLines, b.from, b.to);

@@ -265,6 +265,40 @@ test("B3/54 T7 E2: 'exposed end panel' = P1 qoida adjacency(free-end)ga tayanadi
   assert.equal(leftSide.params.panelThickness, 18, "ochiq uchli panel → 18");
 });
 
+test("B4/L15: createSheet(opening) — tashqi yuza opening chegarasida → side = opening balandligi (720, 736 emas)", () => {
+  const s = createSheet({ width: 800, height: 720 }, { left: { kind: "against-wall", endPanel: 16 }, right: { kind: "free", endPanel: 16 } });
+  const [vL, vR] = s.vLines.map((l) => l.id); // pos bo'yicha: vL@8, vR@792
+  const [hF, hC] = s.hLines.map((l) => l.id); // @0, @720 (chegara marker)
+  const roles: Record<string, Role> = { [vL!]: "side", [vR!]: "side", [hF!]: "bottom", [hC!]: "top" };
+  const d = derive(s, { roles });
+  const leftSide = d.parts.find((p) => p.board.line === vL)!;
+  assert.equal(leftSide.finishedLength, 720, "side = opening balandligi (L15 outer-face)");
+  assert.equal(leftSide.facets.adjacency.left, "wall-facing", "against-wall uch → wall-facing");
+  const rightSide = d.parts.find((p) => p.board.line === vR)!;
+  assert.equal(rightSide.facets.adjacency.right, "free-end", "free uch → ochiq");
+});
+
+test("B4/L15: outer chiziqlarning tashqi yuzasi aynan opening'da (chap panel outer=0, o'ng=width)", () => {
+  const s = createSheet({ width: 1000, height: 900 }, { left: { kind: "free", endPanel: 16 }, right: { kind: "free", endPanel: 16 } });
+  const vL = s.vLines[0]!, vR = s.vLines[s.vLines.length - 1]!;
+  assert.equal(vL.pos - 16 / 2, 0, "chap panel tashqi yuza = 0");
+  assert.equal(vR.pos + 16 / 2, 1000, "o'ng panel tashqi yuza = width");
+});
+
+test("B4/L15+L9: into-corner uch → Reserved ustun (qo'shni devor chuqurligi)", () => {
+  const s = createSheet({ width: 1200, height: 720 }, { left: { kind: "into-corner", endPanel: 16, cornerDepth: 600 }, right: { kind: "free", endPanel: 16 } });
+  assert.equal(s.ends?.left.kind, "into-corner");
+  const reserved = s.blocks.find((b) => b.type === "reserved");
+  assert.ok(reserved, "into-corner → Reserved blok bor");
+  // reserved ustun [0, 600] — edge@0 va @600 chiziqlari orasida
+  assert.ok(s.vLines.some((l) => l.pos === 0) && s.vLines.some((l) => l.pos === 600), "reserved chegaralari @0 va @600");
+});
+
+test("B4: argumentsiz createSheet → bo'sh sheet (backward-compat, opening/ends yo'q)", () => {
+  const s = createSheet();
+  assert.deepEqual(s.vLines, []); assert.equal(s.opening, undefined); assert.equal(s.ends, undefined);
+});
+
 test("T4: transport — modul eni ruxsatdan katta → transport RAD", () => {
   const s = createSheet();
   const v0 = addLine(s, "V", 0).id;

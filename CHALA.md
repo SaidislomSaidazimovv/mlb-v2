@@ -44,7 +44,9 @@ Eng muhim qolган (AUDIT §B), founder sinoviдан oldin shart:
   P3 size.clear, P4 colour appearance), 111/111 test. Qoldig'i: P5/P6 zanjirga to'liq ulash + setback/overlay
   geometriyaga oqishi (D3 bilan).
 - ~~**B3 adjacency**~~ — ✅ BAJARILDI (2026-09-09): blok-graf flood-fill; free-end/abutting; E2 exposed-end-panel
-  ishlaydi (113/113). Qoldig'i: wall-facing (L15/B4). **B4 L15 wall-ends/opening**;
+  ishlaydi. wall-facing endi B4 bilan yopildi.
+- ~~**B4 L15 wall-ends/opening**~~ — ✅ BAJARILDI (2026-09-09): createSheet(opening,ends), outer-face
+  chegara (side=opening balandligi), against-wall→wall-facing, into-corner→Reserved; 117/117.
   **B5 L9 Void/Reserved/Absorb**; **B6 L14 wall-length**; **B7 48§3 derived-until-touched**;
   **B8 L3 qatlamlar**; **B9 haqiqiy edge_exposure kromka**.
 

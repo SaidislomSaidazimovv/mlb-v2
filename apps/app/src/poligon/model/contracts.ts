@@ -27,12 +27,25 @@ export interface Block {
   hHi: LineId;
 }
 
+/** 48 L15: devor UCHI holati. `into-corner` → Reserved ustun (qo'shni devor chuqurligi, tahrirlanmaydi). */
+export type EndKind = "free" | "into-corner" | "against-wall";
+export interface EndSpec {
+  kind: EndKind;
+  endPanel: Thickness;   // uch-panel qalinligi: 0 (wall-hung, panelsiz) yoki 16 (panel bilan)
+  cornerDepth?: number;  // into-corner: Reserved ustun eni = qo'shni devor chuqurligi
+}
+export interface WallEnds { left: EndSpec; right: EndSpec; }
+/** 48 L15: opening — devor tashqi chegarasi (outermost lines' OUTER faces shu bilan chegaralanadi). */
+export interface Opening { width: number; height: number; }
+
 /** 48§0: Sheet — bitta devor. Chiziqlar + segment qalinliklari + bloklar. Qolgani (part, module) DERIVED. */
 export interface Sheet {
   vLines: Line[]; // pos bo'yicha tartiblangan
   hLines: Line[]; // pos bo'yicha tartiblangan
   seg: Record<string, Thickness>; // segKey -> qalinlik (yozuv yo'q => 0)
   blocks: Block[];
+  opening?: Opening;  // 48 L15: e'lon qilingan devor tashqi o'lchovi (bo'lsa)
+  ends?: WallEnds;    // 48 L15: chap/o'ng uch holati (bo'lsa)
 }
 
 /** 48 L8/L13: rad etish — QAYSI qoida rad etganini nomlaydi. */

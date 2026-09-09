@@ -20,6 +20,9 @@ export function seedWall(): { sheet: Sheet; profile: Profile } {
   setThickness(s, h1, v1, v2, 16);
   setThickness(s, h2, v0, v1, 16);
 
+  // L15/B4: uch holati — chap devorga taqalgan (penal yon → wall-facing), o'ng ochiq (free)
+  s.ends = { left: { kind: "against-wall", endPanel: 16 }, right: { kind: "free", endPanel: 16 } };
+
   const roles: Record<string, Role> = {
     [v0]: "side", [v1]: "side", [v2]: "side",
     [h0]: "bottom", [h1]: "worktop", [h2]: "top",
