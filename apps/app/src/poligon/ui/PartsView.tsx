@@ -8,10 +8,12 @@ import { sheetExtent, makeView, PAL, ROLE_COLOR } from "./view.ts";
 
 const W = 560, H = 520;
 
-/** 53§1 namuna konvensiya (DEKLARATIV, yashirin emas): ko'rinadigan qirraga 2mm kromka — faqat ko'rsatish uchun. */
+/** 53§1 namuna konvensiya (DEKLARATIV, yashirin emas): kromka faqat UZUNLIK qirralarida (top/bottom),
+ *  QALINLIK yuzasida EMAS — shuning uchun cutW = qalinlik (16) o'zgarmaydi, cutH = uzunlik − kromka.
+ *  Depth (chuqurlik) modeli 2D Sheet'da hali yo'q → bu namuna; haqiqiy kromka Thing'dan keladi (CHALA). */
 function bandingFor(role: string): Banding {
   const v = role === "worktop" || role === "top" || role === "side" ? 2 : 0;
-  return { top: v, bottom: 0, left: v, right: v };
+  return { top: v, bottom: v, left: 0, right: 0 };
 }
 
 export function PartsView({ sheet, profile }: { sheet: Sheet; profile: Profile }) {

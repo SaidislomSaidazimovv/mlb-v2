@@ -39,6 +39,14 @@ export function SheetEditor({ sheet, profile, selLine, onSelectLine, onSheet, on
     return r ? ROLE_COLOR[r] : PAL.dim;
   };
 
+  // MUHARRIR affordance: taxta ekranда kamida MINPX px ko'rinsin — 16mm ~3px "chiziqli" ko'rinmasin,
+  // to'liq 2D panel bo'lsin. Bu FAQAT muharrir; Parts (T15) true-scale saqlaydi.
+  const MINPX = 7;
+  const posById = (id: LineId): number => {
+    const ln = sheet.vLines.find((l) => l.id === id) ?? sheet.hLines.find((l) => l.id === id);
+    return ln ? linePos(id, ln.pos) : 0;
+  };
+
   // ── qalinlik tsikli (setThickness, L0 commit) ──────────────────────────────
   const cycleSeg = (line: LineId, lo: LineId, hi: LineId, t: Thickness): void => {
     const res = apply(sheet, { kind: "setThickness", line, lo, hi, t: CYCLE[t] });
@@ -88,16 +96,19 @@ export function SheetEditor({ sheet, profile, selLine, onSelectLine, onSheet, on
           : <rect x={view.pad} y={view.sy(drag.max)} width={W - 2 * view.pad} height={view.sy(drag.min) - view.sy(drag.max)} fill={PAL.ok} opacity={0.12} />
         )}
 
-        {/* segmentlar (taxtalar) — rol rangida */}
+        {/* segmentlar (taxtalar) — to'liq panel (min ko'rinish qalinligi), rol rangida */}
         {segs.map((s, i) => {
-          const x0 = view.sx(s.axis === "V" ? linePos(s.line, s.x0 + s.t / 2) - s.t / 2 : s.x0);
-          const x1 = view.sx(s.axis === "V" ? linePos(s.line, s.x1 - s.t / 2) + s.t / 2 : s.x1);
-          const y0 = view.sy(s.axis === "H" ? linePos(s.line, s.y1 - s.t / 2) + s.t / 2 : s.y1);
-          const y1 = view.sy(s.axis === "H" ? linePos(s.line, s.y0 + s.t / 2) - s.t / 2 : s.y0);
+          const lineLive = posById(s.line);
+          const loLive = posById(s.lo);
+          const hiLive = posById(s.hi);
+          const half = Math.max(view.scale * s.t / 2, MINPX / 2);
+          let x0: number, x1: number, y0: number, y1: number;
+          if (s.axis === "V") { const cx = view.sx(lineLive); x0 = cx - half; x1 = cx + half; y0 = view.sy(hiLive); y1 = view.sy(loLive); }
+          else { const cy = view.sy(lineLive); y0 = cy - half; y1 = cy + half; x0 = view.sx(loLive); x1 = view.sx(hiLive); }
           return (
             <rect key={"seg" + i} x={Math.min(x0, x1)} y={Math.min(y0, y1)}
               width={Math.abs(x1 - x0)} height={Math.abs(y1 - y0)}
-              fill={roleColor(s.line)} stroke={s.t === 32 ? PAL.accent : PAL.line} strokeWidth={s.t === 32 ? 1.5 : 0.5}
+              fill={roleColor(s.line)} stroke={s.t === 32 ? PAL.accent : "#00000055"} strokeWidth={s.t === 32 ? 2 : 1}
               onClick={(e) => { e.stopPropagation(); cycleSeg(s.line, s.lo, s.hi, s.t); }}
               style={{ cursor: "pointer" }}
             >
@@ -106,15 +117,24 @@ export function SheetEditor({ sheet, profile, selLine, onSelectLine, onSheet, on
           );
         })}
 
-        {/* chiziq handle'lari — sudraladi; L5a xira */}
+        {/* chiziq handle'lari — ko'rinmas keng ushlash zonasi + nozik ko'rsatkich; L5a xira; tanlangan = oltin */}
         {[...sheet.vLines.map((l) => ({ ...l, axis: "V" as const })), ...sheet.hLines.map((l) => ({ ...l, axis: "H" as const }))].map((l) => {
-          const dim = !hasBoard(l.id, l.axis); // L5a
+          const dim = !hasBoard(l.id, l.axis); // L5a — hech nimani tutmaydi
           const sel = selLine === l.id;
           const p = linePos(l.id, l.pos);
-          const common = { stroke: sel ? PAL.accent : (dim ? PAL.line : PAL.ink), strokeWidth: sel ? 3 : 1.5, opacity: dim ? 0.35 : 1, style: { cursor: "grab" as const } };
-          return l.axis === "V"
-            ? <line key={l.id} x1={view.sx(p)} y1={view.pad} x2={view.sx(p)} y2={H - view.pad} {...common} onPointerDown={(e) => startDrag(l.id, "V", e)} />
-            : <line key={l.id} x1={view.pad} y1={view.sy(p)} x2={W - view.pad} y2={view.sy(p)} {...common} onPointerDown={(e) => startDrag(l.id, "H", e)} />;
+          // ko'rinadigan ko'rsatkich: tanlangan=oltin qalin, xira=nozik kulrang guide, aks holda deyarli ko'rinmas
+          const stroke = sel ? PAL.accent : dim ? PAL.line : "#efe8da";
+          const wVisible = sel ? 3 : dim ? 1 : 0.75;
+          const opacity = sel ? 1 : dim ? 0.4 : 0.25;
+          const A = l.axis === "V"
+            ? { x1: view.sx(p), y1: view.pad, x2: view.sx(p), y2: H - view.pad }
+            : { x1: view.pad, y1: view.sy(p), x2: W - view.pad, y2: view.sy(p) };
+          return (
+            <g key={l.id} onPointerDown={(e) => startDrag(l.id, l.axis, e)} style={{ cursor: "grab" }}>
+              <line {...A} stroke="transparent" strokeWidth={14} />{/* ushlash zonasi */}
+              <line {...A} stroke={stroke} strokeWidth={wVisible} opacity={opacity} strokeDasharray={dim ? "4 4" : undefined} />
+            </g>
+          );
         })}
 
         {/* sudrash paytida joriy pozitsiya (mm) — clamp ko'rinadi, jimgina emas */}

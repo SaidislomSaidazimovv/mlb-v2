@@ -325,5 +325,14 @@ release uchidan-uchiga).
 **Asos:** `54`§3 T12–T15 gate'lari · `54`§0 (UI thin, engine sof) · `54`§1 (yangi yadro yonda, alohida sahifa).
 
 **Isbot (haqiqiy):** `src/poligon` **typecheck 0 xato** · poligon **node-test 99/99** · **`vite build`
-MUVAFFAQIYAT** → `dist/poligon.html` + `poligon-*.js` (22.97 kB, 787 modul), `node:fs` brauzerga
-sizmadi. Ko'rish: `cd apps/app && npm run dev` → `/poligon.html`.
+MUVAFFAQIYAT** → `dist/poligon.html` + `poligon-*.js`, `node:fs` brauzerga sizmadi. Ko'rish:
+`cd apps/app && npm run dev` → `/poligon.html`.
+
+**Brauzer sinovi (Puppeteer, screenshot bilan) + 3 tuzatish (2026-09-09):** har 4 tab headless brauzerда
+ochib sinaldi (JS runtime xatosi yo'q). Topilgan va TUZATILGAN kamchiliklar:
+1. Muharrir "chiziqli" ko'rinardi (16mm ~3px) → taxta MUHARRIRда kamida 7px panel qilib ko'rsatiladi
+   (`MINPX`; Parts T15 true-scale saqlaydi) — endi to'liq 2D o'qiladi. Chiziq-handle nozik + ushlash zonasi.
+2. L11 oralig'i `[-4999, ...]` ko'rsatardi → tashqi (qo'shnisiz) chiziq o'z pozitsiyasiga pin qilindi
+   (`ui/legal.ts`) — manfiy/uzoq qiymat yo'q, endi `[0, 584]` kabi to'g'ri.
+3. Kesim ro'yxati `12×2398` (kromka QALINLIKDAN ayrilib qolgan, noto'g'ri) → kromka faqat uzunlik
+   qirralarida; qalinlik 16 saqlanadi → `16×2396`. Depth/haqiqiy kromka Thing'dan keladi (CHALA).
