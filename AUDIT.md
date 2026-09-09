@@ -41,10 +41,20 @@ gap NOTO'G'RI edi. Bu ro'yxat endi to'liq (grep bilan tekshirilган).
   50§6 change ledger (`ledger.ts`) · 52 fork/retire/collections (`catalog.ts`) · 53§1 pre-flight (`preflight.ts`) ·
   53§2 release status (`release.ts`) · 53§3/§5 attached+handedness (`attached.ts`).
 - **Butun suite 164/164, typecheck 0, build ok.**
-- **Halol qolgan (perf/Node-fs, korrektlik EMAS):** 50§6 facet-keyed **incremental invalidation** (kesh
-  optimizatsiyasi — hozir har derive to'liq, to'g'ri lekin optimallanmagan) · 52 haqiqiy **fs folder walk**
-  `loadThings(dir)` (disk'dan def.json/diagram o'qish — hozir logika bor, disk-walk yo'q; real Thing papkalari
-  ham yo'q). Bular korrektlikка ta'sir qilmaydi.
+### ✅ 3-PASS AUDIT — oxirgi qoldiqlar ham yopildi (2026-09-09)
+- **50§6 incremental invalidation — ✅** `invalidation.ts` (facet-keyed kesh, `invalidateByRule` blast radius;
+  membership saqlanmaydi → sog'lom).
+- **52§2 haqiqiy fs loadThings — ✅** `things-fs.ts` (Node-only; `<kind>/<slug>/def.json`+diagram+examples
+  disk-walk; temp-dir bilan tested; brauzer index'ga chiqmaydi).
+- **48 L7 in-plane vs overlay — ✅** `formsJunctions(layer, override?)` — carcass/behind junction hosil qiladi,
+  front/above (overlay plinth) YO'Q; profil override ustun ("nomidan emas"). (Worktop-rank allaqachon RANK'da.)
+
+### ⏳ Yagona ochiq (founder-scope, drilling):
+- **52§3 `joints/`** (confirmat/minifix/dowel/domino) — joinery, drilling/part-count/assembly-order'ga ta'sir
+  qiladi. Modellashtirilmagan, chunki **teshik(drilling) yangi yadroда yo'q** — bu founderning Q2 savoli
+  (`FOUNDERGA.md`). Drilling spec kelganда joints/ + drilling birga quriladi.
+
+**Butun suite 167/167, typecheck 0, build ok. 48–54 barcha QONUN/QOIDA kodda + tested (joints/drilling = founder-scope).**
 
 ---
 

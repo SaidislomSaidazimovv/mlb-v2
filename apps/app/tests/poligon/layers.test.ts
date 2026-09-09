@@ -2,7 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createSheet, addLine, addBlock } from "../../src/poligon/model/sheet.ts";
-import { checkFullness } from "../../src/poligon/model/layers.ts";
+import { checkFullness, formsJunctions } from "../../src/poligon/model/layers.ts";
 import type { Sheet, Layer } from "../../src/poligon/model/contracts.ts";
 
 function grid2() {
@@ -41,6 +41,14 @@ test("L3: ikki carcass ustma-ust → L3.overlap", () => {
   block(s, "base", v0, v2, h0, h1); // ikkala katak
   block(s, "base", v0, v1, h0, h1); // (0,0) ikkinchi marta
   assert.ok(checkFullness(s).some((r) => r.rule === "L3.overlap"));
+});
+
+test("48 L7: in-plane (carcass) junction HOSIL QILADI; overlay (front plinth) HOSIL QILMAYDI; override ustun", () => {
+  assert.equal(formsJunctions("carcass"), true, "in-plane → junction");
+  assert.equal(formsJunctions("behind"), true);
+  assert.equal(formsJunctions("front"), false, "overlay plinth → junction yo'q (fartuk/shapka ustidan o'tadi)");
+  assert.equal(formsJunctions("above"), false);
+  assert.equal(formsJunctions("front", true), true, "profil in-plane override → ustun (L7 'nomidan emas')");
 });
 
 test("L3: FRONT qatlamdagi plinth uch carcass ustidan o'tsa — QONUNIY (front tekshirilmaydi)", () => {

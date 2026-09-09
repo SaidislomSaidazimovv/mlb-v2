@@ -11,6 +11,15 @@ export function blockLayer(b: Block): Layer {
   return b.layer ?? "carcass";
 }
 
+/** 48 L7: panel IN-PLANE (sidelar orasida — junction HOSIL QILADI) yoki OVERLAY (oldinда — junction hosil
+ *  qilMAYDI). "Panel instansiya xususiyati, profil belgilaydi — NOMIDAN emas": `inPlaneOverride` berilsa u
+ *  ustun; aks holda qatlamdan (front/above = overlay → junction yo'q; carcass/behind = in-plane). Plinth
+ *  overlay bo'lsa junction hosil qilmaydi (fartuk/shapka/plinth ustidan o'tadi — L7 "panel-rows deleted"). */
+export function formsJunctions(layer: Layer, inPlaneOverride?: boolean): boolean {
+  if (inPlaneOverride !== undefined) return inPlaneOverride;
+  return layer === "carcass" || layer === "behind";
+}
+
 /** Strukturaviy tekis (carcass PLANE): carcass bloklari + Void/Reserved (oshkora bo'shliq). front/above/behind emas. */
 function inCarcassPlane(b: Block): boolean {
   if (b.type === "void" || b.type === "reserved") return true;

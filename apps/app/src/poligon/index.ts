@@ -65,6 +65,11 @@ export type { Thing, ThingDef, FieldDef, Ownership } from "./model/things.ts";
 export { contentHash, lockOf, checkLock, reverseIndex } from "./model/lock.ts";
 export type { Lock, LockEntry } from "./model/lock.ts";
 
+// ─ incremental invalidation (50§6) — sof, brauzerga xavfsiz ─────────────────────
+export { newCache, cacheKey, getCached, setCached, invalidateByRule } from "./model/invalidation.ts";
+export type { ResolveCache } from "./model/invalidation.ts";
+// (52§2 haqiqiy fs `loadThings(dir)` — Node-only `model/things-fs.ts` dan to'g'ridan import; index brauzerga chiqarmaydi.)
+
 // ─ Type-declared params + optional parts (D2) ─────────────────────────────────
 export { checkRuleParam, checkEnumValue, resolvePresentParts } from "./model/types.ts";
 export type { TypeDef, ParamDecl, ParamKind } from "./model/types.ts";
@@ -72,7 +77,7 @@ export type { TypeDef, ParamDecl, ParamKind } from "./model/types.ts";
 // ─ layers + fullness (L3 · B8) ────────────────────────────────────────────────
 // Eslatma: 48 L3 fizik qatlam (behind/carcass/front/above) `Block.layer` tipida; nomi 50§2 cascade
 // `Layer` (system/catalog/...) bilan to'qnashmasligi uchun index'da alohida eksport qilinmaydi.
-export { checkFullness, blockLayer } from "./model/layers.ts";
+export { checkFullness, blockLayer, formsJunctions } from "./model/layers.ts";
 
 // ─ derived-until-touched (48§3 · B7) ──────────────────────────────────────────
 export { isDerived, declareRelation, resolvePositions, pinPosition } from "./model/relations.ts";
