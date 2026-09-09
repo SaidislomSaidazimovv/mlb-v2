@@ -37,6 +37,10 @@ export type { Thing, ThingDef, FieldDef, Ownership } from "./model/things.ts";
 export { contentHash, lockOf, checkLock, reverseIndex } from "./model/lock.ts";
 export type { Lock, LockEntry } from "./model/lock.ts";
 
+// ─ wall length (L14 · B6) ─────────────────────────────────────────────────────
+export { setWallLength } from "./model/wall.ts";
+export type { RedistributePolicy } from "./model/wall.ts";
+
 // ─ void / reserved / absorb (L9/L10 · B5) ────────────────────────────────────
 export { deleteBoard, voidBlock, reserveBlock, absorb, mergeAdjacentVoids, isExemptFromEqualize, reservedFootprint } from "./model/voidspace.ts";
 export type { ReservedMeta } from "./model/contracts.ts";
