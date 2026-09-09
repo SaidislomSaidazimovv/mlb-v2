@@ -1,5 +1,42 @@
 # AUDIT — halol o'z-o'zini tekshiruv (2026-09-09)
 
+## 🔁 CHUQUR QAYTA-TEKSHIRUV (foydalanuvchi: "qayta qayta 1000 marta tekshir, qanchasini o'tkazib yubording")
+7 hujjat bo'lim-ma-bo'lim, grep bilan qayta ko'rildi. **Yana quyidagilar O'TKAZIB YUBORILGAN edi** (avval
+aytmagan/ko'rmagan) — halol ro'yxat:
+
+**QONUN darajasidagi (muhim — korrektlik):**
+- **48 L6 — material/tola bilan board tugashi:** board run FAQAT qalinlik o'zgarishida tugaydi; hujjat
+  (L6 + 53§5) *material yoki tola* o'zgarishida ham tugashi kerak ("ikki kollinear teng-qalinlik through-joined
+  segment turli material/tola → IKKI board"). `board.ts`da "keyingi" deb qoldirilган. **O'TKAZILGAN.**
+- **50 Law B — no guessing:** property'ni boshqaradigan facet part bo'ylab BIR QIYMATLI bo'lishi shart; part
+  ikki qiymatni qamrasa (mas. tall penal zone base+upper) → RAD + partни nomlash. Nomli QONUN, qilinmagan. **O'TKAZILGAN.**
+- **53§4 — overrides kanali:** part-identity'ga bog'langan override (raqamli=delta, kategorik=absolute,
+  inventory, har derive'da qayta-tekshiriladi, part o'zgarsa konflikt sifatida chiqadi). L12 mo'ljallangan
+  kanal. Faqat junction-override bor. **O'TKAZILGAN.**
+
+**PRODUCT/infra darajasidagi (hujjatda bor, men skip qilgan):**
+- **48§6 — standards profile** (plinth 100, worktop 850, fartuk 600, upper 720, gap'lar) + **"devorni ≤900
+  modul bilan to'ldir" bitta gesture.** Yo'q. **O'TKAZILGAN.**
+- **50 Law C — pin to'liq:** orphan surfacing (part yo'qolsa) + "3 marta bir xil pin → rule'ga ko'tarishни
+  taklif (preview bilan)". Faqat oddiy Pin tipi bor. **O'TKAZILGAN.**
+- **50§6 — change ledger** ("12 part o'zgardi, 3 qirra kromkasiz, −4.20") + **incremental invalidation** +
+  **versioning** (Catalog jimgina yangilamaydi). Yo'q. **O'TKAZILGAN.**
+- **52§2/§4/§9/§10 — katalog infra:** haqiqiy fs `loadThings(dir)` (def.json/diagram/examples o'qish),
+  fork-on-edit, retire, collections/manifest, loyihalararo blast-radius flow. Faqat in-memory validatsiya bor.
+  **O'TKAZILGAN.**
+- **53§1 — pre-flight ro'yxati** (fillersiz Reserved, kromkasiz exposed qirra, transportdan katta modul, hal
+  qilinmagan rank-tie, konfliktdagi override, "estimated" devor) + **wall estimated/measured** bayrog'i. Yo'q. **O'TKAZILGAN.**
+- **53§2 — release status** (draft/released/in-production/delivered) + jonli-release dialog. Yo'q. **O'TKAZILGAN.**
+- **53§3/§5 — attached items** (hinge/leg/handle o'chirilsa egasini tahrirlaydi) + library-instance divergence +
+  handedness'ning to'liq derivatsiyasi (chap/o'ng mirror = kromka/teshik bo'lganда). Qisman/yo'q. **O'TKAZILGAN.**
+
+**Xulosa (halol):** engine geometriya-yadrosi + D1–D12 + B1–B9 tested, LEKIN yuqoridagilar (ayniqsa L6
+material/tola, Law B, 53§4 overrides — QONUN darajasida) hali YO'Q. "Hammasi tugadi" degan har qanday oldingi
+gap NOTO'G'RI edi. Bu ro'yxat endi to'liq (grep bilan tekshirilган).
+
+---
+
+
 > Foydalanuvchi so'radi: "o'zingdan qo'shib qoida yozib yuborgan ekansan, yana shunga o'xshash holatlar
 > bo'lmaganmi aniqla; skip qilib o'tkazib yuborgan, unutgan qismlaring bordir — chuqur iteratsiya qil".
 > Bu — kodni `48–54` hujjatlari bilan qator-ma-qator solishtirib chiqilgan **halol** ro'yxat. Aldov yo'q.
