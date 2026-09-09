@@ -2,7 +2,7 @@
 // QONUNIY oraliq; L5a hech nimani tugatmagan chiziq XIRA; gesture bilan noqonuniy holatga yetib bo'lmaydi;
 // sudrash JIMGINA clamp qilmaydi). Faqat §2 API (poligon/index.ts) orqali — model/ ichiga tegmaydi.
 import { useRef, useState } from "react";
-import { apply, getThickness } from "../index.ts";
+import { apply, getThickness, derive } from "../index.ts";
 import type { Sheet, Profile, LineId, Thickness, Refusal } from "../index.ts";
 import { enumerateSegments, enclosedCells, sheetExtent, makeView, PAL, ROLE_COLOR } from "./view.ts";
 import { legalMoveRange } from "./legal.ts";
@@ -27,6 +27,11 @@ export function SheetEditor({ sheet, profile, selLine, onSelectLine, onSheet, on
   const view = makeView(ext, W, H);
   const segs = enumerateSegments(sheet);
   const cells = enclosedCells(sheet); // ichki bo'shliqlar (shading uchun; o'lchamга tegmaydi)
+  const parts = derive(sheet, profile).parts; // A4: junction-aware finished extent (burchaklar yopiladi)
+  const committedPos = (id: LineId): number => {
+    const ln = sheet.vLines.find((l) => l.id === id) ?? sheet.hLines.find((l) => l.id === id);
+    return ln ? ln.pos : 0;
+  };
 
   // L5a: chiziq biror segmentда taxtaga egami (tugatadimi)?
   const hasBoard = (id: LineId, axis: "V" | "H"): boolean => {
@@ -43,10 +48,6 @@ export function SheetEditor({ sheet, profile, selLine, onSelectLine, onSheet, on
   // MUHARRIR affordance: taxta ekranда kamida MINPX px ko'rinsin — 16mm ~3px "chiziqli" ko'rinmasin,
   // to'liq 2D panel bo'lsin. Bu FAQAT muharrir; Parts (T15) true-scale saqlaydi.
   const MINPX = 4;
-  const posById = (id: LineId): number => {
-    const ln = sheet.vLines.find((l) => l.id === id) ?? sheet.hLines.find((l) => l.id === id);
-    return ln ? linePos(id, ln.pos) : 0;
-  };
 
   // ── qalinlik tsikli (setThickness, L0 commit) ──────────────────────────────
   const cycleSeg = (line: LineId, lo: LineId, hi: LineId, t: Thickness): void => {
@@ -104,22 +105,29 @@ export function SheetEditor({ sheet, profile, selLine, onSelectLine, onSheet, on
           : <rect x={view.pad} y={view.sy(drag.max)} width={W - 2 * view.pad} height={view.sy(drag.min) - view.sy(drag.max)} fill={PAL.ok} opacity={0.12} />
         )}
 
-        {/* segmentlar (taxtalar) — to'liq panel (min ko'rinish qalinligi), rol rangida */}
-        {segs.map((s, i) => {
-          const lineLive = posById(s.line);
-          const loLive = posById(s.lo);
-          const hiLive = posById(s.hi);
-          const half = Math.max(view.scale * s.t / 2, MINPX / 2);
+        {/* taxtalar (RUN, junction-aware FINISHED extent — A4: burchaklar yopiladi, uzunlik to'g'ri) */}
+        {parts.map((p, i) => {
+          const b = p.board;
+          const half = Math.max(view.scale * b.thickness / 2, MINPX / 2);
           let x0: number, x1: number, y0: number, y1: number;
-          if (s.axis === "V") { const cx = view.sx(lineLive); x0 = cx - half; x1 = cx + half; y0 = view.sy(hiLive); y1 = view.sy(loLive); }
-          else { const cy = view.sy(lineLive); y0 = cy - half; y1 = cy + half; x0 = view.sx(loLive); x1 = view.sx(hiLive); }
+          if (b.axis === "V") { const cx = view.sx(committedPos(b.line)); x0 = cx - half; x1 = cx + half; y0 = view.sy(p.finishedTo); y1 = view.sy(p.finishedFrom); }
+          else { const cy = view.sy(committedPos(b.line)); y0 = cy - half; y1 = cy + half; x0 = view.sx(p.finishedFrom); x1 = view.sx(p.finishedTo); }
           return (
-            <rect key={"seg" + i} x={Math.min(x0, x1)} y={Math.min(y0, y1)}
+            <rect key={"board" + i} x={Math.min(x0, x1)} y={Math.min(y0, y1)}
               width={Math.abs(x1 - x0)} height={Math.abs(y1 - y0)}
-              fill={roleColor(s.line)} stroke={s.t === 32 ? PAL.accent : "#00000055"} strokeWidth={s.t === 32 ? 2 : 1}
-              onClick={(e) => { e.stopPropagation(); cycleSeg(s.line, s.lo, s.hi, s.t); }}
-              style={{ cursor: "pointer" }}
-            >
+              fill={roleColor(b.line)} stroke={b.thickness === 32 ? PAL.accent : "#00000066"} strokeWidth={b.thickness === 32 ? 2 : 1} />
+          );
+        })}
+
+        {/* ko'rinmas bosish-zonasi: har segment ustida (qalinlik 0→16→32 tsikli) */}
+        {segs.map((s, i) => {
+          const half = Math.max(view.scale * s.t / 2, 6);
+          let x0: number, x1: number, y0: number, y1: number;
+          if (s.axis === "V") { const cx = view.sx(committedPos(s.line)); x0 = cx - half; x1 = cx + half; y0 = view.sy(committedPos(s.hi)); y1 = view.sy(committedPos(s.lo)); }
+          else { const cy = view.sy(committedPos(s.line)); y0 = cy - half; y1 = cy + half; x0 = view.sx(committedPos(s.lo)); x1 = view.sx(committedPos(s.hi)); }
+          return (
+            <rect key={"hit" + i} x={Math.min(x0, x1)} y={Math.min(y0, y1)} width={Math.abs(x1 - x0)} height={Math.abs(y1 - y0)}
+              fill="transparent" onClick={(e) => { e.stopPropagation(); cycleSeg(s.line, s.lo, s.hi, s.t); }} style={{ cursor: "pointer" }}>
               <title>{`qalinlik ${s.t} → bosilsa ${CYCLE[s.t]} (48 L0)`}</title>
             </rect>
           );

@@ -34,9 +34,16 @@ junction through/butt (48§2) UZUNLIKKA ta'sir qilmayapti.** Kod bilan isbotland
   integratsiyalangan derive'ni emas** (test bo'shlig'i).
 - Konvensiya reconciliation (o'ylab topilmagan): founder 800→768 = W−2t → tashqi chiziqlar OUTER FACE devor
   chegarasida (L15: outer lines t/2 ichkarida). Mening seed'im outer l'ni pos=0/600 ga qo'ygan (L15 buzilgan).
-- **Xulosa:** to'g'ri tuzatish = **L15 (wall outer faces) + junction-aware board extents (faces=pos±t/2, 48§0)**.
-  Bu burchakni yopadi VA butun kesim uzunliklarini to'g'rilaydi. Test oracle = founder'ning 768/800 raqamlari.
-- **Ustuvorlik: YUQORI** (kesim ro'yxati aynan shu sababdan hozir noto'g'ri butt-uzunlik beradi).
+- **Xulosa:** to'g'ri tuzatish = junction-aware board extents (faces=pos±t/2, 48§0) + through/butt (48§2).
+  Test oracle = founder'ning 768/800 raqamlari.
+- ✅ **TUZATILDI (2026-09-09):** `derive.ts` `finishedExtent` — cap=+perpT/2, butt=−perpT/2 (48§0 face);
+  test: quti V-through top=768/side=800, H-through side=768 (carcassParts oracle bilan bir xil).
+- ⚠️ **HALOL: birinchi urinishim NOTO'G'RI edi** — faqat RANK ishlatib (resolveThrough), `48`§2 ning
+  **spanning-blok** qoidasini qo'llamadim → ish-stoli poldan-shiftgacha penal yon ICHIGA kirdi (worktop
+  592, side 600 — OVERLAP). **Foydalanuvchi tutdi.** Tuzatildi: `perpSpansL` (P chizig'i L ni ikki tomondan
+  qamrasa → B butt, rankdan ustun — 48§2 "spanning blok ichida taxta o'smaydi"). Endi worktop=608 (butt),
+  overlap yo'q; test bilan qulflandi. Bu — "o'zimdan asossiz qo'shma" qoidasining aniq misoli: rank yetarli
+  emas edi, spanning shart edi.
 
 ## B. TASHLAB KETILGAN / STUB / SOXTA (skipped) — yo'q yoki yarim
 

@@ -47,7 +47,8 @@ export function Inspector({ sheet, profile }: { sheet: Sheet; profile: Profile }
             <div style={{ color: PAL.ink, fontSize: 16, fontWeight: 600, marginBottom: 10 }}>
               {part.role} · {part.board.axis === "V" ? "vertikal" : "gorizontal"}
             </div>
-            <Row label="uzunlik" value={`${part.board.length} mm`} rule="48 L6 — maksimal yugurish (through-junctionda birlashadi)" />
+            <Row label="uzunlik" value={`${part.finishedLength} mm`} rule={part.provenance.length} />
+            <Row label="centerline" value={`${part.board.length} mm`} rule="48 L6 — maksimal yugurish (through-junctionda birlashadi)" />
             <Row label="qalinlik" value={`${part.board.thickness} mm`} rule={part.provenance.thickness} />
             <Row label="rol" value={part.role} rule={`profil — ${part.provenance.role}`} />
             <Row label="yo'nalish" value={part.board.axis} rule="48§0 — chiziq o'qi" />

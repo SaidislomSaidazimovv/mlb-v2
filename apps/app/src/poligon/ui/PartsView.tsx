@@ -27,7 +27,7 @@ export function PartsView({ sheet, profile }: { sheet: Sheet; profile: Profile }
     role: p.role,
     boundingLines: [p.board.line, `${p.board.from}`, `${p.board.to}`],
     finishedW: p.board.thickness,
-    finishedH: p.board.length,
+    finishedH: p.finishedLength, // A4: junction-aware finished uzunlik (centerline emas)
     banding: bandingFor(p.role),
     grain: p.board.axis === "V" ? "L" : "W",
   }));
@@ -41,11 +41,11 @@ export function PartsView({ sheet, profile }: { sheet: Sheet; profile: Profile }
           {d.parts.map((p, i) => {
             const b = p.board;
             const t = b.thickness;
-            // elevatsiya: V taxta = tik slayder (pos±t/2 × from..to); H = yotiq
-            const X0 = b.axis === "V" ? view.sx(lineX(sheet, b.line) - t / 2) : view.sx(b.from);
-            const X1 = b.axis === "V" ? view.sx(lineX(sheet, b.line) + t / 2) : view.sx(b.to);
-            const Y0 = b.axis === "V" ? view.sy(b.to) : view.sy(lineY(sheet, b.line) + t / 2);
-            const Y1 = b.axis === "V" ? view.sy(b.from) : view.sy(lineY(sheet, b.line) - t / 2);
+            // elevatsiya: V taxta = tik (pos±t/2 × finished uzunlik); H = yotiq. A4: finished extent (burchak yopiladi)
+            const X0 = b.axis === "V" ? view.sx(lineX(sheet, b.line) - t / 2) : view.sx(p.finishedFrom);
+            const X1 = b.axis === "V" ? view.sx(lineX(sheet, b.line) + t / 2) : view.sx(p.finishedTo);
+            const Y0 = b.axis === "V" ? view.sy(p.finishedTo) : view.sy(lineY(sheet, b.line) + t / 2);
+            const Y1 = b.axis === "V" ? view.sy(p.finishedFrom) : view.sy(lineY(sheet, b.line) - t / 2);
             const band = bandingFor(p.role);
             const selHere = sel === i;
             return (

@@ -3,7 +3,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createSheet, addLine, setThickness } from "../../src/poligon/model/sheet.ts";
 import { derive, type Profile } from "../../src/poligon/model/derive.ts";
-import type { Role } from "../../src/poligon/model/junction.ts";
+import { carcassParts, type Role } from "../../src/poligon/model/junction.ts";
 
 test("T3-GATE: penal + baza umumiy YON chiziqni bo'lishsa → BITTA 2400 taxta (T-birlashma, kesilmaydi)", () => {
   const s = createSheet();
@@ -78,6 +78,66 @@ test("48§2: X-kesishmada rol berilmagan → profile.roleMissing RAD", () => {
   const roles: Record<string, Role> = { [v0]: "side", [v2]: "side", [h0]: "bottom", [h2]: "top" }; // v1,h1 yo'q
   const d = derive(s, { roles });
   assert.ok(d.refusals.some((r) => r.rule === "profile.roleMissing"));
+});
+
+test("A4/48§2: V-through quti — top = W−2t = 768, side = H (founderning aniq 800→768 raqami)", () => {
+  // outer W=800: v0=0, v1=784 (centerline farqi 784, +t=800 tashqi). H ham 800.
+  const s = createSheet();
+  const v0 = addLine(s, "V", 0).id, v1 = addLine(s, "V", 784).id;
+  const h0 = addLine(s, "H", 0).id, h1 = addLine(s, "H", 784).id;
+  setThickness(s, v0, h0, h1, 16); setThickness(s, v1, h0, h1, 16);
+  setThickness(s, h0, v0, v1, 16); setThickness(s, h1, v0, v1, 16);
+  // side(4) > top/bottom(3) → V-through (sidelar to'liq, top/bottom butt)
+  const roles: Record<string, Role> = { [v0]: "side", [v1]: "side", [h0]: "bottom", [h1]: "top" };
+  const d = derive(s, { roles });
+
+  const expect = carcassParts(800, 800, 16, "V"); // {top:768, bottom:768, side:800}
+  const top = d.parts.find((p) => p.role === "top")!;
+  const side = d.parts.find((p) => p.role === "side")!;
+  assert.equal(top.finishedLength, 768, "top = W−2t = 768 (48§2)");
+  assert.equal(top.finishedLength, expect.top, "carcassParts oracle bilan bir xil");
+  assert.equal(side.finishedLength, 800, "side = H tashqi = 800");
+  assert.equal(side.finishedLength, expect.side, "carcassParts oracle bilan bir xil");
+  // centerline board.length o'zgarmaydi (additive) — top 784, side 784
+  assert.equal(top.board.length, 784);
+});
+
+test("A4/48§2: H-through (ikkala gorizontal worktop) → side = H−2t (carcassParts oracle)", () => {
+  const s = createSheet();
+  const v0 = addLine(s, "V", 0).id, v1 = addLine(s, "V", 784).id;
+  const h0 = addLine(s, "H", 0).id, h1 = addLine(s, "H", 784).id;
+  setThickness(s, v0, h0, h1, 16); setThickness(s, v1, h0, h1, 16);
+  setThickness(s, h0, v0, v1, 16); setThickness(s, h1, v0, v1, 16);
+  // ikkala gorizontal worktop(5) > side(4) → H-through (gorizontallar to'liq, sidelar butt)
+  const roles: Record<string, Role> = { [v0]: "side", [v1]: "side", [h0]: "worktop", [h1]: "worktop" };
+  const d = derive(s, { roles });
+  const expect = carcassParts(800, 800, 16, "H"); // {top:800, side:768}
+  const side = d.parts.find((p) => p.role === "side")!;
+  const wtop = d.parts.find((p) => p.role === "worktop")!;
+  assert.equal(side.finishedLength, 768, "side = H−2t = 768");
+  assert.equal(side.finishedLength, expect.side);
+  assert.equal(wtop.finishedLength, 800, "worktop = W tashqi = 800");
+  assert.equal(wtop.finishedLength, expect.top);
+});
+
+test("A4/48§2 SPANNING-BLOK: ish-stoli poldan-shiftgacha penal yon (span) ichiga KIRMAYDI — butt 608, overlap yo'q", () => {
+  // penal (chap, v0..v1, 0..2400) + baza (o'ng, v1..v2, 0..720). v1 = umumiy poldan-shiftgacha SIDE (span).
+  const s = createSheet();
+  const v0 = addLine(s, "V", 0).id, v1 = addLine(s, "V", 600).id, v2 = addLine(s, "V", 1200).id;
+  const h0 = addLine(s, "H", 0).id, h1 = addLine(s, "H", 720).id, h2 = addLine(s, "H", 2400).id;
+  setThickness(s, v0, h0, h1, 16); setThickness(s, v0, h1, h2, 16);
+  setThickness(s, v1, h0, h1, 16); setThickness(s, v1, h1, h2, 16); // v1 SPANS 0..2400
+  setThickness(s, v2, h0, h1, 16);
+  setThickness(s, h0, v0, v1, 16); setThickness(s, h0, v1, v2, 16);
+  setThickness(s, h1, v1, v2, 16); // ish-stoli faqat baza (v1..v2)
+  setThickness(s, h2, v0, v1, 16);
+  const roles: Record<string, Role> = { [v0]: "side", [v1]: "side", [v2]: "side", [h0]: "bottom", [h1]: "worktop", [h2]: "top" };
+  const d = derive(s, { roles });
+  const wtop = d.parts.find((p) => p.role === "worktop")!;
+  // worktop(5) > side(4), LEKIN v1 SPANS → 48§2: worktop v1 ning ICHKI yuzasiga (600+8=608) butt qiladi,
+  // rank g'olib bo'lsa ham penal ICHIGA (592) KIRMAYDI.
+  assert.equal(wtop.finishedFrom, 608, "spanning penal ichiga kirmaydi (butt 608)");
+  assert.ok(wtop.finishedFrom >= 600, "hech qachon side markazidan (600) chap tomonга o'tmaydi");
 });
 
 test("T4: transport — modul eni ruxsatdan katta → transport RAD", () => {

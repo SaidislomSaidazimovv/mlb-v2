@@ -6,7 +6,7 @@
 // O'ylab topilgan hech narsa yo'q — kompozitsiya.
 
 import type { Sheet, Line, LineId, Axis, Refusal } from "./contracts.ts";
-import { getThickness } from "./sheet.ts";
+import { getThickness, lineById } from "./sheet.ts";
 import { boardRuns, type Board, type ThroughAt } from "./board.ts";
 import { deriveModules, transportCheck, type Module, type TransportLimit } from "./module.ts";
 import { resolveThrough, classify, type Role, type Through, type Override, type JClass } from "./junction.ts";
@@ -22,8 +22,13 @@ export interface Profile {
 export interface DerivedPart {
   board: Board;
   role: Role | "unknown";
+  /** A4/48§2: junction-aware FIZIK uzunlik (through=cap tashqariga, butt=ichkariga; face=pos±t/2, 48§0).
+   *  centerline `board.length` dan farqli — bu HAQIQIY kesim uzunligi. */
+  finishedFrom: number;
+  finishedTo: number;
+  finishedLength: number;
   facets: { role: Role | "unknown"; axis: Axis; adjacency: Record<string, Adjacency> };
-  provenance: { thickness: string; role: string };
+  provenance: { thickness: string; role: string; length: string };
 }
 export interface DerivedJunction {
   vLine: LineId; hLine: LineId; pos: { x: number; y: number };
@@ -112,12 +117,15 @@ export function derive(sheet: Sheet, profile: Profile, _rules: unknown[] = []): 
   const parts: DerivedPart[] = boards.map((b) => {
     const role = roleOf(b.line);
     const topo = panelTopo(b, role);
+    const ext = finishedExtent(sheet, profile, b);
     return {
       board: b, role,
+      finishedFrom: ext.from, finishedTo: ext.to, finishedLength: ext.length,
       facets: { role, axis: b.axis, adjacency: computeAdjacency(topo) },
       provenance: {
         thickness: `48 L6 — segment qalinligidan (${b.thickness})`,
         role: profile.roles[b.line] ? "profil roli" : "rol berilmagan",
+        length: ext.provenance,
       },
     };
   });
@@ -132,6 +140,51 @@ export function derive(sheet: Sheet, profile: Profile, _rules: unknown[] = []): 
   }
 
   return { parts, modules, junctions, refusals, provenance };
+}
+
+/**
+ * A4 — junction-aware FIZIK extent. ASOS: 48§0 (face = pos ± t/2) + 48§2 (through=to'liq cap; butt=qisqaradi)
+ * + carcassParts semantikasi (T2 gate, 800→768). O'ylab topilган formula EMAS — face + through/butt.
+ * Har uchi (from/to) perp chiziqda: L o'sha junctionда O'TSA (cap) → tashqariga +perpT/2; BUTT bo'lsa
+ * (perp o'tadi) → ichkariga −perpT/2. Rol yo'q / tenglik → tuzatilmaydi (centerline saqlanadi, taxmin yo'q).
+ */
+function finishedExtent(sheet: Sheet, profile: Profile, b: Board): { from: number; to: number; length: number; provenance: string } {
+  const L = lineById(sheet, b.line);
+  if (!L) return { from: b.from, to: b.to, length: b.to - b.from, provenance: "chiziq topilmadi — centerline" };
+  const perpLines = L.axis === "V" ? sheet.hLines : sheet.vLines;
+
+  // P (perp chiziq) ning L ga yondosh segmentlari (L o'qi bo'yicha ikki tomon)
+  const perpAdjSegs = (P: Line): { left: number; right: number } => {
+    const axisLines = L.axis === "V" ? sheet.vLines : sheet.hLines; // L ga parallel chiziqlar
+    const idx = axisLines.findIndex((l) => l.id === L.id);
+    const left = idx > 0 ? getThickness(sheet, P.id, axisLines[idx - 1]!.id, L.id) : 0;
+    const right = idx < axisLines.length - 1 ? getThickness(sheet, P.id, L.id, axisLines[idx + 1]!.id) : 0;
+    return { left, right };
+  };
+  const perpAdjT = (P: Line): number => { const s = perpAdjSegs(P); return Math.max(s.left, s.right); };
+  // 48§2 SPANNING-BLOK: P chizig'i L ni ikki tomondan qamrasa (ikkala segment ≠0) → P SPANS → B BUTT qiladi
+  // (yuqori rank ham buni buzolmaydi; spanning blok ichida taxta o'smaydi — founder ta'kidlagan qoida).
+  const perpSpansL = (P: Line): boolean => { const s = perpAdjSegs(P); return s.left !== 0 && s.right !== 0; };
+
+  // uchdagi qaror: caps(true=cap/tashqari) | butt(false/ichkari) | null(aniqlanmadi → tuzatilmaydi)
+  const decide = (perpPos: number): { caps: boolean | null; perpT: number } => {
+    const P = perpLines.find((l) => l.pos === perpPos);
+    if (!P) return { caps: null, perpT: 0 }; // perp yo'q (erkin uch) → tuzatmaymiz
+    const perpT = perpAdjT(P);
+    if (perpSpansL(P)) return { caps: false, perpT }; // 48§2 spanning → B butt (rankdan OLDIN, ustun)
+    const roleL = profile.roles[L.id];
+    const roleP = profile.roles[P.id];
+    if (!roleL || !roleP) return { caps: null, perpT }; // rol yo'q → taxmin yo'q
+    const dec = L.axis === "V" ? resolveThrough(roleL, roleP) : resolveThrough(roleP, roleL);
+    if (typeof dec === "object" || dec === "neither") return { caps: null, perpT }; // tenglik/both → tuzatmaymiz
+    return { caps: dec === L.axis, perpT }; // dec L o'qida bo'lsa L o'tadi (cap); aks holda butt
+  };
+
+  const lo = decide(b.from);
+  const hi = decide(b.to);
+  const from = lo.caps === null ? b.from : lo.caps ? b.from - lo.perpT / 2 : b.from + lo.perpT / 2;
+  const to = hi.caps === null ? b.to : hi.caps ? b.to + hi.perpT / 2 : b.to - hi.perpT / 2;
+  return { from, to, length: to - from, provenance: "48§2 through/butt + 48§0 face (carcassParts semantikasi)" };
 }
 
 /** Board uchun sodda topologiya (Tier-0). Blok-graf to'liq qo'shnilik T7/T10 da kengayadi. */
