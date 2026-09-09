@@ -7,6 +7,10 @@ export { createSheet, addLine, setThickness, getThickness, setSegMaterial, getSe
 export { apply, legalDomain } from "./model/ops.ts";
 export type { Op, ApplyResult } from "./model/ops.ts";
 
+// ─ parity ko'prigi (parametric karcass → Sheet) ──────────────────────────────
+export { carcassSheet } from "./bridge.ts";
+export type { CarcassSpec } from "./bridge.ts";
+
 // ─ derivation (P0→P4) ────────────────────────────────────────────────────────
 export { derive, bandingFromExposure } from "./model/derive.ts";
 export type { Derivation, DerivedPart, DerivedJunction, Profile, EdgeExposure, KromkaSpec } from "./model/derive.ts";
