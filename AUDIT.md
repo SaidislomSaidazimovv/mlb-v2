@@ -4,6 +4,31 @@
 > bo'lmaganmi aniqla; skip qilib o'tkazib yuborgan, unutgan qismlaring bordir — chuqur iteratsiya qil".
 > Bu — kodni `48–54` hujjatlari bilan qator-ma-qator solishtirib chiqilgan **halol** ro'yxat. Aldov yo'q.
 
+## `51` D1–D12 QAYTA AUDIT (2026-09-09, foydalanuvchi so'rovi "(a)") — HALOL
+Hujjat to'liq qayta o'qildi (29 ssenariy, 8-fixture). Avvalgi "51 D1–D12 TO'LIQ" bahom **yana baland edi**.
+Aniq holat:
+
+**✅ TO'LIQ + tested:** D1 (stable-id authored/derived) · D3 (datum/frame, C1-C5) · D4 (Migration core) ·
+D5 (thickness-class) · D6 (hardware overlay/gap) · D7 (quantised) · D8 (stratifikatsiya — **E4 `size.outer`
+Tier-0 vs `size.clear` Tier-3 to'g'ri ajratilgan**, eng o'tkir qirra) · D12 (Model→Cut banding). **8-fixture
+korpus (A1/B1/C1/E1/E2/F1/H1/I4) o'tadi; F1 IKKALA shop-konvensiyani sinaydi.**
+
+**⚠️ QISMAN / YO'Q (bu qayta auditda topildi):**
+- **D2 — GAP:** "rules faqat Type-e'lon qilган paramни yozadi" + "rules part IXTIRO qilolmaydi; optional part = `present:bool`
+  parametr" (G1/G2) — **YO'Q**. Type-parametr registri va optional-part mexanizmi qurilmagan. Hozir qoida
+  ixtiyoriy propertyни yozadi, hech nima to'smaydi.
+- **D10 — GAP:** atomik **Theme install** (butun-yoki-hech + diff, partial taqiqlangan — D2s/50§4) — **YO'Q**.
+  (migration atomik, lekin Theme-install alohida operatsiya sifatida yo'q.)
+- **D9 — QISMAN:** domain-miss FALL-THROUGH mexanizmi bor (match false → keyingi qatlam), lekin **hisobot**
+  ("51 dan 42 shelf...") va forbidden-zone (B4) yo'q.
+- **D11 — QISMAN:** collision generic box-overlap; **eshik-swing devorga** (G4, "birinchi versiyada bo'lishi
+  shart") aniq emas (faqat izoh); P6 feasibility (grain/nesting/yield, A3/F2) yo'q.
+- **D12 — QISMAN:** Model+Cut bor; **Nominal** alohida plane sifatida emas; kerf/tolerance yo'q.
+- **H3 — YO'Q:** ikki app bitta undo-journal (app-daraja).
+
+Xulosa: **D-qonunlarning YADROSI + 8-fixture to'liq va tested**, lekin D2/D10 (marketplace xavfsizligi) +
+D9-hisobot + D11-swing/P6 + D12-nominal/kerf **ochiq**. Bu — "TUGADI" emas; halol holat.
+
 ## MUHIM tan olish (avval)
 Men avval "engine yadro + qonunlar TO'LIQ TUGADI" dedim — bu **haddan tashqari baland baho** edi. To'g'risi:
 **amalga oshirilgan qonunlar sinovdan o'tган va to'g'ri**, ammo hujjatlarning **jiddiy qismlari hali YO'Q**

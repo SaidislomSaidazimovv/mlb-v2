@@ -257,10 +257,14 @@ T9 Lockfile · T10 Validation · T11 Release · T16 korpus-harness — **69/69 t
 
 ---
 
-## ✅ `51` D1–D12 TO'LIQ (2026-09-09)
-D1/D2 (T1/contracts — authored/derived, Type-param) · D3 datum · D4 Migration · D5 thickness-class ·
-D6 hardware/fit · D7 kvantlangan · D8 (T7 stratifikatsiya) · D9/D10/D11 (T10 validation) · D12
-(T11 three-plane finished/model/cut). **Geometriya devori (Law D) to'liq D1–D12 sifatida qurildi.**
+## `51` D1–D12 — YADRO + 8-fixture tested (2026-09-09; QAYTA AUDIT bilan aniqlangan holat)
+D1 (authored/derived stable-id) · D3 datum · D4 Migration · D5 thickness-class · D6 hardware/fit ·
+D7 kvantlangan · D8 stratifikatsiya (E4 size.outer/clear ajratilgan) · D12 Model→Cut banding — **TO'LIQ+test**.
+8-fixture korpus (A1/B1/C1/E1/E2/F1/H1/I4) o'tadi.
+⚠️ **QISMAN/YO'Q (AUDIT.md "51 qayta audit"):** D2 (Type-param registri + optional `present:bool`, G1/G2),
+D10 (atomik Theme install + diff), D9 (domain-miss hisobot + forbidden-zone), D11 (eshik-swing + P6
+feasibility/nesting), D12 (Nominal plane + kerf/tolerance), H3 (bir undo-journal). Ya'ni "TO'LIQ" EMAS —
+yadrolar tayyor, marketplace-xavfsizligi (D2/D10) va P6 feasibility ochiq. Avvalgi "TO'LIQ" bahom baland edi.
 
 ---
 
