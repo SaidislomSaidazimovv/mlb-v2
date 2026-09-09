@@ -3,7 +3,7 @@
 // Bu fayl yangi mantiq YOZMAYDI — isbotlangan model/ funksiyalarini bitta seam sifatida ochadi.
 
 // ─ sheet ─────────────────────────────────────────────────────────────────────
-export { createSheet, addLine, setThickness, getThickness, lineById, faces, commit, serialize, parse, segKey } from "./model/sheet.ts";
+export { createSheet, addLine, setThickness, getThickness, setSegMaterial, getSegMaterial, lineById, faces, commit, serialize, parse, segKey } from "./model/sheet.ts";
 export { apply, legalDomain } from "./model/ops.ts";
 export type { Op, ApplyResult } from "./model/ops.ts";
 
@@ -30,6 +30,12 @@ export { checkColumnMinimum, checkMaterialDomain, checkCollisions, checkConstrai
 export type { Occupant, MaterialDomain, Box, Constraint } from "./model/validate.ts";
 export { release, diffReleases, partIdentity, nominalToModel } from "./model/release.ts";
 export type { Release, ReleasedPart, InputPart, Banding, ShopConvention, PartDiff } from "./model/release.ts";
+
+// ─ Law B (single-valued facet) + overrides kanali (53§4) ─────────────────────
+export { checkSingleValued, bandsSpanned } from "./model/lawb.ts";
+export type { Band } from "./model/lawb.ts";
+export { makeOverride, applyOverride, checkOverrideAlive, overrideInventory } from "./model/overrides.ts";
+export type { PartOverride, OverrideKind } from "./model/overrides.ts";
 
 // ─ atomik Theme install (D10) ─────────────────────────────────────────────────
 export { installTheme } from "./model/install.ts";

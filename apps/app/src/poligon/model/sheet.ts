@@ -78,6 +78,15 @@ export function getThickness(s: Sheet, line: LineId, lo: LineId, hi: LineId): Th
   return s.seg[segKey(line, lo, hi)] ?? 0;
 }
 
+/** 48 L6/53§5: segment material/tola tokeni (mas. "ldsp-oq|W"). Board run bu o'zgarganда tugaydi. */
+export function setSegMaterial(s: Sheet, line: LineId, lo: LineId, hi: LineId, token: string): void {
+  if (!s.segMat) s.segMat = {};
+  s.segMat[segKey(line, lo, hi)] = token;
+}
+export function getSegMaterial(s: Sheet, line: LineId, lo: LineId, hi: LineId): string {
+  return s.segMat?.[segKey(line, lo, hi)] ?? "";
+}
+
 /** 48§0: chiziq yuzalari = pos ± qalinlik/2 (qalinlik juft: 0/16/32 → yarmi 0/8/16 butun). */
 export function faces(pos: number, t: Thickness): { left: number; right: number } {
   return { left: pos - t / 2, right: pos + t / 2 };

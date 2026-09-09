@@ -64,6 +64,7 @@ export interface Sheet {
   vLines: Line[]; // pos bo'yicha tartiblangan
   hLines: Line[]; // pos bo'yicha tartiblangan
   seg: Record<string, Thickness>; // segKey -> qalinlik (yozuv yo'q => 0)
+  segMat?: Record<string, string>; // 48 L6/53§5: segKey -> material/tola tokeni (o'zgarsa board run tugaydi)
   blocks: Block[];
   opening?: Opening;  // 48 L15: e'lon qilingan devor tashqi o'lchovi (bo'lsa)
   ends?: WallEnds;    // 48 L15: chap/o'ng uch holati (bo'lsa)

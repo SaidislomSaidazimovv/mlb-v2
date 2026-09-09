@@ -6,7 +6,7 @@
 // O'ylab topilgan hech narsa yo'q — kompozitsiya.
 
 import type { Sheet, Line, LineId, Axis, Refusal } from "./contracts.ts";
-import { getThickness, lineById } from "./sheet.ts";
+import { getThickness, lineById, getSegMaterial } from "./sheet.ts";
 import { boardRuns, type Board, type ThroughAt } from "./board.ts";
 import { deriveModules, transportCheck, type Module, type TransportLimit } from "./module.ts";
 import { resolveThrough, classify, type Role, type Through, type Override, type JClass } from "./junction.ts";
@@ -136,7 +136,8 @@ export function derive(sheet: Sheet, profile: Profile, rules: Rule[] = profile.r
   // throughAt: chiziq shu perp-pozitsiyada DAVOM etadimi. Xaritada yozilgani ustun; yozilmagan
   // (kesishma yo'q / neither) → true (hech nima kesmadi → maksimal yugurish davom etadi).
   const throughAt: ThroughAt = (line, atPerpPos) => goesThrough.get(tk(line.id, atPerpPos)) ?? true;
-  const boards = boardRuns(sheet, throughAt);
+  // 48 L6/53§5: material/tola o'zgarishi ham board run'ni tugatadi (turli material = ikki board)
+  const boards = boardRuns(sheet, throughAt, (line, lo, hi) => getSegMaterial(sheet, line, lo, hi));
 
   const enc = enclosedCellSet(sheet); // B3: blok-graf qo'shniligi uchun (bir marta)
   const parts: DerivedPart[] = boards.map((b) => {
