@@ -140,6 +140,34 @@ test("A4/48§2 SPANNING-BLOK: ish-stoli poldan-shiftgacha penal yon (span) ichig
   assert.ok(wtop.finishedFrom >= 600, "hech qachon side markazidan (600) chap tomonга o'tmaydi");
 });
 
+test("A4: finishedExtent = founder `carcassParts` formulasi — KO'P konfiguratsiyada AYNAN teng (ishonch)", () => {
+  // Founderning 48§2 formulasini (carcassParts) integratsiyalangan derive AYNAN takrorlashini isbotlaydi.
+  // Bir raqam tasodif bo'lishi mumkin; W×H×through bo'yicha to'r bilan tekshiramiz.
+  for (const W of [600, 800, 1000]) {
+    for (const H of [720, 900, 2100]) {
+      const t = 16 as const;
+      // tashqi W = (v1-v0)+t → v1 = W-t. Tashqi H = (h1-h0)+t → h1 = H-t.
+      const s = createSheet();
+      const v0 = addLine(s, "V", 0).id, v1 = addLine(s, "V", W - t).id;
+      const h0 = addLine(s, "H", 0).id, h1 = addLine(s, "H", H - t).id;
+      setThickness(s, v0, h0, h1, t); setThickness(s, v1, h0, h1, t);
+      setThickness(s, h0, v0, v1, t); setThickness(s, h1, v0, v1, t);
+
+      // V-through: side(4) > top/bottom(3)
+      const dV = derive(s, { roles: { [v0]: "side", [v1]: "side", [h0]: "bottom", [h1]: "top" } });
+      const cpV = carcassParts(W, H, t, "V");
+      assert.equal(dV.parts.find((p) => p.role === "top")!.finishedLength, cpV.top, `V top W=${W}`);
+      assert.equal(dV.parts.find((p) => p.role === "side")!.finishedLength, cpV.side, `V side H=${H}`);
+
+      // H-through: ikkala gorizontal worktop(5) > side(4)
+      const dH = derive(s, { roles: { [v0]: "side", [v1]: "side", [h0]: "worktop", [h1]: "worktop" } });
+      const cpH = carcassParts(W, H, t, "H");
+      assert.equal(dH.parts.find((p) => p.role === "worktop")!.finishedLength, cpH.top, `H worktop W=${W}`);
+      assert.equal(dH.parts.find((p) => p.role === "side")!.finishedLength, cpH.side, `H side H=${H}`);
+    }
+  }
+});
+
 test("T4: transport — modul eni ruxsatdan katta → transport RAD", () => {
   const s = createSheet();
   const v0 = addLine(s, "V", 0).id;

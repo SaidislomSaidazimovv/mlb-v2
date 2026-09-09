@@ -41,9 +41,14 @@ junction through/butt (48§2) UZUNLIKKA ta'sir qilmayapti.** Kod bilan isbotland
 - ⚠️ **HALOL: birinchi urinishim NOTO'G'RI edi** — faqat RANK ishlatib (resolveThrough), `48`§2 ning
   **spanning-blok** qoidasini qo'llamadim → ish-stoli poldan-shiftgacha penal yon ICHIGA kirdi (worktop
   592, side 600 — OVERLAP). **Foydalanuvchi tutdi.** Tuzatildi: `perpSpansL` (P chizig'i L ni ikki tomondan
-  qamrasa → B butt, rankdan ustun — 48§2 "spanning blok ichida taxta o'smaydi"). Endi worktop=608 (butt),
-  overlap yo'q; test bilan qulflandi. Bu — "o'zimdan asossiz qo'shma" qoidasining aniq misoli: rank yetarli
-  emas edi, spanning shart edi.
+  qamrasa → B butt, rankdan ustun — 48§2 "spanning blok ichida taxta o'smaydi"). Endi worktop=608 (butt).
+
+- **Aniqlashtiruv (o'zim "to'qib qildim"mi?):** YO'Q. Founder KOD bermagan — QONUN (48§0/48§2) bergan; reja
+  54§0 engine kodini AI yozadi deydi. `finishedExtent` — o'sha qonunlarning bajarilishi, va founder
+  `carcassParts` formulasiga **18 konfiguratsiyada (W×H×through) AYNAN teng** (test bilan isbotlangan).
+  Har qatori qonun-iqtibosi bilan (48§0 face, 48§2 W−2t/side=H/spanning). Haqiqiy xato — spanning'ni UNUTGANIM
+  edi (endi tuzatilgan+qulflangan), qoida to'qish emas. Avvalgi "o'zim chiqardim" bahom noaniq edi — to'g'risi:
+  founder qonunini kodga aylantirdim, natija founder formulasi bilan bir xil.
 
 ## B. TASHLAB KETILGAN / STUB / SOXTA (skipped) — yo'q yoki yarim
 

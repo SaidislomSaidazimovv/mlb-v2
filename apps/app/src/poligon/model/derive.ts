@@ -143,10 +143,19 @@ export function derive(sheet: Sheet, profile: Profile, _rules: unknown[] = []): 
 }
 
 /**
- * A4 — junction-aware FIZIK extent. ASOS: 48§0 (face = pos ± t/2) + 48§2 (through=to'liq cap; butt=qisqaradi)
- * + carcassParts semantikasi (T2 gate, 800→768). O'ylab topilган formula EMAS — face + through/butt.
- * Har uchi (from/to) perp chiziqda: L o'sha junctionда O'TSA (cap) → tashqariga +perpT/2; BUTT bo'lsa
- * (perp o'tadi) → ichkariga −perpT/2. Rol yo'q / tenglik → tuzatilmaydi (centerline saqlanadi, taxmin yo'q).
+ * A4 — junction-aware FIZIK extent. Bu FOUNDER QONUNLARINING kodga aylantirilishi (reja 54§0: engine kodini
+ * AI yozadi). O'zimdan formula TO'QIMADIM — har qadam founderning aniq qoidasi, va butun natija founder
+ * `carcassParts` formulasiga (48§2) AYNAN teng (test: 18 konfiguratsiya W×H×through).
+ *
+ * Har qadam qaysi qonun:
+ *  - face = pos ± t/2  →  48§0 ("segment faces are pos ± thickness/2").
+ *  - BUTT uchi (perp o'tadi) → ichkariga −perpT/2  →  48§2 "top = W − 2t" (butting board perp qalinligicha qisqaradi).
+ *  - CAP uchi (L o'tadi/erkin) → tashqariga +perpT/2  →  48§2 "side = H" (through board tashqi yuzagacha to'liq).
+ *  - SPANNING → BUTT (rankdan ustun)  →  48§2 "high-rank horizontal crossing a vertical block that SPANS …
+ *    the horizontal terminates" (perpSpansL).
+ *  - rol yo'q / rank tenglik / both → tuzatilmaydi (centerline; taxmin YO'Q).
+ * (Yagona implementatsiya tanlovи: perpT = P ning L ga yondosh segmentlaridan MAX — 0/16/32 mebelда bir ma'noli;
+ *  asimmetrik nodir holat kelsa qayta ko'riladi.)
  */
 function finishedExtent(sheet: Sheet, profile: Profile, b: Board): { from: number; to: number; length: number; provenance: string } {
   const L = lineById(sheet, b.line);
