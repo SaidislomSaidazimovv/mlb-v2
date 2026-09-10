@@ -74,8 +74,11 @@ export function newFull(f: Furniture): NormPart[] {
   const idx = new Map<string, number>();
   const take = (role: string): Hole[] => { const i = idx.get(role) ?? 0; idx.set(role, i + 1); return drills.get(role)?.[i] ?? []; };
   const out: NormPart[] = d.parts.map((p) => ({ role: p.role, ru: p.role, length: p.finishedLength, depth: p.depth ?? 0, thickness: p.board.thickness, qty: 1, holes: take(p.role) }));
-  if (f.door > 0) out.push({ role: "facade", ru: "facade", length: f.height, depth: f.width, thickness: 18, qty: 1, holes: take("facade") });
-  out.push({ role: "back", ru: "back", length: f.width, depth: f.height, thickness: 16, qty: 1, holes: take("back") });
+  // FRONT/BEHIND qatlam partlari (48 L3) - poligon qatlam modeli; o'lcham app konvensiyasiga (48§6 standart) langarlangan.
+  if (f.door > 0) out.push({ role: "facade", ru: "facade", length: f.height, depth: f.width, thickness: 18, qty: 1, holes: take("facade") }); // D6 fit: to'liq overlay eshik = balandlik x en
+  out.push({ role: "back", ru: "back", length: f.width, depth: f.height, thickness: 16, qty: 1, holes: take("back") });                     // behind qatlam
+  if (f.kind !== "upper") out.push({ role: "plinth", ru: "plinth", length: f.width - 2 * 16, depth: 120, thickness: 16, qty: 1, holes: take("plinth") }); // 48§6 tsokol 120mm, front-below
+  if (f.fill === "drawers") for (let dd = 0; dd < f.count; dd++) out.push({ role: "drawerFront", ru: "drawerFront", length: Math.round(f.height / f.count), depth: f.width, thickness: 18, qty: 1, holes: take("drawerFront") }); // D6: tortma fasadi = balandlik/soni x en
   return out;
 }
 
@@ -108,12 +111,17 @@ function buildConclusion(f: Furniture, old: NormPart[], neu: NormPart[], rows: C
   const matched = rows.filter((r) => r.sizeMatch).map((r) => ROLE_UZ[r.role] ?? r.role);
   const oldOnly = [...new Set(rows.filter((r) => r.old && !r.neu).map((r) => ROLE_UZ[r.role] ?? r.role))];
   const totalDrills = old.reduce((s, p) => s + p.holes.length, 0);
+  const hasDivider = (f.dividers ?? 0) > 0;
   const parts: string[] = [];
   parts.push(`"${f.label}" (${f.note}). Eski versiya (grid.ts) ${old.length} bo'lak chiqardi, yangi (poligon) ${neu.length}.`);
-  if (matched.length) parts.push(`MOS KELGAN (o'lcham bir xil): ${[...new Set(matched)].join(", ")} - poligon tashqi karkasni (48§0 Sheet: yon/ust/past + eshik/orqa) eski bilan bir xil chiqaradi.`);
-  if (oldOnly.length) parts.push(`FAQAT ESKIda: ${oldOnly.join(", ")} - bular ichki to'ldirma (app'ning layout-daraxti; tortma qutisi/slayd, pardevor, tsokol-band). Poligon Sheet-yadrosi hozircha TASHQI karkasni modellaydi; ichki to'ldirma keyingi bosqich (48§0 modul, 52§3 joints).`);
-  parts.push(`TESHIK: eski karkasda jami ${totalDrills} teshik (real, solveRun: Ø15 cam / Ø8 dowel / Ø35 ilgak). Teshik geometriya-yadrodan MUSTAQIL (52§1 quyi qatlam) - poligon karkasi bir xil bo'lgani uchun o'sha teshiklarni oladi.`);
-  parts.push(`YAKUN: poligon tashqi karkas+eshik+orqani eski grid.ts bilan bir xil bo'laklar va teshiklar bilan chiqaradi (parity mos keladi); ichki to'ldirma (tortma/pardevor) hali qolgan - bu founder Q2 (teshik/joints) va keyingi modul ishiga bog'liq.`);
+  if (matched.length) parts.push(`MOS KELGAN (o'lcham bir xil): ${[...new Set(matched)].join(", ")} - poligon eski bilan bir xil chiqaradi. Karkas 48§0 Sheet'dan; eshik/tortma-fasadi/tsokol front-qatlam (48 L3 + D6 fit + 48§6 standart); orqa behind-qatlam.`);
+  if (oldOnly.length) {
+    if (hasDivider) parts.push(`FARQ (pardevorli mebel): ${oldOnly.join(", ")} - eski app pardevorni to'liq balandlik (720) qilib, eshik/polkani per-bo'lim ajratadi; poligon Sheet'ning QAT'IY junction qonuni (48§2) pardevor+ust/past bir joyda ikkalasi ham 'through' bo'lishiga yo'l qo'ymaydi (fizik ustma-ustlik). Ya'ni poligon ANIQROQ, lekin pardevor uchun konvensiya qarori kerak (48§7 'diff a human signs off').`);
+    else parts.push(`FAQAT ESKIda: ${oldOnly.join(", ")}.`);
+  }
+  parts.push(`TESHIK: jami ${totalDrills} teshik (real, solveRun: Ø15 cam / Ø8 dowel / Ø35 ilgak) - ikkala versiyada bir xil, chunki teshik geometriya-yadrodan MUSTAQIL umumiy quyi qatlam (52§1).`);
+  if (hasDivider) parts.push(`YAKUN: poligon karkas+eshik+orqa+tsokol+teshikni bir xil chiqaradi; faqat PARDEVOR ichki bo'linishi konvensiyada farq qiladi (poligon qat'iy, app bo'sh) - bu qonun-qaror, kamchilik emas.`);
+  else parts.push(`YAKUN: poligon bu mebelning TO'LIQ kesim ro'yxatini (karkas+polka+eshik+orqa+tsokol+tortma-fasadi) va teshigini eski grid.ts bilan BIR XIL chiqaradi (to'liq parity).`);
   return parts.join(" ");
 }
 

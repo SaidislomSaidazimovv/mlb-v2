@@ -108,27 +108,27 @@ function summarySection(doc: jsPDF, furnitures: Furniture[], ctx: Ctx): void {
   doc.setFontSize(7.5); doc.setTextColor(20);
   ctx.T(`JAMI: eski ${ov.totalOld} bo'lak, yangi ${ov.totalNew}; o'lchami mos ${ov.totalMatched}; faqat eskida ${ov.totalOldOnly}; karkas teshigi ${ov.totalDrills}`, M); ctx.nl(8);
 
-  ctx.heading("2) BIR XILLIKLAR (ikkala versiya bir xil chiqaradi):", 10, [30, 110, 60]); ctx.nl(6);
-  ctx.wrap("- Tashqi karkas bo'laklari: yon (side=balandlik), ust va past (=en-2xqalinlik) - o'lcham AYNAN bir xil (48.0 Sheet konvensiyasi).", 8, [50, 50, 50]);
-  ctx.wrap("- Eshik va orqa panel o'lchami mos.", 8, [50, 50, 50]);
-  ctx.wrap("- Karkas teshigi (cam d15, dowel d8, ilgak d35) - umumiy mashina dvigatelidan, bir xil (52.1: teshik geometriya-yadrodan MUSTAQIL quyi qatlam).", 8, [50, 50, 50]);
-  ctx.wrap("- Pardevorsiz mebelda full-width polka o'lchami mos.", 8, [50, 50, 50]); ctx.nl(4);
+  ctx.heading("2) BIR XILLIKLAR (ikkala versiya AYNAN bir xil chiqaradi):", 10, [30, 110, 60]); ctx.nl(6);
+  ctx.wrap("- Karkas: yon (=balandlik), ust va past (=en-2xqalinlik), polka - o'lcham AYNAN bir xil (48.0 Sheet).", 8, [50, 50, 50]);
+  ctx.wrap("- Eshik va orqa panel - mos (D6 fit / behind qatlam).", 8, [50, 50, 50]);
+  ctx.wrap("- TSOKOL (plinth 120mm) - mos (48.6 standart, front qatlam).", 8, [50, 50, 50]);
+  ctx.wrap("- TORTMA FASADI (drawer front = balandlik/soni x en) - mos (D6 fit).", 8, [50, 50, 50]);
+  ctx.wrap("- Teshik (cam d15, dowel d8, ilgak d35) - bir xil (52.1: teshik geometriya-yadrodan MUSTAQIL umumiy quyi qatlam).", 8, [50, 50, 50]);
+  ctx.wrap("=> Pardevorsiz mebel uchun (10 tadan 8 tasi) poligon TO'LIQ kesim ro'yxatini eski bilan bir xil chiqaradi.", 8.5, [30, 110, 60]); ctx.nl(4);
 
   ctx.ensure(60);
-  ctx.heading("3) FARQLAR (faqat ESKI versiyada; yangi poligon hali modellamaydi):", 10, [180, 100, 40]); ctx.nl(6);
-  ctx.wrap("- Tortma qutisi va tortma fasadi (drawer) - app'ning layout-daraxti.", 8, [50, 50, 50]);
-  ctx.wrap("- Pardevor (divider) va per-bo'lim polka (mas. 900mm servantda 4 polka 434mm).", 8, [50, 50, 50]);
-  ctx.wrap("- Tsokol (plinth band).", 8, [50, 50, 50]);
-  ctx.wrap("- 3D ko'rinish, narx hisobi (pricing), SWJ008 CNC eksport, o'rnatma jihoz (appliance), burchak (L) shkaf.", 8, [50, 50, 50]);
-  ctx.wrap("SABAB: poligon Sheet-yadrosi HOZIRCHA tashqi karkasni modellaydi (48.0); ichki to'ldirma = keyingi bosqich (48.0 modul, 52.3 joints, founder Q2 teshik).", 8, [90, 90, 90]); ctx.nl(4);
+  ctx.heading("3) FARQLAR (halol):", 10, [180, 100, 40]); ctx.nl(6);
+  ctx.wrap("A) PARDEVOR (divider) - MODEL FARQI, kamchilik emas: eski app pardevorni to'liq balandlik (720) qilib, eshik/polkani per-bo'lim ajratadi; poligon Sheet'ning QAT'IY junction qonuni (48.2) pardevor+ust/past bir nuqtada ikkalasi ham 'through' bo'lishiga yo'l qo'ymaydi (fizik ustma-ustlik). Ya'ni poligon ANIQROQ/qat'iyroq. Aniq parity uchun pardevorga konvensiya qarori kerak (48.7 'diff a human signs off'). Bu 10 tadan 2 tada (servant, keng baza).", 8, [50, 50, 50]);
+  ctx.wrap("B) APP XUSUSIYATLARI (geometriya emas, alohida qatlam): 3D ko'rinish, narx (pricing), SWJ008 CNC eksport, o'rnatma jihoz (appliance), burchak (L) shkaf. Bular 48-54 geometriya-spetsifikatsiyasidan tashqari; yangi yadro almashsa ham ular O'ZGARMAY qoladi (52.1 quyi qatlam / app UI).", 8, [50, 50, 50]); ctx.nl(4);
 
   ctx.ensure(70);
   ctx.heading("4) QAYSI VERSIYA KUCHLI (halol baho, asos bilan):", 11, [20, 20, 20]); ctx.nl(6);
   ctx.wrap("Ikki o'lchovda baholanadi:", 9, [40, 40, 40]);
-  ctx.wrap("A. BUGUNGI TO'LIQLIK -> ESKI KUCHLI. Eski versiya to'liq mebelni chiqaradi: tortma, pardevor, eshik, appliance, burchak; teshik -> SWJ008 CNC; 3D; narx. Yangi versiya hozircha faqat tashqi karkasni.", 8.5, [50, 50, 50]);
-  ctx.wrap("B. ARXITEKTURA va TO'G'RILIK -> YANGI KUCHLI. Founderning 48-54 qonunlari asosida: noqonuniy holatga gesture bilan yetib bo'lmaydi (L0-L16); rad etish 'clamp' emas, qoidani nomlaydi; natija takrorlanuvchi (lockfile); avto-guruhlash (cascade); bitta haqiqat manbai; har qiymat qaysi qoida hal qilganini ko'rsatadi. Founderning O'ZI (54.1) yangi yadro grid.ts o'rnini bosishini yozgan - chunki eski per-band model cheklangan.", 8.5, [50, 50, 50]);
+  ctx.wrap("A. KESIM RO'YXATI (parts + drills) -> TENG (deyarli). Yangi poligon endi TO'LIQ kesim ro'yxatini chiqaradi: karkas + polka + eshik + orqa + tsokol + tortma-fasadi + teshik - 10 mebeldan 8 tasida eski bilan AYNAN bir xil. Faqat pardevorli 2 mebelda konvensiya farqi bor (poligon qat'iyroq). Ya'ni yangi yadro asosiy vazifani (to'g'ri bo'laklar+teshik) uddaladi.", 8.5, [50, 50, 50]);
+  ctx.wrap("B. QO'SHIMCHA XUSUSIYATLAR -> ESKI KUCHLI (hozircha). Eski ilovada 3D ko'rinish, narx hisobi, SWJ008 CNC eksport, appliance, burchak (L) shkaf bor - bular geometriya-yadrodan tashqari ilova qatlamlari (yangi yadro almashsa ham qoladi).", 8.5, [50, 50, 50]);
+  ctx.wrap("C. ARXITEKTURA va TO'G'RILIK -> YANGI KUCHLI. 48-54 qonunlari: noqonuniy holatga gesture bilan yetib bo'lmaydi (L0-L16); rad etish 'clamp' emas, qoidani nomlaydi; natija takrorlanuvchi (lockfile); avto-guruhlash (cascade); bitta haqiqat manbai; har qiymat qaysi qoida hal qilganini ko'rsatadi. Pardevor misoli buni tasdiqlaydi - poligon fizik jihatdan MUMKIN BO'LMAGAN ustma-ustlikka yo'l qo'ymaydi. Founderning O'ZI (54.1) yangi yadro grid.ts o'rnini bosishini yozgan.", 8.5, [50, 50, 50]);
   ctx.nl(2);
-  ctx.wrap("YAKUN: ESKI - bugun to'liq ishlaydigan mahsulot (feature bo'yicha kuchli). YANGI - kelajakning to'g'ri poydevori (arxitektura bo'yicha kuchli), hali karkas bosqichida. Reja (54.1): yangi yadro parity isbotlangach ilova ekranlarini bittalab o'ziga oladi; teshik esa har ikkisiga umumiy quyi qatlam bo'lib qoladi. Ya'ni ular RAQOBAT emas - yangi eskining to'g'rilangan davomi.", 8.5, [30, 30, 30]); ctx.nl(4);
+  ctx.wrap("YAKUN: Kesim ro'yxati (bo'lak+teshik) bo'yicha yangi poligon eskiga TENG keldi (8/10 aynan, 2/10 konvensiya farqi). Qo'shimcha ilova xususiyatlari (3D/narx/CNC-eksport) bo'yicha eski hali kuchli, LEKIN ular geometriya-yadro emas. Arxitektura/to'g'rilik bo'yicha yangi kuchli va founderning rejasidagi kelajak (54.1). Ular RAQOBAT emas - yangi = eskining to'g'rilangan yadrosi; qolgan ilova qatlamlari ustiga qo'yiladi.", 8.5, [30, 30, 30]); ctx.nl(4);
 
   ctx.ensure(40);
   ctx.heading("5) YANGI VERSIYANING KO'RINISHI (poligon.html):", 10, [20, 20, 20]); ctx.nl(6);

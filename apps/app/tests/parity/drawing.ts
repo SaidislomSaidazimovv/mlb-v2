@@ -40,11 +40,12 @@ export function elevationOld(f: Furniture): Elevation {
   return { W: f.width, H: f.height, lines };
 }
 
-/** YANGI (poligon) — karkas + FULL-WIDTH polka (fill=shelves) + eshik. Tortma/pardevor YO'Q. */
+/** YANGI (poligon) — karkas + FULL-WIDTH polka + TORTMA fasadi (poligon front-qatlam) + eshik. Pardevor YO'Q. */
 export function elevationNew(f: Furniture): Elevation {
   const lines: Line2[] = [];
   carcass(f, lines);
   if (f.fill === "shelves") for (let d = 1; d <= f.count; d++) { const yy = Math.round((f.height * d) / (f.count + 1)); lines.push({ x1: T, y1: yy, x2: f.width - T, y2: yy }); }
+  else if (f.fill === "drawers") for (let d = 1; d <= f.count; d++) { const yy = Math.round((f.height * d) / (f.count + 1)); lines.push({ x1: T, y1: yy, x2: f.width - T, y2: yy, color: "#b8863c" }); } // tortma fasadi
   if (f.door) lines.push({ x1: 2, y1: 2, x2: f.width - 2, y2: 2, color: "#c8a25a", dash: true }, { x1: f.width - 2, y1: 2, x2: f.width - 2, y2: f.height - 2, color: "#c8a25a", dash: true }, { x1: f.width - 2, y1: f.height - 2, x2: 2, y2: f.height - 2, color: "#c8a25a", dash: true }, { x1: 2, y1: f.height - 2, x2: 2, y2: 2, color: "#c8a25a", dash: true });
   return { W: f.width, H: f.height, lines };
 }

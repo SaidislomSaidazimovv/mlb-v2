@@ -25,11 +25,16 @@ describe("parity — murakkab mebel (ESKI grid.ts vs YANGI poligon)", () => {
     }
   });
 
-  it("tortma/pardevor/tsokol = FAQAT ESKIda (poligon hali modellamaydi) — halol farq ko'rsatiladi", () => {
+  it("tortma-fasadi + tsokol endi YANGIda ham bor (poligon front-qatlam) va o'lchami mos", () => {
     const chest = compareFurniture(FURNITURES.find((f) => f.id === "chest3")!);
-    const drawerRow = chest.rows.find((r) => r.role === "drawerFront");
-    expect(drawerRow?.old).toBeTruthy();
-    expect(drawerRow?.neu).toBeUndefined();
+    for (const role of ["drawerFront", "plinth"]) {
+      const rows = chest.rows.filter((r) => r.role === role);
+      expect(rows.length, `${role} yo'q`).toBeGreaterThan(0);
+      for (const r of rows) { expect(r.neu, `${role} yangida yo'q`).toBeTruthy(); expect(r.sizeMatch, `${role}: ${r.note}`).toBe(true); }
+    }
+  });
+
+  it("PARDEVOR (divider) = faqat ESKIda — poligon qat'iy Sheet modeli (48§2) sabab, halol farq", () => {
     const sb = compareFurniture(sideboard);
     const divRow = sb.rows.find((r) => r.role === "divider");
     expect(divRow?.old).toBeTruthy();
