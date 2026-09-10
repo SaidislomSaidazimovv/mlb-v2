@@ -4,7 +4,7 @@
 // chiqmaydi, joy yetmasa yangi sahifa; barcha matn ASCII-ga sanitize (jspdf non-ASCII kengligini xato o'lchaydi).
 import { jsPDF } from "jspdf";
 import { compareKitchen, kitchensOverall, ROLE_UZ, type Kitchen, type CabCompare } from "./compare";
-import { kitchenElevation, type Elevation } from "./drawing";
+import { viewFront, viewTop, viewLeft, viewRight, viewBack, type View } from "./views";
 
 const PW = 210, PH = 297, M = 12, W = PW - 2 * M, BOTTOM = PH - 12;
 function hex(h: string): [number, number, number] { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; }
@@ -33,11 +33,18 @@ export function buildParityPdf(kitchens: Kitchen[]): Uint8Array {
     head(`${i + 1}. ${k.label}`, 15); nl(6);
     doc.setFontSize(8.5); doc.setTextColor(90); T(`${k.cabs.length} ta mebel — ${k.note}`, M); nl(6);
 
-    // ESKI | YANGI yonma-yon, kattaroq (founder: chizmalar aniq-tiniq bo'lsin)
-    const halfW = (W - 8) / 2, evH = 72;
-    drawKitchen(doc, kitchenElevation(k, "old"), M, y, halfW, evH, "ESKI (grid.ts) — butun oshxona");
-    drawKitchen(doc, kitchenElevation(k, "new"), M + halfW + 8, y, halfW, evH, "YANGI (poligon) — butun oshxona");
-    y += evH + 16;
+    // TO'LIQ CHIZMALAR (founder): fasad ESKI|YANGI + tepadan + chap|o'ng yon (ichki) + orqa. DEVOR rang+yozuv bilan.
+    const half = (W - 8) / 2;
+    ensure(72); head("A) FASAD (old ko'rinish) — ESKI | YANGI:", 8.5); nl(5);
+    drawView(doc, viewFront(k, "old"), M, y, half, 58);
+    drawView(doc, viewFront(k, "new"), M + half + 8, y, half, 58); y += 58 + 8;
+    ensure(46); head("B) TEPADAN (plan) — devor orqada:", 8.5); nl(5);
+    drawView(doc, viewTop(k), M, y, W, 32); y += 32 + 8;
+    ensure(70); head("C) CHAP YON | O'NG YON (kesim — ICHKI qism):", 8.5); nl(5);
+    drawView(doc, viewLeft(k), M, y, half, 56);
+    drawView(doc, viewRight(k), M + half + 8, y, half, 56); y += 56 + 8;
+    ensure(52); head("D) ORQA (devor tomoni):", 8.5); nl(5);
+    drawView(doc, viewBack(k), M, y, W, 38); y += 38 + 10;
 
     ensure(12); head("Har mebelning bo'laklari + teshigi:", 10); nl(5.5);
     for (const cc of c.cabs) cabTable(cc);
@@ -112,21 +119,30 @@ function summaryPage(doc: jsPDF, kitchens: Kitchen[], ctx: Ctx): void {
   ctx.wrap("Yangi versiya UI-si alohida sahifa: poligon.html (eski grid.ts ilovasiga TEGMAYDI, 54.1). 4 ekran: Muharrir (chiziqni sudrash, qonuniy oraliq ko'rinadi) - Inspektor (har taxta yonida qaysi qoida hal qilgani) - Sozlamalar (Thing-fayllaridan AVTOMATIK) - Parts (kesim ro'yxati). Ishga tushirish: cd apps/app && npm run dev -> /poligon.html.", 8, [50, 50, 50]);
 }
 
-/** Butun oshxona elevatsiyasini box ichiga masshtablab (y-flip) chizadi + o'lcham. */
-function drawKitchen(doc: jsPDF, ev: Elevation, x0: number, y0: number, boxW: number, boxH: number, title: string): void {
-  doc.setFontSize(8); doc.setTextColor(70); doc.text(san(title), x0, y0);
-  const top = y0 + 3;
-  const sc = Math.min(boxW / ev.W, boxH / ev.H);
-  const dw = ev.W * sc, dh = ev.H * sc;
-  const ox = x0 + (boxW - dw) / 2; // gorizontal markaz
+/** Generic View renderer — rect(fill/stroke) + line(dash) + labels; box ichiga masshtab (y-flip), markaz. */
+function drawView(doc: jsPDF, v: View, x0: number, y0: number, boxW: number, boxH: number): void {
+  const top = y0; // sarlavha tashqarida (bo'lim head) chiziladi — bu yerda takrorlanmaydi
+  const sc = Math.min(boxW / v.W, boxH / v.H);
+  const dw = v.W * sc, dh = v.H * sc, ox = x0 + (boxW - dw) / 2;
   const px = (x: number) => ox + x * sc, py = (yy: number) => top + dh - yy * sc;
-  doc.setLineWidth(0.15);
-  for (const l of ev.lines) {
-    if (l.color) { const cc = hex(l.color); doc.setDrawColor(cc[0], cc[1], cc[2]); } else doc.setDrawColor(45);
-    doc.setLineDashPattern(l.dash ? [0.7, 0.7] : [], 0);
-    doc.line(px(l.x1), py(l.y1), px(l.x2), py(l.y2));
+  for (const s of v.shapes) {
+    const dash = s.dash ? [0.6, 0.6] : [];
+    doc.setLineDashPattern(dash, 0); doc.setLineWidth(0.15);
+    const st = s.stroke ? hex(s.stroke) : [45, 45, 45];
+    doc.setDrawColor(st[0]!, st[1]!, st[2]!);
+    if (s.t === "rect") {
+      const rx = px(Math.min(s.x1, s.x2)), ry = py(Math.max(s.y1, s.y2)), rw = Math.abs(s.x2 - s.x1) * sc, rh = Math.abs(s.y2 - s.y1) * sc;
+      if (s.fill) { const f = hex(s.fill); doc.setFillColor(f[0]!, f[1]!, f[2]!); doc.rect(rx, ry, rw, rh, "FD"); }
+      else doc.rect(rx, ry, rw, rh, "D");
+    } else doc.line(px(s.x1), py(s.y1), px(s.x2), py(s.y2));
   }
   doc.setLineDashPattern([], 0);
-  doc.setFontSize(5.5); doc.setTextColor(120);
-  doc.text(`kenglik ~${Math.round(ev.W)} mm, balandlik ${Math.round(ev.H)} mm`, ox, top + dh + 3);
+  for (const lb of v.labels) {
+    const c = lb.color ? hex(lb.color) : [110, 110, 110];
+    doc.setTextColor(c[0]!, c[1]!, c[2]!);
+    doc.setFontSize((lb.size ?? 24) >= 30 ? 7 : 5.2);
+    doc.text(san(lb.text), px(lb.x), py(lb.y), lb.mid ? ({ align: "center" } as never) : undefined);
+  }
+  doc.setFontSize(5); doc.setTextColor(140);
+  doc.text(`~${Math.round(v.W)}x${Math.round(v.H)} mm`, ox, top + dh + 3);
 }
