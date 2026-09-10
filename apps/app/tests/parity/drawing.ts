@@ -54,3 +54,57 @@ export interface PanelDraw { role: string; length: number; depth: number; holes:
 export function panelDraw(p: NormPart): PanelDraw {
   return { role: p.role, length: p.length, depth: p.depth, holes: p.holes.map((h) => ({ x: h.x, y: h.y, dia: h.dia })) };
 }
+
+// ── BUTUN OSHXONA elevatsiyasi (front ko'rinish) — base+worktop pastda, upper tepada, tall to'liq balandlik.
+// Real mm balandliklar (layout.ts GEOM): plinth 120, base 120..840, worktop 840..880, upper 1520..2240, tall 120..120+h.
+import type { Kitchen } from "./compare";
+const PLINTH = 120, BASE_TOP = 840, WT_TOP = 880, UPPER_BOT = 1520;
+
+/** Bitta mebel yuzasi (front) LOKAL koordinatada (0..w × 0..h). variant: "old"=to'liq (pardevor), "new"=poligon (pardevorsiz). */
+function cabFace(f: Furniture, variant: "old" | "new"): Line2[] {
+  const lines: Line2[] = [];
+  carcass(f, lines);
+  const divXs = variant === "old" ? (f.dividers === 1 ? [f.width / 2] : f.dividers === 2 ? [f.width / 3, (2 * f.width) / 3] : []) : [];
+  for (const x of divXs) lines.push({ x1: x, y1: T, x2: x, y2: f.height - T });
+  const sections = [0, ...divXs, f.width];
+  const put = (color?: string) => {
+    for (let s = 0; s + 1 < sections.length; s++) {
+      const x0 = s === 0 ? T : sections[s]! + (f.fill === "shelves" ? T / 2 : 0);
+      const x1 = s + 2 === sections.length ? f.width - T : sections[s + 1]! - (f.fill === "shelves" ? T / 2 : 0);
+      for (let d = 1; d <= f.count; d++) { const yy = Math.round((f.height * d) / (f.count + 1)); lines.push({ x1: x0, y1: yy, x2: x1, y2: yy, color }); }
+    }
+  };
+  if (f.fill === "drawers") put("#b8863c");
+  else if (f.fill === "shelves") put(undefined);
+  if (f.door) lines.push(
+    { x1: 2, y1: 2, x2: f.width - 2, y2: 2, color: "#c8a25a", dash: true }, { x1: f.width - 2, y1: 2, x2: f.width - 2, y2: f.height - 2, color: "#c8a25a", dash: true },
+    { x1: f.width - 2, y1: f.height - 2, x2: 2, y2: f.height - 2, color: "#c8a25a", dash: true }, { x1: 2, y1: f.height - 2, x2: 2, y2: 2, color: "#c8a25a", dash: true });
+  return lines;
+}
+const translate = (lines: Line2[], dx: number, dy: number): Line2[] =>
+  lines.map((l) => ({ ...l, x1: l.x1 + dx, y1: l.y1 + dy, x2: l.x2 + dx, y2: l.y2 + dy }));
+
+/** Butun oshxona elevatsiyasi: base/tall pastda (yBottom=plinth), upper tepada (yBottom=1520); base ustida worktop. */
+export function kitchenElevation(k: Kitchen, variant: "old" | "new"): Elevation {
+  const lines: Line2[] = [];
+  let floorX = 0, upperX = 0;
+  for (const c of k.cabs) {
+    if (c.kind === "upper") {
+      lines.push(...translate(cabFace(c, variant), upperX, UPPER_BOT));
+      upperX += c.width + 20;
+    } else {
+      const yb = PLINTH;
+      lines.push(...translate(cabFace(c, variant), floorX, yb));
+      if (c.kind === "base") { // worktop slab 840..880
+        lines.push({ x1: floorX, y1: BASE_TOP, x2: floorX + c.width, y2: BASE_TOP, color: "#7c756b" },
+          { x1: floorX, y1: WT_TOP, x2: floorX + c.width, y2: WT_TOP, color: "#7c756b" },
+          { x1: floorX, y1: BASE_TOP, x2: floorX, y2: WT_TOP, color: "#7c756b" }, { x1: floorX + c.width, y1: BASE_TOP, x2: floorX + c.width, y2: WT_TOP, color: "#7c756b" });
+      }
+      floorX += c.width + 20;
+    }
+  }
+  const W = Math.max(floorX, upperX) - 20;
+  let H = 0;
+  for (const c of k.cabs) H = Math.max(H, c.kind === "upper" ? UPPER_BOT + c.height : PLINTH + c.height);
+  return { W: Math.max(W, 1), H: Math.max(H, WT_TOP), lines };
+}

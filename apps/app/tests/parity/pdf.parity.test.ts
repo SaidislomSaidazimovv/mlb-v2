@@ -1,25 +1,25 @@
-// B — parity PDF + HTML (screenshot manbasi) hosil bo'lishi testi.
+// B — parity PDF + HTML (screenshot manbasi): 10 BUTUN OSHXONA.
 import { describe, it, expect } from "vitest";
 import { writeFileSync, mkdirSync } from "node:fs";
 import { buildParityPdf } from "./pdf";
 import { buildParityHtml } from "./html";
-import { FURNITURES } from "./furnitures";
+import { KITCHENS } from "./kitchens";
 
 const ROOT = "F:/Main and Private/mebelchi-v2/docs/parity";
 
-describe("parity deliverable", () => {
-  it("10 mebel PDF (%PDF, >1KB) → docs/parity/parity.pdf", () => {
-    const bytes = buildParityPdf(FURNITURES);
+describe("parity deliverable (10 oshxona)", () => {
+  it("PDF (%PDF, >1KB) → docs/parity/parity.pdf", () => {
+    const bytes = buildParityPdf(KITCHENS);
     expect(bytes.length).toBeGreaterThan(1000);
     expect(String.fromCharCode(bytes[0]!, bytes[1]!, bytes[2]!, bytes[3]!, bytes[4]!)).toBe("%PDF-");
     mkdirSync(ROOT, { recursive: true });
     writeFileSync(`${ROOT}/parity.pdf`, bytes);
   });
 
-  it("HTML (screenshot manbasi) → docs/parity/parity.html", () => {
-    const html = buildParityHtml(FURNITURES);
+  it("HTML → docs/parity/parity.html (10 karta)", () => {
+    const html = buildParityHtml(KITCHENS);
     expect(html).toContain("<svg");
-    expect(html.match(/class="card"/g)?.length).toBe(FURNITURES.length);
+    expect(html.match(/class="card"/g)?.length).toBe(KITCHENS.length);
     writeFileSync(`${ROOT}/parity.html`, html);
   });
 });

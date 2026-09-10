@@ -131,6 +131,53 @@ export function compareFurniture(f: Furniture): FurnitureCompare {
   return { furniture: f, old, neu, rows, conclusion: buildConclusion(f, old, neu, rows) };
 }
 
+// ── OSHXONA (wall) darajasi — founder: 10 BUTUN oshxona, har biri ichidagi mebellari bilan (54§1 "wall"). ──
+export interface Kitchen { id: string; label: string; note: string; cabs: Furniture[]; }
+export interface CabCompare { cab: Furniture; old: NormPart[]; neu: NormPart[]; rows: CompareRow[] }
+export interface KitchenCompare {
+  kitchen: Kitchen; cabs: CabCompare[];
+  totOld: number; totNew: number; totBoth: number; totMatched: number; totOldOnly: number; totDrills: number;
+  conclusion: string;
+}
+
+export function compareKitchen(k: Kitchen): KitchenCompare {
+  const cabs: CabCompare[] = k.cabs.map((cab) => {
+    const old = oldFull(cab), neu = newFull(cab);
+    return { cab, old, neu, rows: pairByRole(old, neu) };
+  });
+  let totOld = 0, totNew = 0, totBoth = 0, totMatched = 0, totOldOnly = 0, totDrills = 0;
+  for (const cc of cabs) {
+    totOld += cc.old.length; totNew += cc.neu.length;
+    totBoth += cc.rows.filter((r) => r.old && r.neu).length;
+    totMatched += cc.rows.filter((r) => r.sizeMatch).length;
+    totOldOnly += cc.rows.filter((r) => r.old && !r.neu).length;
+    totDrills += cc.old.reduce((s, p) => s + p.holes.length, 0);
+  }
+  const hasDivider = k.cabs.some((c) => (c.dividers ?? 0) > 0);
+  const parts: string[] = [];
+  parts.push(`"${k.label}" — ${k.note}. Bu oshxonada ${k.cabs.length} ta mebel bor. Jami: eski (grid.ts) ${totOld} bo'lak, yangi (poligon) ${totNew}.`);
+  parts.push(`${totMatched}/${totBoth} juft bo'lak O'LCHAMI bir xil (karkas: yon/ust/past/polka 48§0 Sheet'dan; eshik/tortma-fasadi/tsokol front-qatlam 48 L3 + D6 fit + 48§6; orqa behind-qatlam).`);
+  parts.push(`TESHIK: jami ${totDrills} teshik (real, solveRun: Ø15 cam / Ø8 dowel / Ø35 ilgak) — ikkala versiyada bir xil, chunki teshik geometriya-yadrodan MUSTAQIL umumiy quyi qatlam (52§1).`);
+  if (hasDivider) parts.push(`Faqat PARDEVORLI mebellarda ichki bo'linish konvensiyada farq qiladi (poligon 48§2 junction qonuni fizik ustma-ustlikka yo'l qo'ymaydi — ANIQROQ, kamchilik emas).`);
+  else parts.push(`YAKUN: poligon bu oshxonaning barcha mebellarini eski grid.ts bilan bir xil bo'laklar va teshiklar bilan chiqaradi.`);
+  return { kitchen: k, cabs, totOld, totNew, totBoth, totMatched, totOldOnly, totDrills, conclusion: parts.join(" ") };
+}
+
+/** 10 oshxona bo'yicha umumiy agregat (yakuniy sahifa). */
+export interface KOverallRow { label: string; cabN: number; oldN: number; newN: number; matched: number; both: number; drills: number }
+export function kitchensOverall(kitchens: Kitchen[]): { rows: KOverallRow[]; tOld: number; tNew: number; tMatched: number; tBoth: number; tDrills: number } {
+  const rows = kitchens.map((k) => {
+    const c = compareKitchen(k);
+    return { label: k.label, cabN: k.cabs.length, oldN: c.totOld, newN: c.totNew, matched: c.totMatched, both: c.totBoth, drills: c.totDrills };
+  });
+  return {
+    rows,
+    tOld: rows.reduce((s, r) => s + r.oldN, 0), tNew: rows.reduce((s, r) => s + r.newN, 0),
+    tMatched: rows.reduce((s, r) => s + r.matched, 0), tBoth: rows.reduce((s, r) => s + r.both, 0),
+    tDrills: rows.reduce((s, r) => s + r.drills, 0),
+  };
+}
+
 // ── Umumiy agregatsiya (10 mebel bo'yicha yakuniy xulosa uchun) ──
 export interface OverallRow { label: string; oldN: number; newN: number; matched: number; oldOnly: number; drills: number; }
 export interface Overall { rows: OverallRow[]; totalOld: number; totalNew: number; totalMatched: number; totalOldOnly: number; totalDrills: number; }
