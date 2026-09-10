@@ -4,7 +4,7 @@
 // chiqmaydi, joy yetmasa yangi sahifa; barcha matn ASCII-ga sanitize (jspdf non-ASCII kengligini xato o'lchaydi).
 import { jsPDF } from "jspdf";
 import { compareKitchen, kitchensOverall, ROLE_UZ, type Kitchen, type CabCompare } from "./compare";
-import { viewFront, viewTop, viewLeft, viewRight, viewBack, type View } from "./views";
+import { viewIso, viewFront, viewTop, viewLeft, viewRight, viewBack, type View } from "./views";
 
 const PW = 210, PH = 297, M = 12, W = PW - 2 * M, BOTTOM = PH - 12;
 function hex(h: string): [number, number, number] { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; }
@@ -33,8 +33,10 @@ export function buildParityPdf(kitchens: Kitchen[]): Uint8Array {
     head(`${i + 1}. ${k.label}`, 15); nl(6);
     doc.setFontSize(8.5); doc.setTextColor(90); T(`${k.cabs.length} ta mebel — ${k.note}`, M); nl(6);
 
-    // TO'LIQ CHIZMALAR (founder): fasad ESKI|YANGI + tepadan + chap|o'ng yon (ichki) + orqa. DEVOR rang+yozuv bilan.
+    // TO'LIQ CHIZMALAR (founder): umumiy 3D + fasad ESKI|YANGI + tepadan + chap|o'ng yon (ichki) + orqa. DEVOR rang+yozuv.
     const half = (W - 8) / 2;
+    ensure(78); head("0) UMUMIY KO'RINISH (3D — butun oshxona):", 8.5); nl(5);
+    drawView(doc, viewIso(k), M, y, W, 66); y += 66 + 9;
     ensure(72); head("A) FASAD (old ko'rinish) — ESKI | YANGI:", 8.5); nl(5);
     drawView(doc, viewFront(k, "old"), M, y, half, 58);
     drawView(doc, viewFront(k, "new"), M + half + 8, y, half, 58); y += 58 + 8;
@@ -119,15 +121,16 @@ function summaryPage(doc: jsPDF, kitchens: Kitchen[], ctx: Ctx): void {
   ctx.wrap("Yangi versiya UI-si alohida sahifa: poligon.html (eski grid.ts ilovasiga TEGMAYDI, 54.1). 4 ekran: Muharrir (chiziqni sudrash, qonuniy oraliq ko'rinadi) - Inspektor (har taxta yonida qaysi qoida hal qilgani) - Sozlamalar (Thing-fayllaridan AVTOMATIK) - Parts (kesim ro'yxati). Ishga tushirish: cd apps/app && npm run dev -> /poligon.html.", 8, [50, 50, 50]);
 }
 
-/** Generic View renderer — rect(fill/stroke) + line(dash) + labels; box ichiga masshtab (y-flip), markaz. */
+/** Generic View renderer — rect(fill/stroke) + line(dash) + labels; chizma ICHKI box'da, O'LCHAMLAR chekkada
+ *  (eni pastda, balandlik chapda) — matn chizma ustiga tushmaydi. */
 function drawView(doc: jsPDF, v: View, x0: number, y0: number, boxW: number, boxH: number): void {
-  const top = y0; // sarlavha tashqarida (bo'lim head) chiziladi — bu yerda takrorlanmaydi
-  const sc = Math.min(boxW / v.W, boxH / v.H);
-  const dw = v.W * sc, dh = v.H * sc, ox = x0 + (boxW - dw) / 2;
+  const ML = 9, MB = 6;                       // chap (balandlik dim) + past (eni dim) marginlari
+  const innerX = x0 + ML, innerW = boxW - ML, innerH = boxH - MB, top = y0;
+  const sc = Math.min(innerW / v.W, innerH / v.H);
+  const dw = v.W * sc, dh = v.H * sc, ox = innerX + (innerW - dw) / 2;
   const px = (x: number) => ox + x * sc, py = (yy: number) => top + dh - yy * sc;
   for (const s of v.shapes) {
-    const dash = s.dash ? [0.6, 0.6] : [];
-    doc.setLineDashPattern(dash, 0); doc.setLineWidth(0.15);
+    doc.setLineDashPattern(s.dash ? [0.6, 0.6] : [], 0); doc.setLineWidth(0.15);
     const st = s.stroke ? hex(s.stroke) : [45, 45, 45];
     doc.setDrawColor(st[0]!, st[1]!, st[2]!);
     if (s.t === "rect") {
@@ -139,10 +142,11 @@ function drawView(doc: jsPDF, v: View, x0: number, y0: number, boxW: number, box
   doc.setLineDashPattern([], 0);
   for (const lb of v.labels) {
     const c = lb.color ? hex(lb.color) : [110, 110, 110];
-    doc.setTextColor(c[0]!, c[1]!, c[2]!);
-    doc.setFontSize((lb.size ?? 24) >= 30 ? 7 : 5.2);
+    doc.setTextColor(c[0]!, c[1]!, c[2]!); doc.setFontSize((lb.size ?? 24) >= 30 ? 7 : 5);
     doc.text(san(lb.text), px(lb.x), py(lb.y), lb.mid ? ({ align: "center" } as never) : undefined);
   }
-  doc.setFontSize(5); doc.setTextColor(140);
-  doc.text(`~${Math.round(v.W)}x${Math.round(v.H)} mm`, ox, top + dh + 3);
+  // O'LCHAMLAR (chekkada, chizma tashqarisida) — eni pastda markazda, balandlik chapda vertikal
+  doc.setFontSize(5.5); doc.setTextColor(90);
+  doc.text(san(`${v.xLabel}: ${Math.round(v.W)} mm`), ox + dw / 2, top + dh + 4, { align: "center" } as never);
+  doc.text(san(`${v.yLabel}: ${Math.round(v.H)} mm`), x0 + 3, top + dh / 2, { angle: 90, align: "center" } as never);
 }

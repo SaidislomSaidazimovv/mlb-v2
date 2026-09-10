@@ -1,11 +1,13 @@
 // B — screenshot uchun HTML+SVG: har OSHXONA kartasi — TO'LIQ chizmalar (fasad ESKI|YANGI, tepadan, chap/o'ng
 // yon ichki kesim, orqa) DEVOR rang+yozuv bilan + har mebel bo'lak+teshik jadvali + xulosa.
 import { compareKitchen, ROLE_UZ, type Kitchen } from "./compare";
-import { viewFront, viewTop, viewLeft, viewRight, viewBack, type View } from "./views";
+import { viewIso, viewFront, viewTop, viewLeft, viewRight, viewBack, type View } from "./views";
 
 function svg(v: View, w: number, h: number): string {
-  const sc = Math.min((w - 10) / v.W, (h - 10) / v.H);
-  const dw = v.W * sc, dh = v.H * sc, ox = (w - dw) / 2, oy = (h - dh) / 2;
+  const ML = 14, MB = 14; // chap (balandlik dim) + past (eni dim) margin
+  const iw = w - ML, ih = h - MB;
+  const sc = Math.min((iw - 8) / v.W, (ih - 8) / v.H);
+  const dw = v.W * sc, dh = v.H * sc, ox = ML + (iw - dw) / 2, oy = (ih - dh) / 2;
   const px = (x: number) => ox + x * sc, py = (y: number) => oy + dh - y * sc;
   const parts: string[] = [];
   for (const s of v.shapes) {
@@ -20,6 +22,9 @@ function svg(v: View, w: number, h: number): string {
     const fs = (lb.size ?? 24) >= 30 ? 11 : 8;
     parts.push(`<text x="${px(lb.x).toFixed(1)}" y="${py(lb.y).toFixed(1)}" font-size="${fs}" fill="${lb.color ?? "#666"}"${lb.mid ? ' text-anchor="middle"' : ""}>${lb.text}</text>`);
   }
+  // O'LCHAMLAR chekkada (matn ustiga tushmaydi)
+  parts.push(`<text x="${(ox + dw / 2).toFixed(1)}" y="${(h - 3).toFixed(1)}" font-size="8.5" fill="#777" text-anchor="middle">${v.xLabel}: ${Math.round(v.W)} mm</text>`);
+  parts.push(`<text x="9" y="${(oy + dh / 2).toFixed(1)}" font-size="8.5" fill="#777" text-anchor="middle" transform="rotate(-90 9 ${(oy + dh / 2).toFixed(1)})">${v.yLabel}: ${Math.round(v.H)} mm</text>`);
   return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="background:#fff">${parts.join("")}</svg>`;
 }
 
@@ -40,6 +45,7 @@ export function buildParityHtml(kitchens: Kitchen[]): string {
     return `<div class="card" id="f${i}">
       <h2>${i + 1}. ${k.label}</h2>
       <div class="spec">${k.cabs.length} ta mebel — <i>${k.note}</i></div>
+      <div class="v full"><div class="lbl">0) UMUMIY KO'RINISH (3D — butun oshxona)</div>${svg(viewIso(k), 700, 250)}</div>
       <div class="vrow"><div class="v"><div class="lbl">A) FASAD — ESKI (grid.ts)</div>${svg(viewFront(k, "old"), 340, 240)}</div>
         <div class="v"><div class="lbl">A) FASAD — YANGI (poligon)</div>${svg(viewFront(k, "new"), 340, 240)}</div></div>
       <div class="v full"><div class="lbl">B) TEPADAN (plan) — DEVOR orqada</div>${svg(viewTop(k), 700, 150)}</div>
